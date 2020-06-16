@@ -15,6 +15,13 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
     const Token& newToken = tokenListFromLexer.back();
 
     if (newToken.row != currentRow) {
+        { // exclusivly for testing
+            Expression& buffer = *exprs.back();
+            if (!buffer.completeExpr) {
+                buffer.endingStatus.panicMode = true;
+                buffer.endingStatus.waitingNewExpr = true;
+            }
+        }
         currentRow = newToken.row;
         status.panicMode = false;
         status.waitingNewExpr = true;
@@ -47,6 +54,7 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
         lastExpr.actualTokenSeq.push_back(newToken);
 
         status = lastExpr.checkExpr();
+        lastExpr.endingStatus = status; // exclusevly for testing
     }
 
     numOfReadTokens++;

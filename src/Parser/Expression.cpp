@@ -1,23 +1,29 @@
 #include "Expression.h"
-// #include "Parser.h"
+#include "Parser.h"
 
 Expression::Expression () {}
 
 Status Expression::checkExpr () {
     Status newStatus(false, actualTokenSeq.size() == expectedSeq.size());
 
-    for (size_t i = 0; i < actualTokenSeq.size(); i++) {
-        const std::set<std::string>& expectedTokenTypes = expectedSeq[i];
-        const std::string& actualTokenType = actualTokenSeq[i].type;
+    if (actualTokenSeq.size() == 1u) { // signal that this a new expression
+        point = expectedSeq.begin();
+    }
 
-        if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
-            newStatus.panicMode = true;
-            newStatus.waitingNewExpr = true;
-            return newStatus;
-        } 
+    const std::set<std::string>& expectedTokenTypes = *point;
+    const std::string& actualTokenType = actualTokenSeq.back().type;
+
+    if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
+        newStatus.panicMode = true;
+        newStatus.waitingNewExpr = true;
+        return newStatus;
     }
     
-    if (newStatus.waitingNewExpr) completeExpr = true;
+    point++;
+    
+    if (newStatus.waitingNewExpr && point == expectedSeq.end()) {
+        completeExpr = true;
+    }
     
     return newStatus;
 }

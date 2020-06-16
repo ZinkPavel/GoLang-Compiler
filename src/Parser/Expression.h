@@ -28,11 +28,13 @@ struct Status {
 class Expression {
 protected:
     std::vector<std::set<std::string>> expectedSeq;
+    std::vector<std::set<std::string>>::iterator point;
 
 public:
     bool completeExpr = false;
     std::vector<bool> multipleReference;
     std::vector<Token> actualTokenSeq;
+    Status endingStatus; // exclusively for tests
 
     Expression ();
 

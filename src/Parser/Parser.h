@@ -16,7 +16,6 @@ private:
     size_t numOfReadTokens = 0;
 
     Status status;
-    // std::vector<Token>::iterator point;
     std::vector<std::shared_ptr<Expression>> exprs;
 
 public:

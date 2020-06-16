@@ -95,10 +95,10 @@ void ReturnExprTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/ReturnExprs.txt");
 
     ASSERT_EQUAL(exprs.size(), 5u);
-
+    
     ASSERT_STATUS(0, false, true);
-    ASSERT_STATUS(1, false, false);
-    ASSERT_STATUS(2, false, false);
+    ASSERT_STATUS(1, true, true);
+    ASSERT_STATUS(2, true, true);
     ASSERT_STATUS(3, true, true);
     ASSERT_STATUS(4, false, true);
 
@@ -118,7 +118,6 @@ void ReturnExprTest () {
     ASSERT_EQUAL((*exprs[4]).actualTokenSeq[0].type, "return");
     ASSERT_EQUAL((*exprs[4]).actualTokenSeq[1].type, "numeric_const");
     ASSERT_EQUAL((*exprs[4]).actualTokenSeq[2].type, "SEMI");
-
 }
 
 void FuncDeclareTest () {
@@ -132,7 +131,7 @@ void FuncDeclareTest () {
     ASSERT_STATUS(3, true, true);
     ASSERT_STATUS(4, true, true);
     ASSERT_STATUS(5, true, true);
-    ASSERT_STATUS(6, false, true);
+    // ASSERT_STATUS(6, false, true);
 
     ASSERT_EQUAL((*exprs[0]).actualTokenSeq[0].type, "func");
     ASSERT_EQUAL((*exprs[0]).actualTokenSeq[1].type, "identifier");
