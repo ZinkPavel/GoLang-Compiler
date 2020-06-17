@@ -11,18 +11,13 @@ const std::set<std::string> numericVars = {"identifier", "numeric_const", "bin_c
 const std::set<std::string> arithmeticSings = {"OR", "AND", "PLUS", "MINUS", "STAR", "SLASH", "PROC", "LESS", "MORE"};
 
 struct Status {
+public:
     bool panicMode = false;
     bool waitingNewExpr = true;
 
-    Status () {
-        panicMode = false;
-        waitingNewExpr = true;
-    }
+    Status ();
 
-    Status (bool first, bool second) {
-        panicMode = first;
-        waitingNewExpr = second;
-    }
+    Status (bool first, bool second);
 };
 
 class Expression {

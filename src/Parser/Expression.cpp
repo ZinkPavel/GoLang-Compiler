@@ -1,6 +1,13 @@
 #include "Expression.h"
 #include "Parser.h"
 
+Status::Status () {}
+
+Status::Status (bool first, bool second) {
+    panicMode = first;
+    waitingNewExpr = second;
+}
+
 Expression::Expression () {}
 
 Status Expression::checkExpr () {
