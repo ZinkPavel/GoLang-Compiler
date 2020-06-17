@@ -1,5 +1,2 @@
-/bin/*
-/build/Compiler/*
-/build/Parser/*
-/build/Tests/*
-/build/Tree/*
+/bin
+/build
