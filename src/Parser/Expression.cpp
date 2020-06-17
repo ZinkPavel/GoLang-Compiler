@@ -13,11 +13,7 @@ Expression::Expression () {}
 Status Expression::checkExpr () {
     Status newStatus(false, actualTokenSeq.size() == expectedSeq.size());
 
-    if (actualTokenSeq.size() == 1u) { // signal that this a new expression
-        point = expectedSeq.begin();
-    }
-
-    const std::set<std::string>& expectedTokenTypes = *point;
+    const std::set<std::string>& expectedTokenTypes = expectedSeq[indexInExpSeq];
     const std::string& actualTokenType = actualTokenSeq.back().type;
 
     if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
@@ -26,9 +22,9 @@ Status Expression::checkExpr () {
         return newStatus;
     }
     
-    point++;
+    indexInExpSeq++;
     
-    if (newStatus.waitingNewExpr && point == expectedSeq.end()) {
+    if (newStatus.waitingNewExpr && (indexInExpSeq == expectedSeq.size())) {
         completeExpr = true;
     }
     
@@ -64,6 +60,7 @@ FuncDeclareExpr::FuncDeclareExpr () {
         dataTypes,
     };
     
+    zeroReference =     {false, false, false, true, true, false, true};
     multipleReference = {false, false, false, true, false, false, true};
 }
 

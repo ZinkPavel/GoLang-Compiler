@@ -22,12 +22,13 @@ public:
 
 class Expression {
 protected:
+    size_t indexInExpSeq = 0;
     std::vector<std::set<std::string>> expectedSeq;
-    std::vector<std::set<std::string>>::iterator point;
 
 public:
     bool completeExpr = false;
     std::vector<bool> multipleReference;
+    std::vector<bool> zeroReference;
     std::vector<Token> actualTokenSeq;
     Status endingStatus; // exclusively for tests
 
