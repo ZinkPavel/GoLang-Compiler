@@ -24,8 +24,9 @@ public:
 
 class Expression {
 protected:
-    size_t indexInExpSeq = 0;
+    size_t minAmountTokens = 1, indexInExpSeq = 0;
     std::vector<std::set<std::string>> expectedSeq;
+    std::set<std::string> lastSignificantTokenType;
     std::regex regexMask;
 
 public:

@@ -26,7 +26,7 @@ Status Expression::checkExpr () {
         indexInExpSeq++;
     }
     
-    if (expectedSeq.back().find(actualTokenType) != expectedSeq.back().end() &&  checkByRegexMask()) {
+    if (actualTokenSeq.size() >= minAmountTokens && lastSignificantTokenType.find(actualTokenType) != lastSignificantTokenType.end() &&  checkByRegexMask()) {
         newStatus.waitingNewExpr = true;
         completeExpr = true;
     }
@@ -64,6 +64,7 @@ ReturnExpr::ReturnExpr () {
         {"SEMI"},
     };
 
+    lastSignificantTokenType = {"SEMI"};
     regexMask = "return (identifier|numeric_const|bin_const|octal_const|hex_const) *?SEMI";
 }
 
@@ -77,7 +78,8 @@ FuncDeclareExpr::FuncDeclareExpr () {
         dataTypes,
     };
 
-    regexMask = "func main ?[\x28] ?(identifier( ?, ?identifier)*? (int|float|double|string|bool))? ?[\x29] ?(int|float|double|string|bool)?";
+    lastSignificantTokenType = {"R_PAREN"};
+    regexMask = "func identifier ?L_PAREN ?R_PAREN (int|float|double|string|bool)?" ;
 }
 
 ImportExpr::ImportExpr () {
@@ -86,6 +88,7 @@ ImportExpr::ImportExpr () {
         {"string_litteral"},
     };
 
+    lastSignificantTokenType = {expectedSeq.back()};
     regexMask = "import string_litteral";
 }
 
@@ -95,6 +98,7 @@ PackageExpr::PackageExpr () {
         {"identifier"},
     };
 
+    lastSignificantTokenType = {expectedSeq.back()};
     regexMask = "package identifier";
 }
 

@@ -1,7 +1,1 @@
-func main (a int) bool
-func main (a "sting_literral") string
-func 3 (a "sting_literral") string
-func //func (param double) float
-func "word" (param double) float
-func" //func main (param int) string
-func main ()
+func main () int
