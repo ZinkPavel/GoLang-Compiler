@@ -37,10 +37,11 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
     if (status.waitingNewExpr) {
         status.waitingNewExpr = false;
 
-        if (isCommentExpr(newToken)) exprs.push_back(std::make_shared<CommentExpr>());
-        else if (isImportExpr(newToken)) exprs.push_back(std::make_shared<ImportExpr>());
+        // if (isCommentExpr(newToken)) exprs.push_back(std::make_shared<CommentExpr>());
+        if (isImportExpr(newToken)) exprs.push_back(std::make_shared<ImportExpr>());
         else if (isPackageExpr(newToken)) exprs.push_back(std::make_shared<PackageExpr>());
-        else if (isFuncDeclareExpr(newToken)) exprs.push_back(std::make_shared<FuncDeclareExpr>());
+        // else if (isFuncDeclareExpr(newToken)) exprs.push_back(std::make_shared<FuncDeclareExpr>());
+        // else if (isReturnExpr(newToken)) exprs.push_back(std::make_shared<ReturnExpr>());
         else if (isReturnExpr(newToken)) exprs.push_back(std::make_shared<ReturnExpr>());
         // else if (isMathExpr(newToken)) exprs.push_back(std::make_shared<MathExpr>()); // make for newToken
         // else if (isMathExpr(undefinedTokenList)) exprs.push_back(std::make_shared<MathExpr>());

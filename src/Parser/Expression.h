@@ -2,6 +2,8 @@
 
 #include <set>
 #include <vector>
+#include <regex>
+#include <string>
 
 #include "../Compiler/Token.h"
 
@@ -24,17 +26,17 @@ class Expression {
 protected:
     size_t indexInExpSeq = 0;
     std::vector<std::set<std::string>> expectedSeq;
+    std::regex regexMask;
 
 public:
     bool completeExpr = false;
-    std::vector<bool> multipleReference;
-    std::vector<bool> zeroReference;
     std::vector<Token> actualTokenSeq;
     Status endingStatus; // exclusively for tests
 
     Expression ();
 
     Status checkExpr ();
+    bool checkByRegexMask ();
 };
 
 // Exprs

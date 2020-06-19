@@ -11,24 +11,40 @@ Status::Status (bool first, bool second) {
 Expression::Expression () {}
 
 Status Expression::checkExpr () {
-    Status newStatus(false, actualTokenSeq.size() == expectedSeq.size());
+    Status newStatus(false, false);
 
     const std::set<std::string>& expectedTokenTypes = expectedSeq[indexInExpSeq];
     const std::string& actualTokenType = actualTokenSeq.back().type;
 
-    if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
-        newStatus.panicMode = true;
-        newStatus.waitingNewExpr = true;
-        return newStatus;
+    if (*expectedTokenTypes.begin() != "BODY" && expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
+        if (*expectedSeq[indexInExpSeq - 1].begin() != "BODY") {
+            newStatus.panicMode = true;
+            newStatus.waitingNewExpr = true;
+            return newStatus;        
+        }
+    } else {
+        indexInExpSeq++;
     }
     
-    indexInExpSeq++;
-    
-    if (newStatus.waitingNewExpr && (indexInExpSeq == expectedSeq.size())) {
+    if (expectedSeq.back().find(actualTokenType) != expectedSeq.back().end() &&  checkByRegexMask()) {
+        newStatus.waitingNewExpr = true;
         completeExpr = true;
     }
-    
+
     return newStatus;
+}
+
+bool Expression::checkByRegexMask () {
+    std::string str = "";
+    bool first = true;
+    for (size_t i = 0; i < actualTokenSeq.size(); i++) {
+        if (!first) str += ' ';
+        else first = false;
+        str += actualTokenSeq[i].type;
+    }
+
+    // std::cout << str << std::endl;
+    return std::regex_match(str, regexMask);
 }
 
 // Exprs
@@ -44,9 +60,11 @@ Status Expression::checkExpr () {
 ReturnExpr::ReturnExpr () {
     expectedSeq = {
         {"return"},
-        numericVars,
+        {"BODY"},
         {"SEMI"},
     };
+
+    regexMask = "return (identifier|numeric_const|bin_const|octal_const|hex_const) *?SEMI";
 }
 
 FuncDeclareExpr::FuncDeclareExpr () {
@@ -54,14 +72,12 @@ FuncDeclareExpr::FuncDeclareExpr () {
         {"func"},
         {"identifier"},
         {"L_PAREN"},
-        {"identifier"},
-        dataTypes,
+        {"BODY"},
         {"R_PAREN"},
         dataTypes,
     };
-    
-    zeroReference =     {false, false, false, true, true, false, true};
-    multipleReference = {false, false, false, true, false, false, true};
+
+    regexMask = "func main ?[\x28] ?(identifier( ?, ?identifier)*? (int|float|double|string|bool))? ?[\x29] ?(int|float|double|string|bool)?";
 }
 
 ImportExpr::ImportExpr () {
@@ -69,6 +85,8 @@ ImportExpr::ImportExpr () {
         {"import"},
         {"string_litteral"},
     };
+
+    regexMask = "import string_litteral";
 }
 
 PackageExpr::PackageExpr () {
@@ -76,6 +94,8 @@ PackageExpr::PackageExpr () {
         {"package"},
         {"identifier"},
     };
+
+    regexMask = "package identifier";
 }
 
 CommentExpr::CommentExpr () {
