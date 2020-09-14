@@ -5,7 +5,6 @@
 #include <vector>
 #include <tuple>
 
-
 enum CH { 
     SPACE = 32,
     EXCLAMATION = 33, // !
@@ -25,7 +24,7 @@ enum CH {
     SLASH = 47, // '/'
     COLON = 58, // :
     SEMI = 59, // ;
-    LESS = 60, // <PIPE
+    LESS = 60, // <
     MORE = 62, // >
     EQUAL = 61, // =
     PIPE = 124, // |
@@ -38,7 +37,7 @@ enum CH {
 };
 
 const std::vector<std::string> keywords = {"int", "double", "var", "float", "return", "package",
-    "import", "func", "bool", "string", "for", "if", "else", "while"};
+    "import", "func", "bool", "string", "for", "if", "else", "while", "do"};
 
 class Token {
     public:

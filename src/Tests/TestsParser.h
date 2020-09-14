@@ -12,14 +12,15 @@
     ASSERT_EQUAL(status.panicMode, fBool); \
     ASSERT_EQUAL(status.waitingNewExpr, sBool)
 
+void TestsParser ();
+
+void MathExprTest ();
 // void PanicModeTest ();
 // void ExprWithNegativeSignTest ();
 // void DoubleSignExprTest ();
 // void BasicExprTest ();
-void ReturnExprTest ();
-void FuncDeclareTest ();
-void ImportExprTest ();
-void PackageExprTest ();
-void CommentExprTest ();
-
-void TestsParser ();
+// void ReturnExprTest ();
+// void FuncDeclareTest ();
+// void ImportExprTest ();
+// void PackageExprTest ();
+// void CommentExprTest ();

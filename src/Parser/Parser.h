@@ -6,9 +6,9 @@
 
 #include "Expression.h"
 
-#define MAKE_NEW_EXPR(exprType) \
+/* #define MAKE_NEW_EXPR(exprType) \
     exprs.push_back(std::make_shared<exprType>()); \
-    waitingNewExpr = false;
+    waitingNewExpr = false; */
 
 class Parser {
 private:
@@ -21,6 +21,7 @@ private:
 public:
     Parser ();
 
-    const std::vector<std::shared_ptr<Expression>>& getExprs () const;
     void update (const std::vector<Token>& tokensFromLexer);
+    const std::vector<std::shared_ptr<Expression>>& getExprs () const;
+    const Status& getComplitionStatus () const;
 };

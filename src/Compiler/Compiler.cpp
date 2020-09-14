@@ -134,6 +134,10 @@ const std::vector<std::shared_ptr<Expression>>& Compiler::getParserExprs () cons
     return parser.getExprs();
 }
 
+const Status& Compiler::getParserComplitionStatus() const {
+    return parser.getComplitionStatus();
+}
+
 
 // Checks
 inline bool isDQuotes (const char& ch) {

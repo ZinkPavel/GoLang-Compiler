@@ -1,3 +1,7 @@
+#include <algorithm>
+#include <sstream>
+#include <iterator>
+
 #include "Expression.h"
 #include "Parser.h"
 
@@ -16,59 +20,69 @@ Status Expression::checkExpr () {
     const std::set<std::string>& expectedTokenTypes = expectedSeq[indexInExpSeq];
     const std::string& actualTokenType = actualTokenSeq.back().type;
 
-    if (*expectedTokenTypes.begin() != "BODY" && expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
-        if (*expectedSeq[indexInExpSeq - 1].begin() != "BODY") {
-            newStatus.panicMode = true;
-            newStatus.waitingNewExpr = true;
-            return newStatus;        
-        }
+    // if (*expectedTokenTypes.begin() != "BODY" && expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
+    if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
+        // if (*expectedSeq[indexInExpSeq - 1].begin() != "BODY") {
+            return {true, true};
+        // }
     } else {
         indexInExpSeq++;
     }
     
-    if (actualTokenSeq.size() >= minAmountTokens && lastSignificantTokenType.find(actualTokenType) != lastSignificantTokenType.end() &&  checkByRegexMask()) {
+    // finished token
+    // if (actualTokenSeq.size() == expectedTokenTypes.size()) {
+        if (checkByRegexMask()) {
+            newStatus.waitingNewExpr = true;
+            completeExpr = true;
+        }
+    // }
+    /* if (actualTokenSeq.size() >= minAmountTokens && lastSignificantTokenType.find(actualTokenType) != lastSignificantTokenType.end() &&  checkByRegexMask()) {
         newStatus.waitingNewExpr = true;
-        completeExpr = true;
-    }
+        // completeExpr = true;
+    } */
 
     return newStatus;
 }
 
 bool Expression::checkByRegexMask () {
-    std::string str = "";
-    bool first = true;
-    for (size_t i = 0; i < actualTokenSeq.size(); i++) {
-        if (!first) str += ' ';
-        else first = false;
-        str += actualTokenSeq[i].type;
-    }
+    std::stringstream actualSeq;
 
-    // std::cout << str << std::endl;
-    return std::regex_match(str, regexMask);
+    for (auto it = actualTokenSeq.begin(); it != actualTokenSeq.end() - 1; ++it) {
+        actualSeq << it->type << ' ';
+    }
+    actualSeq << actualTokenSeq.back().type;
+
+    // std::cout << actualSeq.str() << std::endl;
+    return std::regex_match(actualSeq.str(), regexMask);
 }
 
 // Exprs
 
-/* MathExpr::MathExpr () {
+MathExpr::MathExpr () {
     expectedSeq = {
         numericVars,
         arithmeticSings,
         numericVars,
     };
-} */
 
-ReturnExpr::ReturnExpr () {
+    regexMask = "(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)";
+}
+
+/* ReturnExpr::ReturnExpr () {
     expectedSeq = {
         {"return"},
         {"BODY"},
         {"SEMI"},
     };
 
+    minAmountTokens = 3;
     lastSignificantTokenType = {"SEMI"};
     regexMask = "return (identifier|numeric_const|bin_const|octal_const|hex_const) *?SEMI";
-}
+} */
 
-FuncDeclareExpr::FuncDeclareExpr () {
+/* FuncDeclareExpr::FuncDeclareExpr () {
     expectedSeq = {
         {"func"},
         {"identifier"},
@@ -78,11 +92,12 @@ FuncDeclareExpr::FuncDeclareExpr () {
         dataTypes,
     };
 
+    minAmountTokens = 4;
     lastSignificantTokenType = {"R_PAREN"};
-    regexMask = "func identifier ?L_PAREN ?R_PAREN (int|float|double|string|bool)?" ;
-}
+    regexMask = "func identifier ?L_PAREN ?R_PAREN ?(int|float|double|string|bool)?";
+} */
 
-ImportExpr::ImportExpr () {
+/* ImportExpr::ImportExpr () {
     expectedSeq = {
         {"import"},
         {"string_litteral"},
@@ -90,9 +105,9 @@ ImportExpr::ImportExpr () {
 
     lastSignificantTokenType = {expectedSeq.back()};
     regexMask = "import string_litteral";
-}
+} */
 
-PackageExpr::PackageExpr () {
+/* PackageExpr::PackageExpr () {
     expectedSeq = {
         {"package"},
         {"identifier"},
@@ -100,43 +115,36 @@ PackageExpr::PackageExpr () {
 
     lastSignificantTokenType = {expectedSeq.back()};
     regexMask = "package identifier";
-}
+} */
 
-CommentExpr::CommentExpr () {
+/* CommentExpr::CommentExpr () {
     expectedSeq = {
         {"comment"}
     };
-}
+} */
 
 // Checks
 
-/* bool isMathExpr (const std::vector<Token>& undefinedTokenList) {
-    size_t newStatus = 0;
+bool isMathExpr (const Token& newToken) {
+    return numericVars.find(newToken.type) != numericVars.end();
+}
 
-    for (const auto& token : undefinedTokenList) {
-        if (numericVars.find(token.type) != numericVars.end()) newStatus++;
-        if (arithmeticSings.find(token.type) != arithmeticSings.end()) newStatus++;
-    }
-    
-    return newStatus == undefinedTokenList.size(); // all elements belong to math expr
+/* bool isReturnExpr (const Token& newToken) {
+    return newToken.type == "return";
 } */
 
-bool isReturnExpr (const Token& newToken) {
-    return newToken.type == "return";
-}
-
-bool isFuncDeclareExpr (const Token& newToken) {
+/* bool isFuncDeclareExpr (const Token& newToken) {
     return newToken.type == "func"; 
-}
+} */
 
-bool isImportExpr (const Token& newToken) { 
+/* bool isImportExpr (const Token& newToken) { 
     return newToken.type == "import"; 
-}
+} */
 
-bool isPackageExpr (const Token& newToken) { 
+/* bool isPackageExpr (const Token& newToken) { 
     return  newToken.type == "package"; 
-}
+} */
 
-bool isCommentExpr (const Token& newToken) {
+/* bool isCommentExpr (const Token& newToken) {
     return newToken.type == "comment";
-}
+} */
