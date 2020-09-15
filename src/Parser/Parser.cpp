@@ -8,16 +8,23 @@ Parser::Parser () {}
 void Parser::update (const std::vector<Token>& tokenListFromLexer) {
     if (tokenListFromLexer.size() == numOfReadTokens) return; // found insignificant sign
 
+    /* if (exprs.size() > 0) {
+        Expression& lastExpr = *exprs.back();
+        if (lastExpr.completeExpr) {
+            lastExpr.endingStatus = status;
+        }
+    } */
+    // if ((*exprs.back().completeExpr) {}
+
     const Token& newToken = tokenListFromLexer.back();
 
     if (newToken.row != currentRow) {
-        /* { // exclusivly for tests
-            Expression& buffer = *exprs.back();
-            if (!buffer.completeExpr) {
-                buffer.endingStatus.panicMode = true;
-                buffer.endingStatus.waitingNewExpr = true;
+        { // exclusivly for tests
+            Expression& lastExpr = *exprs.back();
+            if (!lastExpr.completeExpr) {
+                lastExpr.endingStatus = {true, true};
             }
-        } */
+        }
         currentRow = newToken.row;
         status.panicMode = false;
         status.waitingNewExpr = true;
@@ -34,12 +41,11 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
         status.waitingNewExpr = false;
 
         if (isMathExpr(newToken)) exprs.push_back(std::make_shared<MathExpr>());
+        else if (isReturnExpr(newToken)) exprs.push_back(std::make_shared<ReturnExpr>());
         // if (isCommentExpr(newToken)) exprs.push_back(std::make_shared<CommentExpr>());
         // if (isImportExpr(newToken)) exprs.push_back(std::make_shared<ImportExpr>());
         // else if (isPackageExpr(newToken)) exprs.push_back(std::make_shared<PackageExpr>());
         // else if (isFuncDeclareExpr(newToken)) exprs.push_back(std::make_shared<FuncDeclareExpr>());
-        // else if (isReturnExpr(newToken)) exprs.push_back(std::make_shared<ReturnExpr>());
-        // else if (isReturnExpr(newToken)) exprs.push_back(std::make_shared<ReturnExpr>());
         // else if (isMathExpr(newToken)) exprs.push_back(std::make_shared<MathExpr>()); // make for newToken
         // else if (isMathExpr(undefinedTokenList)) exprs.push_back(std::make_shared<MathExpr>());
         else status.waitingNewExpr = true;
@@ -55,7 +61,7 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
 
         status = lastExpr.checkExpr();
         // std::cout << status.panicMode << " " << status.waitingNewExpr << std::endl;
-        // lastExpr.endingStatus = status; // exclusevly for testing
+        lastExpr.endingStatus = status; // exclusevly for tests
     } /* else if (status.waitingNewExpr && exprs.size() > 0) { // waitingNewExpr and push_back ? what ? 
         Expression& lastExpr = *exprs.back();
         lastExpr.actualTokenSeq.push_back(newToken);

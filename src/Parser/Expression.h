@@ -32,7 +32,7 @@ protected:
 public:
     bool completeExpr = false;
     std::vector<Token> actualTokenSeq;
-    // Status endingStatus; // exclusively for tests -- remove it
+    Status endingStatus; // exclusively for tests
 
     Expression ();
 
@@ -47,10 +47,10 @@ public:
     MathExpr ();
 };
 
-/* class ReturnExpr: public Expression {
+class ReturnExpr: public Expression {
 public:
     ReturnExpr ();    
-}; */
+};
 
 /* class FuncDeclareExpr: public Expression {
 public:
@@ -75,7 +75,7 @@ public:
 // Checks
 
 bool isMathExpr (const Token& newToken);
-// bool isReturnExpr (const Token& newToken);
+bool isReturnExpr (const Token& newToken);
 // bool isFuncDeclareExpr (const Token& newToken);
 // bool isImportExpr (const Token& newToken);
 // bool isPackageExpr (const Token& newToken);

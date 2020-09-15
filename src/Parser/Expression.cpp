@@ -57,30 +57,32 @@ bool Expression::checkByRegexMask () {
 }
 
 // Exprs
-
 MathExpr::MathExpr () {
     expectedSeq = {
+        // possibleSings,
         numericVars,
         arithmeticSings,
         numericVars,
     };
 
-    regexMask = "(identifier|numeric_const|bin_const|octal_const|hex_const)"
+    regexMask = "(EXCLAMATION)?\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)"
         "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)\\s?"
+        "(EXCLAMATION)?\\s?"
         "(identifier|numeric_const|bin_const|octal_const|hex_const)";
 }
 
-/* ReturnExpr::ReturnExpr () {
+ReturnExpr::ReturnExpr () {
     expectedSeq = {
         {"return"},
-        {"BODY"},
+        numericVars,
         {"SEMI"},
     };
 
-    minAmountTokens = 3;
-    lastSignificantTokenType = {"SEMI"};
-    regexMask = "return (identifier|numeric_const|bin_const|octal_const|hex_const) *?SEMI";
-} */
+    regexMask = "return"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+        "SEMI";
+}
 
 /* FuncDeclareExpr::FuncDeclareExpr () {
     expectedSeq = {
@@ -126,12 +128,12 @@ MathExpr::MathExpr () {
 // Checks
 
 bool isMathExpr (const Token& newToken) {
-    return numericVars.find(newToken.type) != numericVars.end();
+    return possibleSings.find(newToken.type) != possibleSings.end() || numericVars.find(newToken.type) != numericVars.end();
 }
 
-/* bool isReturnExpr (const Token& newToken) {
+bool isReturnExpr (const Token& newToken) {
     return newToken.type == "return";
-} */
+}
 
 /* bool isFuncDeclareExpr (const Token& newToken) {
     return newToken.type == "func"; 

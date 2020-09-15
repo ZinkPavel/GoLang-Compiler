@@ -5,11 +5,9 @@
 void TestsParser () {
     TestRunner tr;
     RUN_TEST(tr, MathExprTest);
+    RUN_TEST(tr, ReturnExprTest);
     
     // RUN_TEST(tr, ExprWithNegativeSignTest);
-    // RUN_TEST(tr, DoubleSignExprTest);
-    // RUN_TEST(tr, BasicExprTest);
-    // RUN_TEST(tr, ReturnExprTest);
     // RUN_TEST(tr, FuncDeclareTest);
     // RUN_TEST(tr, ImportExprTest);
     // RUN_TEST(tr, PackageExprTest);
@@ -22,7 +20,7 @@ void MathExprTest () {
     status = comp.getParserComplitionStatus();
     expr = *exprs.back();
 
-    {        
+     {        
         ASSERT_EQUAL(exprs.size(), 16u);
         ASSERT_EQUAL(expr.checkByRegexMask(), true);
         ASSERT_EQUAL(status.panicMode, false);
@@ -30,38 +28,32 @@ void MathExprTest () {
     }
 }
 
+void ReturnExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/ReturnExprs.txt");
+
+    {
+        status = comp.getParserComplitionStatus();
+        expr = *exprs.back();
+
+        ASSERT_EQUAL(exprs.size(), 5u);
+        ASSERT_EQUAL(expr.checkByRegexMask(), true);
+        ASSERT_EQUAL(status.panicMode, false);
+        ASSERT_EQUAL(status.waitingNewExpr, true);
+    }
+    
+    {
+        ASSERT_STATUS(0, false, true);
+        ASSERT_STATUS(1, true, true);
+        ASSERT_STATUS(2, true, true);
+        ASSERT_STATUS(3, true, true);
+        ASSERT_STATUS(4, false, true);
+    }
+}
+
 /* void ExprWithNegativeSignTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/math_exprs/ExprsWithNegativeSign.txt");
 
     { ASSERT_STATUS(0, false, true); }
-} */
-
-/* void DoubleSignExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/math_exprs/DoubleSignExprs.txt");
-
-    { ASSERT_EQUAL(exprs.size(), 2u); }
-
-    // test '&&' exprs
-    {
-        { ASSERT_STATUS(0, false, true); }
-    }
-
-    // test '||' exprs
-    {
-        { ASSERT_STATUS(1, false, true); }
-    }
-} */
-
-/* void ReturnExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/ReturnExprs.txt");
-
-    ASSERT_EQUAL(exprs.size(), 5u);
-    
-    ASSERT_STATUS(0, false, true);
-    ASSERT_STATUS(1, true, true);
-    ASSERT_STATUS(2, true, true);
-    ASSERT_STATUS(3, true, true);
-    ASSERT_STATUS(4, false, true);
 } */
 
 /* void FuncDeclareTest () {
