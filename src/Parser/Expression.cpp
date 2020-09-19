@@ -20,26 +20,19 @@ Status Expression::checkExpr () {
     const std::set<std::string>& expectedTokenTypes = expectedSeq[indexInExpSeq];
     const std::string& actualTokenType = actualTokenSeq.back().type;
 
-    // if (*expectedTokenTypes.begin() != "BODY" && expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
     if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
-        // if (*expectedSeq[indexInExpSeq - 1].begin() != "BODY") {
-            return {true, true};
-        // }
+        return {true, true};
     } else {
         indexInExpSeq++;
     }
     
     // finished token
-    // if (actualTokenSeq.size() == expectedTokenTypes.size()) {
-        if (checkByRegexMask()) {
-            newStatus.waitingNewExpr = true;
+    if (checkByRegexMask()) {
+        newStatus.waitingNewExpr = true;
+        if (!hasBraceSeq) {
             completeExpr = true;
         }
-    // }
-    /* if (actualTokenSeq.size() >= minAmountTokens && lastSignificantTokenType.find(actualTokenType) != lastSignificantTokenType.end() &&  checkByRegexMask()) {
-        newStatus.waitingNewExpr = true;
-        // completeExpr = true;
-    } */
+    }
 
     return newStatus;
 }
@@ -102,6 +95,24 @@ PackageExpr::PackageExpr () {
     regexMask = "package identifier";
 }
 
+IfExpr::IfExpr () {
+    expectedSeq = {
+        {"if"},
+        numericVars,
+        arithmeticSings,
+        numericVars,
+        {"L_BRACE"}
+    };
+
+    regexMask = "if"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?L_BRACE";
+
+    hasBraceSeq = true;
+}
+
 /* FuncDeclareExpr::FuncDeclareExpr () {
     expectedSeq = {
         {"func"},
@@ -115,12 +126,6 @@ PackageExpr::PackageExpr () {
     minAmountTokens = 4;
     lastSignificantTokenType = {"R_PAREN"};
     regexMask = "func identifier ?L_PAREN ?R_PAREN ?(int|float|double|string|bool)?";
-} */
-
-/* CommentExpr::CommentExpr () {
-    expectedSeq = {
-        {"comment"}
-    };
 } */
 
 // Checks
@@ -141,10 +146,10 @@ bool isPackageExpr (const Token& newToken) {
     return  newToken.type == "package"; 
 }
 
+bool isIfExpr (const Token& newToken) {
+    return newToken.type == "if";
+}
+
 /* bool isFuncDeclareExpr (const Token& newToken) {
     return newToken.type == "func"; 
-} */
-
-/* bool isCommentExpr (const Token& newToken) {
-    return newToken.type == "comment";
 } */

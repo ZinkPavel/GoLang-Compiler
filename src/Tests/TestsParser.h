@@ -18,7 +18,5 @@ void MathExprTest ();
 void ReturnExprTest ();
 void ImportExprTest ();
 void PackageExprTest ();
-// void PanicModeTest ();
-// void ExprWithNegativeSignTest ();
+void IfExprTest ();
 // void FuncDeclareTest ();
-// void CommentExprTest ();

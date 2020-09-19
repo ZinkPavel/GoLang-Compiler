@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <stack>
 
 #include "Expression.h"
 
@@ -17,6 +18,7 @@ private:
 
     Status status;
     std::vector<std::shared_ptr<Expression>> exprs;
+    std::stack<std::shared_ptr<Expression>> braceStack;
 
 public:
     Parser ();

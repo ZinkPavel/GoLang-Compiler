@@ -8,9 +8,9 @@ void TestsParser () {
     RUN_TEST(tr, ReturnExprTest);
     RUN_TEST(tr, ImportExprTest);
     RUN_TEST(tr, PackageExprTest);
+    RUN_TEST(tr, IfExprTest);
 
     // RUN_TEST(tr, FuncDeclareTest);
-    // RUN_TEST(tr, CommentExprTest);
 }
 
 void MathExprTest () {
@@ -69,11 +69,18 @@ void PackageExprTest () {
     ASSERT_STATUS(2, false, true);
 }
 
-/* void ExprWithNegativeSignTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/math_exprs/ExprsWithNegativeSign.txt");
+void IfExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/IfExprs.txt");
 
-    { ASSERT_STATUS(0, false, true); }
-} */
+    ASSERT_EQUAL(exprs.size(), 3u);
+
+    ASSERT_STATUS(0, false, true);
+    ASSERT_EQUAL(expr.completeExpr, true);
+    ASSERT_STATUS(1, false, true);
+    ASSERT_EQUAL(expr.completeExpr, true);
+    ASSERT_STATUS(2, false, true);
+    ASSERT_EQUAL(expr.completeExpr, true);
+}
 
 /* void FuncDeclareTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt");
@@ -89,22 +96,4 @@ void PackageExprTest () {
     // ASSERT_STATUS(6, false, true);
 
     ASSERT_EQUAL((*exprs[0]).actualTokenSeq[4].type, "int");  
-} */
-
-/* void CommentExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/CommentExprs.txt");
-
-    ASSERT_EQUAL(exprs.size(), 3u);
-
-    ASSERT_STATUS(0, false, true);
-    ASSERT_STATUS(1, false, true);
-    ASSERT_STATUS(2, false, true);
-
-    ASSERT_EQUAL((*exprs[0]).actualTokenSeq[0].type, "comment");
-
-    ASSERT_EQUAL((*exprs[1]).actualTokenSeq[0].type, "return");
-    ASSERT_EQUAL((*exprs[1]).actualTokenSeq[1].type, "numeric_const");
-    ASSERT_EQUAL((*exprs[1]).actualTokenSeq[2].type, "SEMI");
-
-    ASSERT_EQUAL((*exprs[2]).actualTokenSeq[0].type, "comment");
 } */

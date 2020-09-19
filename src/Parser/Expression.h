@@ -33,6 +33,7 @@ public:
     bool completeExpr = false;
     std::vector<Token> actualTokenSeq;
     Status endingStatus; // exclusively for tests
+    bool hasBraceSeq = false;
 
     Expression ();
 
@@ -62,14 +63,14 @@ public:
     PackageExpr ();
 };
 
+class IfExpr: public Expression {
+public:
+    IfExpr ();
+};
+
 /* class FuncDeclareExpr: public Expression {
 public:
     FuncDeclareExpr ();
-}; */
-
-/* class CommentExpr: public Expression {
-public:
-    CommentExpr ();
 }; */
 
 // Checks
@@ -78,5 +79,5 @@ bool isMathExpr (const Token& newToken);
 bool isReturnExpr (const Token& newToken);
 bool isImportExpr (const Token& newToken);
 bool isPackageExpr (const Token& newToken);
+bool isIfExpr (const Token& newToken);
 // bool isFuncDeclareExpr (const Token& newToken);
-// bool isCommentExpr (const Token& newToken);

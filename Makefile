@@ -1,4 +1,4 @@
-All: bin/main # bin/test
+All: clear bin/main # bin/test
 
 FLAGS = g++ -Wall -Werror -std=c++17
 OBJ = $(TREE) $(PARSER) $(COMPILER) build/main.o $(TESTS)
@@ -7,7 +7,6 @@ TREE = build/Tree/Tree.o build/Tree/Node.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
 COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
 TESTS = build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
-
 
 bin/main: $(OBJ)
 	$(FLAGS) $(OBJ) -o bin/main
