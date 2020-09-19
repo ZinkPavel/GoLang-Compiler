@@ -25,7 +25,6 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
                 lastExpr.endingStatus = {true, true};
             }
         }
-        std::cout << "NEW LINE" << std::endl;
         currentRow = newToken.row;
         status.panicMode = false;
         status.waitingNewExpr = true;
@@ -44,8 +43,8 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
         if (isMathExpr(newToken)) exprs.push_back(std::make_shared<MathExpr>());
         else if (isReturnExpr(newToken)) exprs.push_back(std::make_shared<ReturnExpr>());
         else if (isImportExpr(newToken)) exprs.push_back(std::make_shared<ImportExpr>());
+        else if (isPackageExpr(newToken)) exprs.push_back(std::make_shared<PackageExpr>());
         // if (isCommentExpr(newToken)) exprs.push_back(std::make_shared<CommentExpr>());
-        // else if (isPackageExpr(newToken)) exprs.push_back(std::make_shared<PackageExpr>());
         // else if (isFuncDeclareExpr(newToken)) exprs.push_back(std::make_shared<FuncDeclareExpr>());
         // else if (isMathExpr(newToken)) exprs.push_back(std::make_shared<MathExpr>()); // make for newToken
         // else if (isMathExpr(undefinedTokenList)) exprs.push_back(std::make_shared<MathExpr>());

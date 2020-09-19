@@ -57,14 +57,14 @@ public:
     ImportExpr ();
 };
 
+class PackageExpr: public Expression {
+public:
+    PackageExpr ();
+};
+
 /* class FuncDeclareExpr: public Expression {
 public:
     FuncDeclareExpr ();
-}; */
-
-/* class PackageExpr: public Expression {
-public:
-    PackageExpr ();
 }; */
 
 /* class CommentExpr: public Expression {
@@ -77,6 +77,6 @@ public:
 bool isMathExpr (const Token& newToken);
 bool isReturnExpr (const Token& newToken);
 bool isImportExpr (const Token& newToken);
+bool isPackageExpr (const Token& newToken);
 // bool isFuncDeclareExpr (const Token& newToken);
-// bool isPackageExpr (const Token& newToken);
 // bool isCommentExpr (const Token& newToken);
