@@ -84,6 +84,15 @@ ReturnExpr::ReturnExpr () {
         "SEMI";
 }
 
+ImportExpr::ImportExpr () {
+    expectedSeq = {
+        {"import"},
+        {"string_litteral"},
+    };
+
+    regexMask = "import string_litteral";
+}
+
 /* FuncDeclareExpr::FuncDeclareExpr () {
     expectedSeq = {
         {"func"},
@@ -97,16 +106,6 @@ ReturnExpr::ReturnExpr () {
     minAmountTokens = 4;
     lastSignificantTokenType = {"R_PAREN"};
     regexMask = "func identifier ?L_PAREN ?R_PAREN ?(int|float|double|string|bool)?";
-} */
-
-/* ImportExpr::ImportExpr () {
-    expectedSeq = {
-        {"import"},
-        {"string_litteral"},
-    };
-
-    lastSignificantTokenType = {expectedSeq.back()};
-    regexMask = "import string_litteral";
 } */
 
 /* PackageExpr::PackageExpr () {
@@ -135,12 +134,12 @@ bool isReturnExpr (const Token& newToken) {
     return newToken.type == "return";
 }
 
+bool isImportExpr (const Token& newToken) { 
+    return newToken.type == "import"; 
+}
+
 /* bool isFuncDeclareExpr (const Token& newToken) {
     return newToken.type == "func"; 
-} */
-
-/* bool isImportExpr (const Token& newToken) { 
-    return newToken.type == "import"; 
 } */
 
 /* bool isPackageExpr (const Token& newToken) { 

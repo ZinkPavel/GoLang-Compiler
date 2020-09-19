@@ -4,12 +4,11 @@
 
 void TestsParser () {
     TestRunner tr;
-    RUN_TEST(tr, MathExprTest);
-    RUN_TEST(tr, ReturnExprTest);
-    
-    // RUN_TEST(tr, ExprWithNegativeSignTest);
+    // RUN_TEST(tr, MathExprTest);
+    // RUN_TEST(tr, ReturnExprTest);
+    RUN_TEST(tr, ImportExprTest);
+
     // RUN_TEST(tr, FuncDeclareTest);
-    // RUN_TEST(tr, ImportExprTest);
     // RUN_TEST(tr, PackageExprTest);
     // RUN_TEST(tr, CommentExprTest);
 }
@@ -50,6 +49,16 @@ void ReturnExprTest () {
     }
 }
 
+void ImportExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/ImportExprs.txt");
+
+    ASSERT_EQUAL(exprs.size(), 3u);
+
+    ASSERT_STATUS(0, false, true);
+    ASSERT_STATUS(1, true, true);
+    ASSERT_STATUS(2, false, true);
+}
+
 /* void ExprWithNegativeSignTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/math_exprs/ExprsWithNegativeSign.txt");
 
@@ -72,15 +81,6 @@ void ReturnExprTest () {
     ASSERT_EQUAL((*exprs[0]).actualTokenSeq[4].type, "int");  
 } */
 
-/* void ImportExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/ImportExprs.txt");
-
-    ASSERT_EQUAL(exprs.size(), 3u);
-
-    ASSERT_STATUS(0, false, true);
-    ASSERT_STATUS(1, true, true);
-    ASSERT_STATUS(2, false, true);
-} */
 
 /* void PackageExprTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/PackageExprs.txt");

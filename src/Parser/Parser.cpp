@@ -18,13 +18,14 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
 
     const Token& newToken = tokenListFromLexer.back();
 
-    if (newToken.row != currentRow) {
+    if (currentRow != newToken.row) {
         { // exclusivly for tests
             Expression& lastExpr = *exprs.back();
             if (!lastExpr.completeExpr) {
                 lastExpr.endingStatus = {true, true};
             }
         }
+        std::cout << "NEW LINE" << std::endl;
         currentRow = newToken.row;
         status.panicMode = false;
         status.waitingNewExpr = true;
@@ -42,8 +43,8 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
 
         if (isMathExpr(newToken)) exprs.push_back(std::make_shared<MathExpr>());
         else if (isReturnExpr(newToken)) exprs.push_back(std::make_shared<ReturnExpr>());
+        else if (isImportExpr(newToken)) exprs.push_back(std::make_shared<ImportExpr>());
         // if (isCommentExpr(newToken)) exprs.push_back(std::make_shared<CommentExpr>());
-        // if (isImportExpr(newToken)) exprs.push_back(std::make_shared<ImportExpr>());
         // else if (isPackageExpr(newToken)) exprs.push_back(std::make_shared<PackageExpr>());
         // else if (isFuncDeclareExpr(newToken)) exprs.push_back(std::make_shared<FuncDeclareExpr>());
         // else if (isMathExpr(newToken)) exprs.push_back(std::make_shared<MathExpr>()); // make for newToken

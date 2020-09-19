@@ -3,3 +3,6 @@
 /build/Parser/*
 /build/Tests/*
 /build/Tree/*
+
+/.vscode
+/.idea
