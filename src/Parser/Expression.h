@@ -68,6 +68,11 @@ public:
     IfExpr ();
 };
 
+class WhileLoopExpr: public Expression {
+public:
+    WhileLoopExpr ();
+};
+
 /* class FuncDeclareExpr: public Expression {
 public:
     FuncDeclareExpr ();
@@ -80,4 +85,5 @@ bool isReturnExpr (const Token& newToken);
 bool isImportExpr (const Token& newToken);
 bool isPackageExpr (const Token& newToken);
 bool isIfExpr (const Token& newToken);
+bool isWhileLoopExpr (const Token& newToken);
 // bool isFuncDeclareExpr (const Token& newToken);

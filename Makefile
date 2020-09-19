@@ -54,5 +54,8 @@ build/Tests/TestController.o: src/Tests/TestController.cpp
 build/Tests/TestRunner.o: src/Tests/TestRunner.cpp
 	$(FLAGS) -c src/Tests/TestRunner.cpp -o build/Tests/TestRunner.o
 	
+# clear:
+# 	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
+
 clear:
-	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
+	rm -rf build/Parser/*.o build/Tests/*.o bin/* 

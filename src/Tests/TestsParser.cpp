@@ -9,6 +9,7 @@ void TestsParser () {
     RUN_TEST(tr, ImportExprTest);
     RUN_TEST(tr, PackageExprTest);
     RUN_TEST(tr, IfExprTest);
+    RUN_TEST(tr, WhileLoopExprTest);
 
     // RUN_TEST(tr, FuncDeclareTest);
 }
@@ -79,6 +80,21 @@ void IfExprTest () {
     ASSERT_STATUS(1, false, true);
     ASSERT_EQUAL(expr.completeExpr, true);
     ASSERT_STATUS(2, false, true);
+    ASSERT_EQUAL(expr.completeExpr, true);
+}
+
+void WhileLoopExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/WhileLoopExprs.txt");
+
+    ASSERT_EQUAL(exprs.size(), 4u);
+
+    ASSERT_STATUS(0, false, true);
+    ASSERT_EQUAL(expr.completeExpr, true);
+    ASSERT_STATUS(1, false, true);
+    ASSERT_EQUAL(expr.completeExpr, true);
+    ASSERT_STATUS(2, false, true);
+    ASSERT_EQUAL(expr.completeExpr, true);
+    ASSERT_STATUS(3, false, true);
     ASSERT_EQUAL(expr.completeExpr, true);
 }
 

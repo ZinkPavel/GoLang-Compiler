@@ -113,6 +113,24 @@ IfExpr::IfExpr () {
     hasBraceSeq = true;
 }
 
+WhileLoopExpr::WhileLoopExpr () {
+    expectedSeq = {
+        {"while"},
+        numericVars,
+        arithmeticSings,
+        numericVars,
+        {"L_BRACE"}
+    };
+
+    regexMask = "while"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?L_BRACE";
+
+    hasBraceSeq = true;
+}
+
 /* FuncDeclareExpr::FuncDeclareExpr () {
     expectedSeq = {
         {"func"},
@@ -148,6 +166,10 @@ bool isPackageExpr (const Token& newToken) {
 
 bool isIfExpr (const Token& newToken) {
     return newToken.type == "if";
+}
+
+bool isWhileLoopExpr (const Token& newToken) {
+    return newToken.type == "while";
 }
 
 /* bool isFuncDeclareExpr (const Token& newToken) {
