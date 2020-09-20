@@ -46,7 +46,7 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
         else if (isPackageExpr(newToken)) exprs.push_back(std::make_shared<PackageExpr>());
         else if (isIfExpr(newToken)) exprs.push_back(std::make_shared<IfExpr>());
         else if (isWhileLoopExpr(newToken)) exprs.push_back(std::make_shared<WhileLoopExpr>());
-        // else if (isFuncDeclareExpr(newToken)) exprs.push_back(std::make_shared<FuncDeclareExpr>());
+        else if (isFuncDeclareExpr(newToken)) exprs.push_back(std::make_shared<FuncDeclareExpr>());
         else status.waitingNewExpr = true;
 
         // if tokenamount > 1 && match --- > 

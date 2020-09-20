@@ -10,8 +10,7 @@ void TestsParser () {
     RUN_TEST(tr, PackageExprTest);
     RUN_TEST(tr, IfExprTest);
     RUN_TEST(tr, WhileLoopExprTest);
-
-    // RUN_TEST(tr, FuncDeclareTest);
+    RUN_TEST(tr, FuncDeclareTest);
 }
 
 void MathExprTest () {
@@ -35,7 +34,7 @@ void ReturnExprTest () {
         status = comp.getParserComplitionStatus();
         expr = *exprs.back();
 
-        ASSERT_EQUAL(exprs.size(), 5u);
+        ASSERT_EQUAL(exprs.size(), 3u);
         ASSERT_EQUAL(expr.checkByRegexMask(), true);
         ASSERT_EQUAL(status.panicMode, false);
         ASSERT_EQUAL(status.waitingNewExpr, true);
@@ -44,9 +43,7 @@ void ReturnExprTest () {
     {
         ASSERT_STATUS(0, false, true);
         ASSERT_STATUS(1, true, true);
-        ASSERT_STATUS(2, true, true);
-        ASSERT_STATUS(3, true, true);
-        ASSERT_STATUS(4, false, true);
+        ASSERT_STATUS(2, false, true);
     }
 }
 
@@ -98,18 +95,16 @@ void WhileLoopExprTest () {
     ASSERT_EQUAL(expr.completeExpr, true);
 }
 
-/* void FuncDeclareTest () {
+void FuncDeclareTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt");
 
     ASSERT_EQUAL(exprs.size(), 1u);
 
     ASSERT_STATUS(0, false, true);
-    // ASSERT_STATUS(1, true, true);
+    // ASSERT_STATUS(1, false, true);
     // ASSERT_STATUS(2, true, true);
     // ASSERT_STATUS(3, true, true);
     // ASSERT_STATUS(4, true, true);
     // ASSERT_STATUS(5, false, true);
     // ASSERT_STATUS(6, false, true);
-
-    ASSERT_EQUAL((*exprs[0]).actualTokenSeq[4].type, "int");  
-} */
+}

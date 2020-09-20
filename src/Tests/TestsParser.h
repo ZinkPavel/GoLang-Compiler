@@ -20,4 +20,4 @@ void ImportExprTest ();
 void PackageExprTest ();
 void IfExprTest ();
 void WhileLoopExprTest ();
-// void FuncDeclareTest ();
+void FuncDeclareTest ();

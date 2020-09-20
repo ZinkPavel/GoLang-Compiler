@@ -21,6 +21,7 @@ Status Expression::checkExpr () {
     const std::string& actualTokenType = actualTokenSeq.back().type;
 
     if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
+        /* read while str != end && actualTokenSeq++ .. ++  */
         return {true, true};
     } else {
         indexInExpSeq++;
@@ -69,12 +70,10 @@ ReturnExpr::ReturnExpr () {
     expectedSeq = {
         {"return"},
         numericVars,
-        {"SEMI"},
     };
 
     regexMask = "return"
-        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
-        "SEMI";
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?";
 }
 
 ImportExpr::ImportExpr () {
@@ -131,20 +130,25 @@ WhileLoopExpr::WhileLoopExpr () {
     hasBraceSeq = true;
 }
 
-/* FuncDeclareExpr::FuncDeclareExpr () {
+FuncDeclareExpr::FuncDeclareExpr () {
     expectedSeq = {
         {"func"},
         {"identifier"},
         {"L_PAREN"},
-        {"BODY"},
         {"R_PAREN"},
         dataTypes,
+        {"L_BRACE"}
     };
 
-    minAmountTokens = 4;
-    lastSignificantTokenType = {"R_PAREN"};
-    regexMask = "func identifier ?L_PAREN ?R_PAREN ?(int|float|double|string|bool)?";
-} */
+    regexMask = "func\\s"
+        "identifier\\s?"
+        "L_PAREN\\s?"
+        "R_PAREN\\s?"
+        "(int|float|double|string|bool)?\\s?"
+        "L_BRACE";
+
+    hasBraceSeq = true;
+}
 
 // Checks
 
@@ -172,6 +176,6 @@ bool isWhileLoopExpr (const Token& newToken) {
     return newToken.type == "while";
 }
 
-/* bool isFuncDeclareExpr (const Token& newToken) {
+bool isFuncDeclareExpr (const Token& newToken) {
     return newToken.type == "func"; 
-} */
+}
