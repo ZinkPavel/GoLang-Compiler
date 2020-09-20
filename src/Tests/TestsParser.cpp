@@ -20,7 +20,7 @@ void MathExprTest () {
     expr = *exprs.back();
 
      {        
-        ASSERT_EQUAL(exprs.size(), 16u);
+        ASSERT_EQUAL(exprs.size(), 15u);
         ASSERT_EQUAL(expr.checkByRegexMask(), true);
         ASSERT_EQUAL(status.panicMode, false);
         ASSERT_EQUAL(status.waitingNewExpr, true);
@@ -98,13 +98,9 @@ void WhileLoopExprTest () {
 void FuncDeclareTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt");
 
-    ASSERT_EQUAL(exprs.size(), 1u);
+    ASSERT_EQUAL(exprs.size(), 3u);
 
     ASSERT_STATUS(0, false, true);
-    // ASSERT_STATUS(1, false, true);
-    // ASSERT_STATUS(2, true, true);
-    // ASSERT_STATUS(3, true, true);
-    // ASSERT_STATUS(4, true, true);
-    // ASSERT_STATUS(5, false, true);
-    // ASSERT_STATUS(6, false, true);
+    ASSERT_STATUS(1, false, true);
+    ASSERT_STATUS(2, false, true);
 }

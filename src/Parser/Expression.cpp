@@ -22,7 +22,7 @@ Status Expression::checkExpr () {
 
     if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
         /* read while str != end && actualTokenSeq++ .. ++  */
-        return {true, true};
+        return {true, false};
     } else {
         indexInExpSeq++;
     }
@@ -136,13 +136,13 @@ FuncDeclareExpr::FuncDeclareExpr () {
         {"identifier"},
         {"L_PAREN"},
         {"R_PAREN"},
-        dataTypes,
         {"L_BRACE"}
     };
 
     regexMask = "func\\s"
         "identifier\\s?"
         "L_PAREN\\s?"
+        "(identifier\\s(int|float|double|string|bool))?\\s?"
         "R_PAREN\\s?"
         "(int|float|double|string|bool)?\\s?"
         "L_BRACE";

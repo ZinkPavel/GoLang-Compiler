@@ -11,21 +11,16 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
     const Token& newToken = tokenListFromLexer.back();
 
     if (currentRow != newToken.row) {
-        { // exclusivly for tests
-            Expression& lastExpr = *exprs.back();
-            if (!lastExpr.completeExpr && !lastExpr.hasBraceSeq) {
-                lastExpr.endingStatus = {true, true};
-                // exception
-            }
+        Expression& lastExpr = *exprs.back();
+
+        if (!lastExpr.completeExpr && !lastExpr.hasBraceSeq) {
+            lastExpr.endingStatus = {true, true}; // exception
+            // lastExpr.endingStatus = status; // ?
         }
+
         currentRow = newToken.row;
         status.panicMode = false;
         status.waitingNewExpr = true;
-    }
-
-    if (status.panicMode) {
-        numOfReadTokens++;
-        return;
     }
 
     if (braceStack.size() > 0 && newToken.type == "R_BRACE") {
@@ -56,10 +51,10 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
 
     if (!status.waitingNewExpr) {
         Expression& lastExpr = *exprs.back();
-        lastExpr.actualTokenSeq.push_back(newToken);
 
+        lastExpr.actualTokenSeq.push_back(newToken);
         status = lastExpr.checkExpr();
-        // exception
+
         if (lastExpr.hasBraceSeq && !status.panicMode && status.waitingNewExpr) {
             braceStack.push(exprs.back());
         }
