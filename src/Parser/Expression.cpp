@@ -21,7 +21,6 @@ Status Expression::checkExpr () {
     const std::string& actualTokenType = actualTokenSeq.back().type;
 
     if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
-        /* read while str != end && actualTokenSeq++ .. ++  */
         return {true, false};
     } else {
         indexInExpSeq++;
@@ -38,6 +37,7 @@ Status Expression::checkExpr () {
     return newStatus;
 }
 
+// mb .toString() ?
 bool Expression::checkByRegexMask () {
     std::stringstream actualSeq;
 
@@ -169,69 +169,53 @@ AssignExpr::AssignExpr () {
 }
 
 bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
-    size_t counter = 0;
-    
-    for (const auto& it = expectedSeq.begin(); it != expectedSeq.end(); next(it)) {
-        if ((*it).find(undefineTokenSeq[counter].type) != (*it).end()) counter++;
-    }
+    size_t counter;
+
+    for (counter = 0; counter < undefineTokenSeq.size(); counter++) {
+        if (expectedSeq[counter].find(undefineTokenSeq[counter].type) == expectedSeq[counter].end()) break;
+    }  
 
     return counter == undefineTokenSeq.size();
 }
 
 // Checks
 
-bool isMathExpr (std::vector<Token>& undefineTokenSeq) {    
-    if (undefineTokenSeq.size() == 1) {
-        return possibleSings.find(undefineTokenSeq.back().type) != possibleSings.end() || vars.find(undefineTokenSeq.back().type) != vars.end();
-    }
-    return false;
+bool isMathExpr (std::vector<Token>& undefineTokenSeq) {        
+    MathExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isReturnExpr (std::vector<Token>& undefineTokenSeq) {
-    if (undefineTokenSeq.size() == 1) {
-        return undefineTokenSeq.back().type == "return";
-    }
-    return false;
+    ReturnExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isImportExpr (std::vector<Token>& undefineTokenSeq) { 
-    if (undefineTokenSeq.size() == 1) {
-        return undefineTokenSeq.back().type == "import"; 
-    }
-    return false;
+    ImportExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isPackageExpr (std::vector<Token>& undefineTokenSeq) { 
-    if (undefineTokenSeq.size() == 1) {
-        return  undefineTokenSeq.back().type == "package";
-    }
-    return false;
+    PackageExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isIfExpr (std::vector<Token>& undefineTokenSeq) {
-    if (undefineTokenSeq.size() == 1) {
-        return undefineTokenSeq.back().type == "if";
-    }
-    return false;
+    IfExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq) {
-    if (undefineTokenSeq.size() == 1) {
-        return undefineTokenSeq.back().type == "while";
-    }
-    return false;
+    WhileLoopExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq) {
-    if (undefineTokenSeq.size() == 1) {
-        return undefineTokenSeq.back().type == "func"; 
-    }
-    return false;
+    FuncDeclareExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
-    if (undefineTokenSeq.size() == 1) {
-        return undefineTokenSeq.back().type == "identifier";
-    }
-    return false;
+    AssignExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }

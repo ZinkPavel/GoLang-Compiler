@@ -11,7 +11,7 @@ void TestsParser () {
     RUN_TEST(tr, IfExprTest);
     RUN_TEST(tr, WhileLoopExprTest);
     RUN_TEST(tr, FuncDeclareExprTest);
-    // RUN_TEST(tr, AssignExprTest);
+    RUN_TEST(tr, AssignExprTest);
 }
 
 void MathExprTest () {

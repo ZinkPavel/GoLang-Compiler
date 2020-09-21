@@ -1,4 +1,4 @@
-All: clear bin/main # bin/test
+All: partial_clear bin/main # bin/test
 
 FLAGS = g++ -Wall -Werror -std=c++17
 OBJ = $(PARSER) $(COMPILER) build/main.o $(TESTS)
@@ -45,8 +45,8 @@ build/Tests/TestController.o: src/Tests/TestController.cpp
 build/Tests/TestRunner.o: src/Tests/TestRunner.cpp
 	$(FLAGS) -c src/Tests/TestRunner.cpp -o build/Tests/TestRunner.o
 	
-# clear:
-# 	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
-
 clear:
+	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
+
+partial_clear:
 	rm -rf build/Parser/*.o build/Tests/*.o bin/* 

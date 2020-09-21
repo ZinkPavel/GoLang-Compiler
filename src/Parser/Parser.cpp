@@ -9,7 +9,7 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
     if (tokenListFromLexer.size() == numOfReadTokens) return; // found insignificant sign
 
     const Token& newToken = tokenListFromLexer.back();
-    undefineTokenSeq.push_back(tokenListFromLexer.back()); // question
+    undefineTokenSeq.push_back(tokenListFromLexer.back());
 
     if (currentRow != newToken.row) {
         Expression& lastExpr = *exprs.back();
@@ -42,34 +42,35 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
         std::shared_ptr<Expression> newExpression;
 
         if (isMathExpr(undefineTokenSeq)) { EXPR_HIT(MathExpr); }
-        else if (isReturnExpr(undefineTokenSeq)) { EXPR_HIT(ReturnExpr); }
-        else if (isImportExpr(undefineTokenSeq)) { EXPR_HIT(ImportExpr); }
-        else if (isPackageExpr(undefineTokenSeq)) { EXPR_HIT(PackageExpr); }
-        else if (isIfExpr(undefineTokenSeq)) { EXPR_HIT(IfExpr); }
-        else if (isWhileLoopExpr(undefineTokenSeq)) { EXPR_HIT(WhileLoopExpr); }
-        else if (isFuncDeclareExpr(undefineTokenSeq)) { EXPR_HIT(FuncDeclareExpr); }
-        // else if (isAssignExpr(newToken)) { EXPR_HIT(AssignExpr); }
-        else status.waitingNewExpr = true;
+        if (isReturnExpr(undefineTokenSeq)) { EXPR_HIT(ReturnExpr); }
+        if (isImportExpr(undefineTokenSeq)) { EXPR_HIT(ImportExpr); }
+        if (isPackageExpr(undefineTokenSeq)) { EXPR_HIT(PackageExpr); }
+        if (isIfExpr(undefineTokenSeq)) { EXPR_HIT(IfExpr); }
+        if (isWhileLoopExpr(undefineTokenSeq)) { EXPR_HIT(WhileLoopExpr); }
+        if (isFuncDeclareExpr(undefineTokenSeq)) { EXPR_HIT(FuncDeclareExpr); }
+        if (isAssignExpr(undefineTokenSeq)) { EXPR_HIT(AssignExpr); }
+
+        // std::cout << "Counter entry = " << counterEntry << std::endl;
 
         if (counterEntry == 1) exprs.push_back(newExpression);
-
-        // repeat check mb ? 
+        else status.waitingNewExpr = true;
     }
 
     // Add tokens in new expression
 
     if (!status.waitingNewExpr) {
         Expression& lastExpr = *exprs.back();
+        
+        for (size_t i = 0; i < undefineTokenSeq.size(); i++) {
+            lastExpr.actualTokenSeq.push_back(undefineTokenSeq[i]);
+            status = lastExpr.checkExpr();
 
-        lastExpr.actualTokenSeq.push_back(undefineTokenSeq.back());
-        undefineTokenSeq.clear();
-        // lastExpr.actualTokenSeq.insert(lastExpr.actualTokenSeq.end(), undefineTokenSeq.begin(), undefineTokenSeq.end());
-        status = lastExpr.checkExpr();
-
-        if (lastExpr.hasBraceSeq && !status.panicMode && status.waitingNewExpr) {
-            braceStack.push(exprs.back());
+            if (lastExpr.hasBraceSeq && !status.panicMode && status.waitingNewExpr) {
+                braceStack.push(exprs.back());
+            }
+            lastExpr.endingStatus = status; // exclusevly for tests
         }
-        lastExpr.endingStatus = status; // exclusevly for tests
+        undefineTokenSeq.clear();
     }
 
     numOfReadTokens++;
