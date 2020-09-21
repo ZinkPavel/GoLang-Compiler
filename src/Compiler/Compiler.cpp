@@ -98,7 +98,15 @@ void Compiler::readFile () {
                         } 
                         else NEW_CH_TOKEN(EQUAL, ch)
                         break;
-                        
+
+                    case CH::EXCLAMATION: 
+                        if (*(it + 1) == CH::EQUAL) {
+                            foundSequence = {begin, ++it + 1};
+                            NEW_TOKEN("NOT_EQUAL", foundSequence);
+                        } 
+                        else NEW_CH_TOKEN(EXCLAMATION, ch)
+                        break;
+
                     case CH::PROC: NEW_CH_TOKEN(PROC, ch);
                     case CH::STAR: NEW_CH_TOKEN(STAR, ch);
                     case CH::LESS: NEW_CH_TOKEN(LESS, ch);
@@ -112,7 +120,6 @@ void Compiler::readFile () {
                     case CH::DOLLAR: NEW_CH_TOKEN(DOLLAR, ch);
                     case CH::DOT: NEW_CH_TOKEN(DOT, ch);
                     case CH::BACKSLASH: NEW_CH_TOKEN(BACKSLASH, ch);
-                    case CH::EXCLAMATION: NEW_CH_TOKEN(EXCLAMATION, ch);
                     
                     case CH::SPACE: break;
                     case '\n': break;
