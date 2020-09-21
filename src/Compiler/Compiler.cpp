@@ -91,11 +91,18 @@ void Compiler::readFile () {
                         else NEW_CH_TOKEN(PIPE, ch);
                         break;
                         
+                    case CH::EQUAL: 
+                        if (*(it + 1) == CH::EQUAL) {
+                            foundSequence = {begin, ++it + 1};
+                            NEW_TOKEN("DOUBLE_EQUAL", foundSequence);
+                        } 
+                        else NEW_CH_TOKEN(EQUAL, ch)
+                        break;
+                        
                     case CH::PROC: NEW_CH_TOKEN(PROC, ch);
                     case CH::STAR: NEW_CH_TOKEN(STAR, ch);
                     case CH::LESS: NEW_CH_TOKEN(LESS, ch);
                     case CH::MORE: NEW_CH_TOKEN(MORE, ch);
-                    case CH::EQUAL: NEW_CH_TOKEN(EQUAL, ch);
                     case CH::PLUS: NEW_CH_TOKEN(PLUS, ch);
                     case CH::MINUS: NEW_CH_TOKEN(MINUS, ch);
 
