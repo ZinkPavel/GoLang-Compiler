@@ -9,7 +9,7 @@
 
 const std::set<std::string> dataTypes = {"int", "double", "float", "bool", "string"};
 const std::set<std::string> possibleSings = {"EXCLAMATION"};
-const std::set<std::string> numericVars = {"identifier", "numeric_const", "bin_cont", "octal_const", "hex_const"};
+const std::set<std::string> vars = {"identifier", "numeric_const", "bin_cont", "octal_const", "hex_const"};
 const std::set<std::string> arithmeticSings = {"NOT_EQUAL", "DOUBLE_EQUAL", "OR", "AND", "PLUS", "MINUS", "STAR", "SLASH", "PROC", "LESS", "MORE"};
 const std::set<std::string> assignSings = {"EQUAL"};
 
@@ -40,6 +40,7 @@ public:
 
     Status checkExpr ();
     bool checkByRegexMask ();
+    bool exprIdentification (const std::vector<Token>& undefineTokenSeq);
 };
 
 // Exprs
@@ -79,12 +80,18 @@ public:
     FuncDeclareExpr ();
 };
 
+class AssignExpr: public Expression {
+public:
+    AssignExpr ();
+};
+
 // Checks
 
-bool isMathExpr (const Token& newToken);
-bool isReturnExpr (const Token& newToken);
-bool isImportExpr (const Token& newToken);
-bool isPackageExpr (const Token& newToken);
-bool isIfExpr (const Token& newToken);
-bool isWhileLoopExpr (const Token& newToken);
-bool isFuncDeclareExpr (const Token& newToken);
+bool isMathExpr (std::vector<Token>& undefineTokenSeq);
+bool isReturnExpr (std::vector<Token>& undefineTokenSeq);
+bool isImportExpr (std::vector<Token>& undefineTokenSeq);
+bool isPackageExpr (std::vector<Token>& undefineTokenSeq);
+bool isIfExpr (std::vector<Token>& undefineTokenSeq);
+bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq);
+bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq);
+bool isAssignExpr (std::vector<Token>& undefineTokenSeq);

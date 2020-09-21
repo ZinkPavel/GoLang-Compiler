@@ -10,7 +10,8 @@ void TestsParser () {
     RUN_TEST(tr, PackageExprTest);
     RUN_TEST(tr, IfExprTest);
     RUN_TEST(tr, WhileLoopExprTest);
-    RUN_TEST(tr, FuncDeclareTest);
+    RUN_TEST(tr, FuncDeclareExprTest);
+    // RUN_TEST(tr, AssignExprTest);
 }
 
 void MathExprTest () {
@@ -95,7 +96,7 @@ void WhileLoopExprTest () {
     ASSERT_EQUAL(expr.completeExpr, true);
 }
 
-void FuncDeclareTest () {
+void FuncDeclareExprTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt");
 
     ASSERT_EQUAL(exprs.size(), 3u);
@@ -103,4 +104,12 @@ void FuncDeclareTest () {
     ASSERT_STATUS(0, false, true);
     ASSERT_STATUS(1, false, true);
     ASSERT_STATUS(2, false, true);
+}
+
+void AssignExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/AssignExprs.txt");
+
+    ASSERT_EQUAL(exprs.size(), 1u);
+
+    ASSERT_STATUS(0, false, true);
 }

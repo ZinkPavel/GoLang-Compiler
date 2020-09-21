@@ -7,9 +7,9 @@
 
 #include "Expression.h"
 
-/* #define MAKE_NEW_EXPR(exprType) \
-    exprs.push_back(std::make_shared<exprType>()); \
-    waitingNewExpr = false; */
+#define EXPR_HIT(exprType) \
+    newExpression = std::make_shared<exprType>(); \
+    counterEntry++;
 
 class Parser {
 private:
@@ -19,6 +19,7 @@ private:
     Status status;
     std::vector<std::shared_ptr<Expression>> exprs;
     std::stack<std::shared_ptr<Expression>> braceStack;
+    std::vector<Token> undefineTokenSeq;
 
 public:
     Parser ();

@@ -54,9 +54,9 @@ bool Expression::checkByRegexMask () {
 MathExpr::MathExpr () {
     expectedSeq = {
         // possibleSings,
-        numericVars,
+        vars,
         arithmeticSings,
-        numericVars,
+        vars,
     };
 
     regexMask = "(EXCLAMATION)?\\s?"
@@ -69,7 +69,7 @@ MathExpr::MathExpr () {
 ReturnExpr::ReturnExpr () {
     expectedSeq = {
         {"return"},
-        numericVars,
+        vars,
     };
 
     regexMask = "return"
@@ -97,9 +97,9 @@ PackageExpr::PackageExpr () {
 IfExpr::IfExpr () {
     expectedSeq = {
         {"if"},
-        numericVars,
+        vars,
         arithmeticSings,
-        numericVars,
+        vars,
         {"L_BRACE"}
     };
 
@@ -115,9 +115,9 @@ IfExpr::IfExpr () {
 WhileLoopExpr::WhileLoopExpr () {
     expectedSeq = {
         {"while"},
-        numericVars,
+        vars,
         arithmeticSings,
-        numericVars,
+        vars,
         {"L_BRACE"}
     };
 
@@ -150,32 +150,88 @@ FuncDeclareExpr::FuncDeclareExpr () {
     hasBraceSeq = true;
 }
 
+AssignExpr::AssignExpr () {
+    expectedSeq = {
+        {"identifier"},
+        assignSings,
+        vars,
+        arithmeticSings,
+        vars,
+    };
+
+    regexMask = {
+        "identifier\\s?"
+        "EQUAL\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+        "(NOT_EQUAL|DOUBLE_EQUAL|OR|AND|PLUS|MINUS|STAR|SLASH|PROC|LESS|MORE)\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+    };
+}
+
+bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
+    size_t counter = 0;
+    
+    for (const auto& it = expectedSeq.begin(); it != expectedSeq.end(); next(it)) {
+        if ((*it).find(undefineTokenSeq[counter].type) != (*it).end()) counter++;
+    }
+
+    return counter == undefineTokenSeq.size();
+}
+
 // Checks
 
-bool isMathExpr (const Token& newToken) {
-    return possibleSings.find(newToken.type) != possibleSings.end() || numericVars.find(newToken.type) != numericVars.end();
+bool isMathExpr (std::vector<Token>& undefineTokenSeq) {    
+    if (undefineTokenSeq.size() == 1) {
+        return possibleSings.find(undefineTokenSeq.back().type) != possibleSings.end() || vars.find(undefineTokenSeq.back().type) != vars.end();
+    }
+    return false;
 }
 
-bool isReturnExpr (const Token& newToken) {
-    return newToken.type == "return";
+bool isReturnExpr (std::vector<Token>& undefineTokenSeq) {
+    if (undefineTokenSeq.size() == 1) {
+        return undefineTokenSeq.back().type == "return";
+    }
+    return false;
 }
 
-bool isImportExpr (const Token& newToken) { 
-    return newToken.type == "import"; 
+bool isImportExpr (std::vector<Token>& undefineTokenSeq) { 
+    if (undefineTokenSeq.size() == 1) {
+        return undefineTokenSeq.back().type == "import"; 
+    }
+    return false;
 }
 
-bool isPackageExpr (const Token& newToken) { 
-    return  newToken.type == "package"; 
+bool isPackageExpr (std::vector<Token>& undefineTokenSeq) { 
+    if (undefineTokenSeq.size() == 1) {
+        return  undefineTokenSeq.back().type == "package";
+    }
+    return false;
 }
 
-bool isIfExpr (const Token& newToken) {
-    return newToken.type == "if";
+bool isIfExpr (std::vector<Token>& undefineTokenSeq) {
+    if (undefineTokenSeq.size() == 1) {
+        return undefineTokenSeq.back().type == "if";
+    }
+    return false;
 }
 
-bool isWhileLoopExpr (const Token& newToken) {
-    return newToken.type == "while";
+bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq) {
+    if (undefineTokenSeq.size() == 1) {
+        return undefineTokenSeq.back().type == "while";
+    }
+    return false;
 }
 
-bool isFuncDeclareExpr (const Token& newToken) {
-    return newToken.type == "func"; 
+bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq) {
+    if (undefineTokenSeq.size() == 1) {
+        return undefineTokenSeq.back().type == "func"; 
+    }
+    return false;
+}
+
+bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
+    if (undefineTokenSeq.size() == 1) {
+        return undefineTokenSeq.back().type == "identifier";
+    }
+    return false;
 }
