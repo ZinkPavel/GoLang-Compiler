@@ -1,57 +1,79 @@
+#include <algorithm>
+#include <sstream>
+#include <iterator>
+
 #include "Expression.h"
-// #include "Parser.h"
+#include "Parser.h"
+
+Status::Status () {}
+
+Status::Status (bool first, bool second) {
+    panicMode = first;
+    waitingNewExpr = second;
+}
 
 Expression::Expression () {}
 
 Status Expression::checkExpr () {
-    Status newStatus(false, actualTokenSeq.size() == expectedSeq.size());
+    Status newStatus(false, false);
 
-    for (size_t i = 0; i < actualTokenSeq.size(); i++) {
-        const std::set<std::string>& expectedTokenTypes = expectedSeq[i];
-        const std::string& actualTokenType = actualTokenSeq[i].type;
+    const std::set<std::string>& expectedTokenTypes = expectedSeq[indexInExpSeq];
+    const std::string& actualTokenType = actualTokenSeq.back().type;
 
-        if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
-            newStatus.panicMode = true;
-            newStatus.waitingNewExpr = true;
-            return newStatus;
-        } 
+    if (expectedTokenTypes.find(actualTokenType) == expectedTokenTypes.end()) {
+        return {true, false};
+    } else {
+        indexInExpSeq++;
     }
     
-    if (newStatus.waitingNewExpr) completeExpr = true;
-    
+    // finished token
+    if (checkByRegexMask()) {
+        newStatus.waitingNewExpr = true;
+        if (!hasBraceSeq) {
+            completeExpr = true;
+        }
+    }
+
     return newStatus;
 }
 
-// Exprs
+// mb .toString() ?
+bool Expression::checkByRegexMask () {
+    std::stringstream actualSeq;
 
-/* MathExpr::MathExpr () {
+    for (auto it = actualTokenSeq.begin(); it != actualTokenSeq.end() - 1; ++it) {
+        actualSeq << it->type << ' ';
+    }
+    actualSeq << actualTokenSeq.back().type;
+
+    // std::cout << actualSeq.str() << std::endl;
+    return std::regex_match(actualSeq.str(), regexMask);
+}
+
+// Exprs
+MathExpr::MathExpr () {
     expectedSeq = {
-        numericVars,
+        // possibleSings,
+        vars,
         arithmeticSings,
-        numericVars,
+        vars,
     };
-} */
+
+    regexMask = "(EXCLAMATION)?\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)\\s?"
+        "(EXCLAMATION)?\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)";
+}
 
 ReturnExpr::ReturnExpr () {
     expectedSeq = {
         {"return"},
-        numericVars,
-        {"SEMI"},
+        vars,
     };
-}
 
-FuncDeclareExpr::FuncDeclareExpr () {
-    expectedSeq = {
-        {"func"},
-        {"identifier"},
-        {"L_PAREN"},
-        {"identifier"},
-        dataTypes,
-        {"R_PAREN"},
-        dataTypes,
-    };
-    
-    multipleReference = {false, false, false, true, false, false, true};
+    regexMask = "return"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?";
 }
 
 ImportExpr::ImportExpr () {
@@ -59,6 +81,8 @@ ImportExpr::ImportExpr () {
         {"import"},
         {"string_litteral"},
     };
+
+    regexMask = "import string_litteral";
 }
 
 PackageExpr::PackageExpr () {
@@ -66,43 +90,133 @@ PackageExpr::PackageExpr () {
         {"package"},
         {"identifier"},
     };
+
+    regexMask = "package identifier";
 }
 
-CommentExpr::CommentExpr () {
+IfExpr::IfExpr () {
     expectedSeq = {
-        {"comment"}
+        {"if"},
+        vars,
+        arithmeticSings,
+        vars,
+        {"L_BRACE"}
     };
+
+    regexMask = "if"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?L_BRACE";
+
+    hasBraceSeq = true;
+}
+
+WhileLoopExpr::WhileLoopExpr () {
+    expectedSeq = {
+        {"while"},
+        vars,
+        arithmeticSings,
+        vars,
+        {"L_BRACE"}
+    };
+
+    regexMask = "while"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)"
+        "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
+        "\\s?L_BRACE";
+
+    hasBraceSeq = true;
+}
+
+FuncDeclareExpr::FuncDeclareExpr () {
+    expectedSeq = {
+        {"func"},
+        {"identifier"},
+        {"L_PAREN"},
+        {"R_PAREN"},
+        {"L_BRACE"}
+    };
+
+    regexMask = "func\\s"
+        "identifier\\s?"
+        "L_PAREN\\s?"
+        "(identifier\\s?(COMMA\\s?identifier)?\\s"
+        "(L_SQ_BRACE\\s?R_SQ_BRACE)?\\s?(int|float|double|string|bool))?\\s?"
+        "R_PAREN\\s?"
+        "(int|float|double|string|bool)?\\s?"
+        "L_BRACE";
+
+    hasBraceSeq = true;
+}
+
+AssignExpr::AssignExpr () {
+    expectedSeq = {
+        {"identifier"},
+        assignSings,
+        vars,
+        arithmeticSings,
+        vars,
+    };
+
+    regexMask = {
+        "identifier\\s?"
+        "ASSIGN\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+        "(NOT_EQUAL|DOUBLE_EQUAL|OR|AND|PLUS|MINUS|STAR|SLASH|PROC|LESS|MORE)\\s?"
+        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+    };
+}
+
+bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
+    size_t counter;
+
+    for (counter = 0; counter < undefineTokenSeq.size(); counter++) {
+        if (expectedSeq[counter].find(undefineTokenSeq[counter].type) == expectedSeq[counter].end()) break;
+    }  
+
+    return counter == undefineTokenSeq.size();
 }
 
 // Checks
 
-/* bool isMathExpr (const std::vector<Token>& undefinedTokenList) {
-    size_t newStatus = 0;
-
-    for (const auto& token : undefinedTokenList) {
-        if (numericVars.find(token.type) != numericVars.end()) newStatus++;
-        if (arithmeticSings.find(token.type) != arithmeticSings.end()) newStatus++;
-    }
-    
-    return newStatus == undefinedTokenList.size(); // all elements belong to math expr
-} */
-
-bool isReturnExpr (const Token& newToken) {
-    return newToken.type == "return";
+bool isMathExpr (std::vector<Token>& undefineTokenSeq) {        
+    MathExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
-bool isFuncDeclareExpr (const Token& newToken) {
-    return newToken.type == "func"; 
+bool isReturnExpr (std::vector<Token>& undefineTokenSeq) {
+    ReturnExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
-bool isImportExpr (const Token& newToken) { 
-    return newToken.type == "import"; 
+bool isImportExpr (std::vector<Token>& undefineTokenSeq) { 
+    ImportExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
-bool isPackageExpr (const Token& newToken) { 
-    return  newToken.type == "package"; 
+bool isPackageExpr (std::vector<Token>& undefineTokenSeq) { 
+    PackageExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }
 
-bool isCommentExpr (const Token& newToken) {
-    return newToken.type == "comment";
+bool isIfExpr (std::vector<Token>& undefineTokenSeq) {
+    IfExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq) {
+    WhileLoopExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq) {
+    FuncDeclareExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
+    AssignExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
 }

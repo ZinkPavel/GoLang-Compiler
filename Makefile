@@ -1,24 +1,14 @@
-All: bin/main # bin/test
+All: partial_clear bin/main # bin/test
 
 FLAGS = g++ -Wall -Werror -std=c++17
-OBJ = $(TREE) $(PARSER) $(COMPILER) build/main.o $(TESTS)
+OBJ = $(PARSER) $(COMPILER) build/main.o $(TESTS)
 
-TREE = build/Tree/Tree.o build/Tree/Node.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
 COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
 TESTS = build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
 
-
 bin/main: $(OBJ)
 	$(FLAGS) $(OBJ) -o bin/main
-
-# TREE
-
-build/Tree/Tree.o: src/Tree/Tree.cpp
-	$(FLAGS) -c src/Tree/Tree.cpp -o build/Tree/Tree.o
-
-build/Tree/Node.o: src/Tree/Node.cpp
-	$(FLAGS) -c src/Tree/Node.cpp -o build/Tree/Node.o
 
 # PARSER
 
@@ -57,3 +47,6 @@ build/Tests/TestRunner.o: src/Tests/TestRunner.cpp
 	
 clear:
 	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
+
+partial_clear:
+	rm -rf build/Parser/*.o build/Tests/*.o bin/* 

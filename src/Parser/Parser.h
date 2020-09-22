@@ -3,12 +3,13 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <stack>
 
 #include "Expression.h"
 
-#define MAKE_NEW_EXPR(exprType) \
-    exprs.push_back(std::make_shared<exprType>()); \
-    waitingNewExpr = false;
+#define EXPR_HIT(exprType) \
+    newExpression = std::make_shared<exprType>(); \
+    counterEntry++;
 
 class Parser {
 private:
@@ -16,12 +17,14 @@ private:
     size_t numOfReadTokens = 0;
 
     Status status;
-    // std::vector<Token>::iterator point;
     std::vector<std::shared_ptr<Expression>> exprs;
+    std::stack<std::shared_ptr<Expression>> braceStack;
+    std::vector<Token> undefineTokenSeq;
 
 public:
     Parser ();
 
-    const std::vector<std::shared_ptr<Expression>>& getExprs () const;
     void update (const std::vector<Token>& tokensFromLexer);
+    const std::vector<std::shared_ptr<Expression>>& getExprs () const;
+    const Status& getComplitionStatus () const;
 };

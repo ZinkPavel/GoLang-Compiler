@@ -1,5 +1,3 @@
-return a;
 return a
+return "faf
 return 325
-return" wd;
-return 0;

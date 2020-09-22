@@ -38,6 +38,7 @@ public:
 
     std::vector<Token>& getTokenList ();
     const std::vector<std::shared_ptr<Expression>>& getParserExprs () const;
+    const Status& getParserComplitionStatus() const;
 };
 
 // Checks

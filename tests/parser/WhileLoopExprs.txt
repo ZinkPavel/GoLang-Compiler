@@ -1,0 +1,8 @@
+while f < d {
+    d - f
+    if f + d {
+        while c < b {
+            
+        }
+    }
+}
