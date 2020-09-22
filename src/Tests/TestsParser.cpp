@@ -12,6 +12,8 @@ void TestsParser () {
     RUN_TEST(tr, WhileLoopExprTest);
     RUN_TEST(tr, FuncDeclareExprTest);
     RUN_TEST(tr, AssignExprTest);
+
+    RUN_TEST(tr, ProgramTest);
 }
 
 void MathExprTest () {
@@ -107,11 +109,13 @@ void WhileLoopExprTest () {
 void FuncDeclareExprTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt");
 
-    ASSERT_EQUAL(exprs.size(), 3u);
+    ASSERT_EQUAL(exprs.size(), 5u);
 
     ASSERT_STATUS(0, false, true);
     ASSERT_STATUS(1, false, true);
     ASSERT_STATUS(2, false, true);
+    ASSERT_STATUS(3, false, true);
+    ASSERT_STATUS(4, false, true);
 
     for (const auto& expr : exprs) {
         ASSERT_EQUAL((*expr).completeExpr, true);
@@ -124,4 +128,18 @@ void AssignExprTest () {
     ASSERT_EQUAL(exprs.size(), 1u);
 
     ASSERT_STATUS(0, false, true);
+}
+
+void ProgramTest () {
+    INIT_TEST_ENVAIRONMENT("tests/prog.go");
+
+    ASSERT_EQUAL(exprs.size(), 6u);
+
+    for (size_t i = 0; i < exprs.size(); i++) {
+        ASSERT_STATUS(i, false, true);
+    }
+
+    for (const auto& expr : exprs) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
 }

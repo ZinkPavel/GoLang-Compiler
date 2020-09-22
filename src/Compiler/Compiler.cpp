@@ -130,6 +130,7 @@ void Compiler::readFile () {
                     
                     case CH::SPACE: break;
                     case '\n': break;
+                    case '\t': break;
 
                     default: NEW_CH_TOKEN(undefined, ch);
                     }

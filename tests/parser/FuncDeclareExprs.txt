@@ -1,3 +1,5 @@
 func main () int {}
 func main () {}
 func main (a int) int {}
+func main (a,b int) int {}
+func main (a,b []int) int {}

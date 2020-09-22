@@ -142,7 +142,8 @@ FuncDeclareExpr::FuncDeclareExpr () {
     regexMask = "func\\s"
         "identifier\\s?"
         "L_PAREN\\s?"
-        "(identifier\\s(int|float|double|string|bool))?\\s?"
+        "(identifier\\s?(COMMA\\s?identifier)?\\s"
+        "(L_SQ_BRACE\\s?R_SQ_BRACE)?\\s?(int|float|double|string|bool))?\\s?"
         "R_PAREN\\s?"
         "(int|float|double|string|bool)?\\s?"
         "L_BRACE";

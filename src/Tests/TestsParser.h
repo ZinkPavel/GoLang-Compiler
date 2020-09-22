@@ -22,3 +22,5 @@ void IfExprTest ();
 void WhileLoopExprTest ();
 void FuncDeclareExprTest ();
 void AssignExprTest ();
+
+void ProgramTest();
