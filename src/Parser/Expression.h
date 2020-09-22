@@ -11,7 +11,7 @@ const std::set<std::string> dataTypes = {"int", "double", "float", "bool", "stri
 const std::set<std::string> possibleSings = {"EXCLAMATION"};
 const std::set<std::string> vars = {"identifier", "numeric_const", "bin_cont", "octal_const", "hex_const"};
 const std::set<std::string> arithmeticSings = {"NOT_EQUAL", "DOUBLE_EQUAL", "OR", "AND", "PLUS", "MINUS", "STAR", "SLASH", "PROC", "LESS", "MORE"};
-const std::set<std::string> assignSings = {"EQUAL"};
+const std::set<std::string> assignSings = {"ASSIGN"};
 
 struct Status {
 public:

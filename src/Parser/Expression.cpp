@@ -161,7 +161,7 @@ AssignExpr::AssignExpr () {
 
     regexMask = {
         "identifier\\s?"
-        "EQUAL\\s?"
+        "ASSIGN\\s?"
         "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
         "(NOT_EQUAL|DOUBLE_EQUAL|OR|AND|PLUS|MINUS|STAR|SLASH|PROC|LESS|MORE)\\s?"
         "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"

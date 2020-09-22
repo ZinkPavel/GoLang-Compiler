@@ -1,8 +1,9 @@
 /bin/*
-/build/Compiler/*
-/build/Parser/*
-/build/Tests/*
-/build/Tree/*
+/build/*.o
+/build/Compiler/*.o
+/build/Parser/*.o
+/build/Tests/*.o
+/build/Tree/*.o
 
 /.vscode
 /.idea
