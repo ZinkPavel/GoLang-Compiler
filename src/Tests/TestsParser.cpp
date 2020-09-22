@@ -79,6 +79,10 @@ void IfExprTest () {
     ASSERT_EQUAL(expr.completeExpr, true);
     ASSERT_STATUS(2, false, true);
     ASSERT_EQUAL(expr.completeExpr, true);
+
+    for (const auto& expr : exprs) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
 }
 
 void WhileLoopExprTest () {
@@ -94,6 +98,10 @@ void WhileLoopExprTest () {
     ASSERT_EQUAL(expr.completeExpr, true);
     ASSERT_STATUS(3, false, true);
     ASSERT_EQUAL(expr.completeExpr, true);
+
+    for (const auto& expr : exprs) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
 }
 
 void FuncDeclareExprTest () {
@@ -104,6 +112,10 @@ void FuncDeclareExprTest () {
     ASSERT_STATUS(0, false, true);
     ASSERT_STATUS(1, false, true);
     ASSERT_STATUS(2, false, true);
+
+    for (const auto& expr : exprs) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
 }
 
 void AssignExprTest () {
