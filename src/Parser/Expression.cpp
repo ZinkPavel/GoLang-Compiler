@@ -37,7 +37,10 @@ Status Expression::checkExpr () {
     return newStatus;
 }
 
-// mb .toString() ?
+std::string testFunc (const Token& token) {
+    return token.type;
+}
+
 bool Expression::checkByRegexMask () {
     std::stringstream actualSeq;
 
@@ -50,7 +53,28 @@ bool Expression::checkByRegexMask () {
     return std::regex_match(actualSeq.str(), regexMask);
 }
 
-// Exprs
+/* Operators */
+
+std::ostream& operator << (std::ostream& os, Expression& expr) {
+    bool first = true;
+    // size_t nestingLevel = 0;
+    
+    for (const auto& token : expr.actualTokenSeq) {
+        // if (token.type == "R_BRACE") nestingLevel--;
+        
+        if (!first) {
+            os << '\n';
+            // for (size_t i = 0; i < nestingLevel; i++) os << '\t';
+        }
+        first = false;
+        os << token;
+        // if (token.type == "L_BRACE") nestingLevel++;
+    }
+    return os;
+}
+
+/* Exprs */
+
 MathExpr::MathExpr () {
     expectedSeq = {
         // possibleSings,
@@ -179,7 +203,7 @@ bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq)
     return counter == undefineTokenSeq.size();
 }
 
-// Checks
+/* Checks */
 
 bool isMathExpr (std::vector<Token>& undefineTokenSeq) {        
     MathExpr instance;

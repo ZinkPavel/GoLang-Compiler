@@ -5,17 +5,16 @@
 # include <map>
 # include <sstream>
 # include <utility>
+#include <functional>
 
-using namespace std;
+template <typename Collection, typename CollectionItem>
+std::string Join(const Collection& collection, char delim, std::function<std::string(const CollectionItem& item)> func);
 
-template <typename Collection >
-string Join( const Collection & c, char d);
-
-template <typename First, typename Second >
-ostream& operator << (ostream& out, const pair<First, Second>& p);
+template <typename First, typename Second>
+std::ostream& operator << (std::ostream& out, const std::pair<First, Second>& p);
 
 template <typename T>
-ostream& operator << (ostream& out, const vector <T >& vi);
+std::ostream& operator << (std::ostream& out, const std::vector<T>& vi);
 
-template <typename Key , typename Value >
-ostream & operator << (ostream& out, const map <Key , Value >& m);
+template <typename Key, typename Value>
+std::ostream& operator << (std::ostream& out, const std::map<Key, Value>& m);

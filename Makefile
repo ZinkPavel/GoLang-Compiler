@@ -59,4 +59,4 @@ clear:
 	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
 
 partial_clear:
-	rm -rf build/Parser/*.o build/Tests/*.o bin/* 
+	rm -rf build/Tools/*.o build/Parser/*.o build/Tests/*.o bin/* 

@@ -1,31 +1,31 @@
 #include "OperatorsRedefinition.h"
 
-template <typename Collection > // тип коллекции
-string Join( const Collection & c, char d) { // передаем коллекцию и разделитель
-    stringstream ss; // завели строковый поток
-    bool first = true; // первый ли это элемент?
+template <typename Collection, typename CollectionItem>
+std::string Join(const Collection& collection, char delim, std::function<std::string(const CollectionItem& item)> func) {
+    std::stringstream ss;
+    bool first = true;
     
-    for (const auto& i : c) {
-        if (! first ) {
-            ss << d; // если вывели не первый элемент - кладем поток в разделитель
+    for (const auto& item : collection) {
+        if (!first) {
+            ss << delim;
         }
-        first = false; // т.к. следующий элемент точно не будет первым
-        ss << i; // кладем следующий элемент в поток
+        first = false;
+        ss << func(item);
     }
-    return ss.str ();
+    return ss.str();
 }
 
-template <typename First, typename Second > // для pair
-ostream& operator << (ostream& out, const pair<First, Second>& p) {
-    return out << '(' <<p. first << ',' << p. second << ')'; // тоже изменили
+template <typename First, typename Second>
+std::ostream& operator << (std::ostream& out, const std::pair<First, Second>& p) {
+    return out << '(' << p.first << ',' << p.second << ')';
 }
 
-template <typename T> // для vector изменили код и добавили скобочки
-ostream& operator << (ostream& out, const vector <T >& vi) {
-    return out << '[' << Join(vi , ',') << ']';
-} // оператор вывода возвращает ссылку на поток
+template <typename T>
+std::ostream& operator << (std::ostream& out, const std::vector<T>& vector) {
+    return out << '[' << Join(vector, ',') << ']';
+}
 
-template <typename Key , typename Value > // для map убрали аналогично vector
-ostream & operator << (ostream& out, const map <Key , Value >& m) {
-    return out << '{' << Join(m, ',') << '}'; // и добавили фигурные скобочки
+template <typename Key, typename Value>
+std::ostream& operator << (std::ostream& out, const std::map<Key, Value>& m) {
+    return out << '{' << Join(m, ',') << '}';
 }

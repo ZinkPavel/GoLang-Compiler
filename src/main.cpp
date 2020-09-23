@@ -7,10 +7,12 @@
 int main (int argc, char *argv[]) {
     std::vector<std::string> params (argv + 1, argv + argc);
     
-    AllTests();
+    // AllTests();
     
-    // Compiler comp ("tests/prog.go");
+    Compiler comp ("tests/prog.go");
     // comp.dumpTokens();
+    Expression& expr = *comp.getParserExprs()[2];
+    std::cout << expr << std::endl;
     // std::cout << comp.getParserExprs().size() << std::endl;
     
     /* if (params[0] == "--tests") AllTests();

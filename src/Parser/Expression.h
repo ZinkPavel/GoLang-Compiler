@@ -6,7 +6,6 @@
 #include <string>
 
 #include "../Compiler/Token.h"
-#include "../Tools/OperatorsRedefinition.h"
 
 const std::set<std::string> dataTypes = {"int", "double", "float", "bool", "string"};
 const std::set<std::string> possibleSings = {"EXCLAMATION"};
@@ -44,6 +43,7 @@ public:
 
 // Operators 
 
+std::ostream& operator << (std::ostream& os, Expression& expr);
 
 // Exprs
 
