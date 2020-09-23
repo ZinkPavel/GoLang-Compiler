@@ -56,20 +56,7 @@ bool Expression::checkByRegexMask () {
 /* Operators */
 
 std::ostream& operator << (std::ostream& os, Expression& expr) {
-    bool first = true;
-    // size_t nestingLevel = 0;
-    
-    for (const auto& token : expr.actualTokenSeq) {
-        // if (token.type == "R_BRACE") nestingLevel--;
-        
-        if (!first) {
-            os << '\n';
-            // for (size_t i = 0; i < nestingLevel; i++) os << '\t';
-        }
-        first = false;
-        os << token;
-        // if (token.type == "L_BRACE") nestingLevel++;
-    }
+    os << Join(expr.actualTokenSeq, '\n');
     return os;
 }
 

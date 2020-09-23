@@ -5,10 +5,21 @@
 # include <map>
 # include <sstream>
 # include <utility>
-#include <functional>
 
-template <typename Collection, typename CollectionItem>
-std::string Join(const Collection& collection, char delim, std::function<std::string(const CollectionItem& item)> func);
+template <typename Collection>
+std::string Join(const Collection& collection, char delim) {
+    std::stringstream ss;
+    bool first = true;
+    
+    for (const auto& item : collection) {
+        if (!first) {
+            ss << delim;
+        }
+        first = false;
+        ss << item;
+    }
+    return ss.str();
+}
 
 template <typename First, typename Second>
 std::ostream& operator << (std::ostream& out, const std::pair<First, Second>& p);
