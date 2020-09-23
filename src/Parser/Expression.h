@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../Compiler/Token.h"
+#include "../Tools/OperatorsRedefinition.h"
 
 const std::set<std::string> dataTypes = {"int", "double", "float", "bool", "string"};
 const std::set<std::string> possibleSings = {"EXCLAMATION"};
@@ -25,16 +26,14 @@ public:
 class Expression {
 protected:
     size_t indexInExpSeq = 0;
-    // size_t minAmountTokens = 1;
     std::vector<std::set<std::string>> expectedSeq;
-    // std::set<std::string> lastSignificantTokenType;
     std::regex regexMask;
 
 public:
-    bool completeExpr = false;
-    std::vector<Token> actualTokenSeq;
-    Status endingStatus; // exclusively for tests
     bool hasBraceSeq = false;
+    bool completeExpr = false;
+    Status endingStatus; // exclusively for tests
+    std::vector<Token> actualTokenSeq;
 
     Expression ();
 
@@ -42,6 +41,9 @@ public:
     bool checkByRegexMask ();
     bool exprIdentification (const std::vector<Token>& undefineTokenSeq);
 };
+
+// Operators 
+
 
 // Exprs
 

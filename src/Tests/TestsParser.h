@@ -24,3 +24,5 @@ void FuncDeclareExprTest ();
 void AssignExprTest ();
 
 void ProgramTest();
+
+void SerializeTokenTest ();

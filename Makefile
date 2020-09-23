@@ -1,14 +1,22 @@
-All: partial_clear bin/main # bin/test
+All: partial_clear bin/app
 
 FLAGS = g++ -Wall -Werror -std=c++17
-OBJ = $(PARSER) $(COMPILER) build/main.o $(TESTS)
+OBJ = build/main.o $(TESTS) $(COMPILER) $(PARSER) $(TOOLS)
 
-PARSER = build/Parser/Expression.o build/Parser/Parser.o
-COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
 TESTS = build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
+COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
+PARSER = build/Parser/Expression.o build/Parser/Parser.o
+TOOLS = build/Tools/OperatorsRedefinition.o
 
-bin/main: $(OBJ)
-	$(FLAGS) $(OBJ) -o bin/main
+# APPLICATION
+
+bin/app: $(OBJ)
+	$(FLAGS) $(OBJ) -o bin/app
+
+# MAIN
+
+build/main.o: src/main.cpp
+	$(FLAGS) -c src/main.cpp -o build/main.o
 
 # PARSER
 
@@ -26,11 +34,6 @@ build/Compiler/Token.o: src/Compiler/Token.cpp
 build/Compiler/Compiler.o: src/Compiler/Compiler.cpp
 	$(FLAGS) -c src/Compiler/Compiler.cpp -o build/Compiler/Compiler.o
 
-# MAIN
-
-build/main.o: src/main.cpp
-	$(FLAGS) -c src/main.cpp -o build/main.o
-
 # TESTS
 
 build/Tests/TestsParser.o: src/Tests/TestsParser.cpp
@@ -44,6 +47,13 @@ build/Tests/TestController.o: src/Tests/TestController.cpp
 
 build/Tests/TestRunner.o: src/Tests/TestRunner.cpp
 	$(FLAGS) -c src/Tests/TestRunner.cpp -o build/Tests/TestRunner.o
+
+# TOOLS
+
+build/Tools/OperatorsRedefinition.o: src/Tools/OperatorsRedefinition.cpp
+	$(FLAGS) -c src/Tools/OperatorsRedefinition.cpp -o build/Tools/OperatorsRedefinition.o
+
+# OTHER
 	
 clear:
 	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 

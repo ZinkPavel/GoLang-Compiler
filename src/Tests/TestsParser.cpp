@@ -14,6 +14,8 @@ void TestsParser () {
     RUN_TEST(tr, AssignExprTest);
 
     RUN_TEST(tr, ProgramTest);
+
+    RUN_TEST(tr, SerializeTokenTest);
 }
 
 void MathExprTest () {
@@ -142,4 +144,19 @@ void ProgramTest () {
     for (const auto& expr : exprs) {
         ASSERT_EQUAL((*expr).completeExpr, true);
     }
+}
+
+void SerializeTokenTest () {
+    Compiler comp("tests/prog.go");
+    const std::vector<std::shared_ptr<Expression>>& exprs = comp.getParserExprs();
+    Expression expr = *exprs[0];
+
+    std::stringstream tokenSeqStream;
+
+    for (auto it = expr.actualTokenSeq.begin(); it != expr.actualTokenSeq.end(); ++it) {
+        if (it == expr.actualTokenSeq.begin()) tokenSeqStream << it->type;
+        else tokenSeqStream << ' ' << it->type;
+    }
+
+    ASSERT_EQUAL(tokenSeqStream.str(), "package identifier");
 }
