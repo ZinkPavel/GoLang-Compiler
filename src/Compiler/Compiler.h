@@ -35,13 +35,14 @@ public:
 
     void readFile ();
     void dumpTokens ();
+    void dumpAst ();
 
     std::vector<Token>& getTokenList ();
     const std::vector<std::shared_ptr<Expression>>& getParserExprs () const;
     const Status& getParserComplitionStatus() const;
 };
 
-// Checks
+/* Checks */
 
 inline bool isDQuotes (const char& ch);
 inline bool isLetter (const char& ch);

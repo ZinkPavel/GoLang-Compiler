@@ -1,6 +1,6 @@
 #include "Compiler.h"
 
-// Constructors && Destructors
+/* Constructors && Destructors */
 
 Compiler::Compiler (std::string filePath) {
     input.open(filePath);
@@ -12,7 +12,7 @@ Compiler::~Compiler () {
     input.close();
 }
 
-// Compiler
+/* Compiler */
 
 void Compiler::readFile () {
     char ch;
@@ -148,6 +148,10 @@ void Compiler::dumpTokens () {
     }
 }
 
+void Compiler::dumpAst () {
+
+}
+
 std::vector<Token>& Compiler::getTokenList () {
     return tokenList;
 }
@@ -160,8 +164,8 @@ const Status& Compiler::getParserComplitionStatus() const {
     return parser.getComplitionStatus();
 }
 
+/* Checks */
 
-// Checks
 inline bool isDQuotes (const char& ch) {
     return ch == CH::DQUOTES;
 }

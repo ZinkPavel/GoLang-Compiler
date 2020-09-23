@@ -47,7 +47,7 @@ class Token {
         Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow = 0, const size_t& newCol = 0);
 };
 
-// Operators
+/* Operators */
 
 std::ostream& operator << (std::ostream& os, const Token& token);
 bool operator == (const Token& lhs, const Token& rhs);

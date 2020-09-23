@@ -42,11 +42,11 @@ public:
     bool exprIdentification (const std::vector<Token>& undefineTokenSeq);
 };
 
-// Operators 
+/* Operators */
 
 std::ostream& operator << (std::ostream& os, Expression& expr);
 
-// Exprs
+/* Exprs */
 
 class MathExpr: public Expression {
 public:
@@ -88,7 +88,7 @@ public:
     AssignExpr ();
 };
 
-// Checks
+/* Checks */
 
 bool isMathExpr (std::vector<Token>& undefineTokenSeq);
 bool isReturnExpr (std::vector<Token>& undefineTokenSeq);
