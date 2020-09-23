@@ -143,13 +143,47 @@ void Compiler::readFile () {
 }
 
 void Compiler::dumpTokens () {
-    for (const auto& token : tokenList) {
-        std::cout << token << std::endl;
-    }
+    std::stringstream ss;
+    for (const auto& token : tokenList) ss << token << '\n';
+    std::cout << ss.str();
 }
 
 void Compiler::dumpAst () {
+    size_t nestingLevel = 0;
+    std::stringstream ss;
+    std::stack<Token> postponementToken;
 
+    const auto& exprs = parser.getExprs();
+    auto& expr = *exprs[0];
+    auto& tokenSeq = expr.actualTokenSeq;
+    
+    for (size_t i = 0; i < exprs.size(); i++) {
+        expr = *exprs[i];
+        tokenSeq = expr.actualTokenSeq;
+
+        for (size_t j = 0; j < tokenSeq.size(); j++) {
+            if (tokenSeq[j].type == "R_BRACE") postponementToken.push(tokenSeq[j]);
+
+            if (nestingLevel > 0 && tokenSeq[j].row > postponementToken.top().row) {
+                nestingLevel--;
+                for (size_t k = 0; k < nestingLevel; k++) ss << '\t';
+                ss << postponementToken.top() << '\n';
+                postponementToken.pop();
+            } 
+            
+            if (tokenSeq[j].type != "R_BRACE") {
+                for (size_t k = 0; k < nestingLevel; k++) ss << '\t';
+                if (tokenSeq[j].type == "L_BRACE") nestingLevel++;
+                ss << tokenSeq[j] << '\n'; 
+            }
+        }
+    }
+
+    if (nestingLevel > 0) {
+        for (size_t i = 0; i < postponementToken.size(); i++) ss << postponementToken.top() << '\n';
+    }
+
+    std::cout << ss.str();
 }
 
 std::vector<Token>& Compiler::getTokenList () {
