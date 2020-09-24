@@ -1,11 +1,12 @@
 All: partial_clear bin/app
 
 FLAGS = g++ -Wall -Werror -std=c++17
-OBJ = build/main.o $(TESTS) $(COMPILER) $(PARSER) $(TOOLS)
+OBJ = build/main.o $(TOOLS) $(TESTS) $(COMPILER) $(PARSER) $(TREE)
 
-TESTS = build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
-COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
+TREE = build/Parser/AST-Tree/ASTree.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
+COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
+TESTS = build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
 TOOLS = build/Tools/OperatorsRedefinition.o
 
 # APPLICATION
@@ -17,6 +18,11 @@ bin/app: $(OBJ)
 
 build/main.o: src/main.cpp
 	$(FLAGS) -c src/main.cpp -o build/main.o
+
+# TREE
+
+build/Parser/AST-Tree/ASTree.o: src/Parser/AST-Tree/ASTree.cpp
+	$(FLAGS) -c src/Parser/AST-Tree/ASTree.cpp -o build/Parser/AST-Tree/ASTree.o
 
 # PARSER
 
@@ -56,7 +62,7 @@ build/Tools/OperatorsRedefinition.o: src/Tools/OperatorsRedefinition.cpp
 # OTHER
 	
 clear:
-	rm -rf build/Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
+	rm -rf build/Parser/AST-Tree/*.o build/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o bin/* 
 
 partial_clear:
-	rm -rf build/Tools/*.o build/Parser/*.o build/Tests/*.o bin/* 
+	rm -rf build/Parser/AST-Tree/*.o build/Tests/*.o bin/* 

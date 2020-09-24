@@ -6,6 +6,7 @@
 #include <stack>
 
 #include "Expression.h"
+#include "AST-Tree/ASTree.h"
 
 #define EXPR_HIT(exprType) \
     newExpression = std::make_shared<exprType>(); \
