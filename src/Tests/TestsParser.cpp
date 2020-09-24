@@ -14,6 +14,8 @@ void TestsParser () {
     RUN_TEST(tr, AssignExprTest);
 
     RUN_TEST(tr, ProgramTest);
+
+    RUN_TEST(tr, SerializeTokenTest);
 }
 
 void MathExprTest () {
@@ -142,4 +144,33 @@ void ProgramTest () {
     for (const auto& expr : exprs) {
         ASSERT_EQUAL((*expr).completeExpr, true);
     }
+}
+
+void SerializeTokenTest () {
+    Compiler comp("tests/prog.go");
+    const std::vector<std::shared_ptr<Expression>>& exprs = comp.getParserExprs();
+
+    std::stringstream tokenSeqStream;
+    std::vector<std::string> tokenSeqs;
+
+    for (size_t i = 0; i < exprs.size(); i++) {
+        Expression& expr = *exprs[0];
+
+        for (auto it = expr.actualTokenSeq.begin(); it != expr.actualTokenSeq.end(); ++it) {
+            if (it == expr.actualTokenSeq.begin()) tokenSeqStream << it->type;
+            else tokenSeqStream << ' ' << it->type;
+        }
+
+        tokenSeqs.push_back(tokenSeqStream.str());
+        tokenSeqStream.clear();
+    }
+
+    ASSERT_EQUAL(exprs.size(), 6u);
+
+    ASSERT_EQUAL(tokenSeqs[0], "package identifier");
+    // ASSERT_EQUAL(tokenSeqs[1], "");
+    // ASSERT_EQUAL(tokenSeqs[2], "");
+    // ASSERT_EQUAL(tokenSeqs[3], "");
+    // ASSERT_EQUAL(tokenSeqs[4], "");
+    // ASSERT_EQUAL(tokenSeqs[5], "");
 }

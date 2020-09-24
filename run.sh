@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# ./bin/main --dump-tokens tests/prog.go
+# ./bin/app --dump-tokens tests/prog.go
 
-./bin/main --tests
+./bin/app --tests
 
-# ./bin/main --dump-tokens tests/parser/PackageExp.txt
+# ./bin/app --dump-tokens tests/parser/PackageExp.txt

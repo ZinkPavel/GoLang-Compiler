@@ -37,7 +37,10 @@ Status Expression::checkExpr () {
     return newStatus;
 }
 
-// mb .toString() ?
+std::string testFunc (const Token& token) {
+    return token.type;
+}
+
 bool Expression::checkByRegexMask () {
     std::stringstream actualSeq;
 
@@ -50,7 +53,15 @@ bool Expression::checkByRegexMask () {
     return std::regex_match(actualSeq.str(), regexMask);
 }
 
-// Exprs
+/* Operators */
+
+std::ostream& operator << (std::ostream& os, Expression& expr) {
+    os << Join(expr.actualTokenSeq, '\n');
+    return os;
+}
+
+/* Exprs */
+
 MathExpr::MathExpr () {
     expectedSeq = {
         // possibleSings,
@@ -179,7 +190,7 @@ bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq)
     return counter == undefineTokenSeq.size();
 }
 
-// Checks
+/* Checks */
 
 bool isMathExpr (std::vector<Token>& undefineTokenSeq) {        
     MathExpr instance;
