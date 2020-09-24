@@ -183,7 +183,11 @@ void Compiler::dumpAst () {
         for (size_t i = 0; i < postponementToken.size(); i++) ss << postponementToken.top() << '\n';
     }
 
-    std::cout << ss.str();
+    std::ofstream out ("ast.txt");
+    out << ss.str();
+    out.close();
+
+    // std::cout << ss.str();
 }
 
 std::vector<Token>& Compiler::getTokenList () {

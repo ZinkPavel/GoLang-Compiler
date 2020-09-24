@@ -12,7 +12,6 @@ int main (int argc, char *argv[]) {
     Compiler comp ("tests/prog.go");
     // comp.dumpTokens();
     comp.dumpAst();
-    // std::cout << comp.getParserExprs().size() << std::endl;
     
     /* if (params[0] == "--tests") AllTests();
 
