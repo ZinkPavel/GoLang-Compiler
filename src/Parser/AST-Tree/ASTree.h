@@ -1,27 +1,18 @@
 #pragma once
 
-#include "../../Compiler/Token.h"
-#include "../Expression.h"
+#include <algorithm>
 
-struct ASTRoot {
-    Token token = {"root", "root", 0, 0};
-    std::vector<Token> childs;
-};
-
-struct ASTNode {
-    Token token;
-    ASTNode *left, *right, *parent;
-};
+#include "Node.h"
 
 class ASTree {
 public:
     ASTree ();
 
-    ASTRoot *root;
-    size_t nestingLevel = 0;
+    void build (const std::vector<std::shared_ptr<Expression>>& exprSeq);
 
-    void build (const std::vector<std::shared_ptr<Expression>>& exprSeq); // mb not & ? 
-    void insert (const ASTNode& node);
+private: 
+    // size_t nestingLevel = 0;
+    std::vector<ExprNode> root;
 };
 
 /* Operators */

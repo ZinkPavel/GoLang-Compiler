@@ -40,11 +40,12 @@ const std::vector<std::string> keywords = {"int", "double", "var", "float", "ret
     "import", "func", "bool", "string", "for", "if", "else", "while", "do"};
 
 class Token {
-    public:
-        int row, col;
-        std::string type, litteral;
+public:
+    int row, col;
+    std::string type, litteral;
 
-        Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow = 0, const size_t& newCol = 0);
+    Token ();
+    Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow = 0, const size_t& newCol = 0);
 };
 
 /* Operators */

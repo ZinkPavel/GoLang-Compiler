@@ -1,14 +1,12 @@
 /bin/*
+
 /build/*.o
+/build/Tests/*.o
 /build/Compiler/*.o
 /build/Parser/*.o
-/build/Tests/*.o
-/build/Tree/*.o
+/build/Parser/AST-Tree/*.o
 
 /.vscode
 /.idea
-<<<<<<< HEAD
-=======
 
 ast.txt
->>>>>>> parser

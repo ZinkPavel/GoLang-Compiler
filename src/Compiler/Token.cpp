@@ -1,5 +1,7 @@
 #include "Token.h"
 
+Token::Token () {}
+
 Token::Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow, const size_t& newCol)
     : row(newRow), col(newCol), type(newType), litteral(newLitteral) {}
 

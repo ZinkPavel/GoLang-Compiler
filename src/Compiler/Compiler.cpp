@@ -140,6 +140,7 @@ void Compiler::readFile () {
             }
         }
     }
+    tree.build(getParserExprs());
 }
 
 void Compiler::dumpTokens () {
@@ -149,6 +150,10 @@ void Compiler::dumpTokens () {
 }
 
 void Compiler::dumpAst () {
+    std::cout << "[INFO] exec with flag --dump-ast" << std::endl;
+}
+
+/* void Compiler::dumpAst () {
     size_t nestingLevel = 0;
     std::stringstream ss;
     std::stack<Token> postponementToken;
@@ -188,7 +193,7 @@ void Compiler::dumpAst () {
     out.close();
 
     // std::cout << ss.str();
-}
+} */
 
 std::vector<Token>& Compiler::getTokenList () {
     return tokenList;

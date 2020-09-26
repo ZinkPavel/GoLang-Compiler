@@ -9,8 +9,9 @@
 #include <regex>
 #include <exception>
 
-#include "../Parser/Parser.h"
 #include "Token.h"
+#include "../Parser/Parser.h"
+#include "../Parser/AST-Tree/ASTree.h"
 
 #define NEW_CH_TOKEN(type, ch) \
     tokenList.push_back({#type, {ch}, currentRow, currentCol}); \
@@ -28,6 +29,7 @@ private:
     std::ifstream input;
     std::vector<Token> tokenList;
     Parser parser;
+    ASTree tree;
 
 public:
     Compiler (std::string filePath);
