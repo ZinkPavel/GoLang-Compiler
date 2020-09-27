@@ -150,7 +150,8 @@ void Compiler::dumpTokens () {
 }
 
 void Compiler::dumpAst () {
-    std::cout << "[INFO] exec with flag --dump-ast" << std::endl;
+    std::cout << tree << std::endl;
+    // std::cout << "[INFO] exec with flag --dump-ast" << std::endl;
 }
 
 /* void Compiler::dumpAst () {

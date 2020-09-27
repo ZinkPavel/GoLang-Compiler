@@ -5,27 +5,26 @@
 
 class Node {
 public:
-    Node ();
-    Node (Node *_parent);
-    
-protected:
-    Node *parent;
-};
-
-class TokenNode : Node {
-public:
-    TokenNode ();
-    TokenNode (const Token& _token, Node *_parent);
-
-protected:
     Token token;
+    Node *parent;
+    std::vector<Node> children;
+
+    Node ();
+    Node (Token _token);
+    Node (Token _token, Node *_parent);
 };
 
-class ExprNode : Node {
+/* class TokenNode: public Node {
 public:
-    ExprNode ();
-    // ExprNode (const std::vector<Token>& tokenSeq, Node *_parent);
-    
-protected:
+    Token token;
+
+    TokenNode ();
+    TokenNode (const Token _token, Node *_parent);
+}; */
+
+/* class ExprNode: public Node {
+public:
     std::vector<Node> children;
-};
+    
+    ExprNode ();
+}; */

@@ -7,12 +7,12 @@
 class ASTree {
 public:
     ASTree ();
+    Node root;
 
     void build (const std::vector<std::shared_ptr<Expression>>& exprSeq);
 
 private: 
     // size_t nestingLevel = 0;
-    std::vector<ExprNode> root;
 };
 
 /* Operators */
