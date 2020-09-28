@@ -17,6 +17,8 @@ public:
     // Node (Token _token, Node *_parent);
 };
 
+std::ostream& operator<< (std::ostream&, const Node& node);
+
 /* class TokenNode: public Node {
 public:
     Token token;

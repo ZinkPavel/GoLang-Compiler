@@ -11,6 +11,13 @@ Node::Node (Token _token, bool _hasBraceSeq) {
     hasBraceSeq = _hasBraceSeq;
 }
 
+std::ostream& operator<< (std::ostream& os, const Node& node) {
+    for (auto child : node.children) {
+        os << child.token << '\n';
+    }
+    return os;
+}
+
 /* Node::Node (Token _token, Node *_parent) {
     token = _token;
     parent = _parent;
