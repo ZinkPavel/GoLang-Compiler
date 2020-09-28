@@ -9,9 +9,12 @@ public:
     Node *parent;
     std::vector<Node> children;
 
+    bool hasBraceSeq = false;
+
     Node ();
     Node (Token _token);
-    Node (Token _token, Node *_parent);
+    Node (Token _token, bool _hasBraceSeq);
+    // Node (Token _token, Node *_parent);
 };
 
 /* class TokenNode: public Node {

@@ -1,63 +1,52 @@
 #include "ASTree.h"
 
-ASTree::ASTree () : root({"root", "root", 0, 0}) {
-    // root->token = new {"root", "root", 0, 0};
-}
+ASTree::ASTree () : root({"root", "root", 0, 0}) {}
 
 void ASTree::build (const std::vector<std::shared_ptr<Expression>>& exprSeq) {
     size_t nestingLevel = 0;
-    std::stack<Token> postponementToken;
     Node *curParent = &root;
+    std::stack<std::pair<Token*, Node*>> post;
+    // Node *post;
 
     for (size_t i = 0; i < exprSeq.size(); i++) {
-        Expression expr = *exprSeq[i];
-        std::vector<Token>& tokenSeq = expr.actualTokenSeq;
+        Expression *expr = &*exprSeq.at(i);
+        std::vector<Token> *tokenSeq = &expr->actualTokenSeq;
+        Node newNode(tokenSeq->at(0), expr->hasBraceSeq ? true : false);
 
-        Node newNode(*tokenSeq.begin());
+        auto it = std::find_if(  
+            tokenSeq->begin(), tokenSeq->end(), [] (const Token& token) {
+                return token.type == "L_BRACE";
+            });
 
-        auto body = std::find_if(tokenSeq.begin(), tokenSeq.end(), [](const Token& token) {
-            return token.type == "L_BRACE"; // give brace
-        });
-
-        if (postponementToken.size() > 0 && newNode.token.row > postponementToken.top().row) {
-            nestingLevel--;
-            // code
-            // close brace
-        }
-
-        std::transform(tokenSeq.begin() + 1, body, std::back_inserter(newNode.children), 
-            [] (Token token) -> Node {
+        std::transform(
+            tokenSeq->begin() + 1, it == tokenSeq->end() ? it : next(it), std::back_inserter(newNode.children),
+            [] (const Token& token) -> Node {
                 return {token};
             });
-            
+
         curParent->children.push_back(newNode);
-        // curParent.children.push_back(newNode);
 
-        if (body == tokenSeq.end()) {
-
-        }
-
-        if (body != tokenSeq.end()) {
-            curParent = &newNode;
-            // curParent = newNode;
+        if (it != tokenSeq->end()) {
+            post.push({&*next(it), {&curParent->children.back()}});
             nestingLevel++;
-            postponementToken.push(*next(body));
-            
-            // std::cout << *next(body) << std::endl;
+            curParent = &newNode;
         }
+
+        if (it == tokenSeq->end()) {}
     }
 
-    /* for (auto it = postponementToken.top(); postponementToken.size() > 0; postponementToken.pop()) {
-        std::cout << it << std::endl;
-    } */
-
-    // останется одна скоба, которую нужно будет закрыть
-    std::cout << "[INFO] Nesting level = " << nestingLevel << std::endl;
-}
+    while (post.size() > 0) {
+        post.top().second->children.push_back({*post.top().first});
+        post.pop();
+    }
 
 std::ostream& operator<< (std::ostream& os, const ASTree& tree) {
-    for (const Node& node : tree.root.children) {
+    for (auto node : tree.root.children) {
         os << node.token << '\n';
+
+        for (auto childNode : node.children) {
+            os << childNode.token << '\n';
+        }
     }
     return os;
 }
