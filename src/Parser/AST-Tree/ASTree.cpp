@@ -24,12 +24,19 @@ void ASTree::build (const std::vector<std::shared_ptr<Expression>>& exprSeq) {
                 return {token};
             });
 
+        while (post.size() > 0 && newNode.token.row > post.top().first->row) {
+            curParent = &*post.top().second;
+            post.top().second->children.push_back({*post.top().first});
+            post.pop();
+            nestingLevel--;
+        }
+
         curParent->children.push_back(newNode);
 
         if (it != tokenSeq->end()) {
             post.push({&*next(it), {&curParent->children.back()}});
-            nestingLevel++;
             curParent = &newNode;
+            nestingLevel++;
         }
 
         if (it == tokenSeq->end()) {}
@@ -39,6 +46,7 @@ void ASTree::build (const std::vector<std::shared_ptr<Expression>>& exprSeq) {
         post.top().second->children.push_back({*post.top().first});
         post.pop();
     }
+}
 
 std::ostream& operator<< (std::ostream& os, const ASTree& tree) {
     for (auto node : tree.root.children) {
