@@ -16,6 +16,4 @@ private:
     // size_t nestingLevel = 0;
 };
 
-/* Operators */
-
-std::ostream& operator<< (std::ostream&, const ASTree& tree);
+std::ostream& printASTree (std::ostream& os, const Node& node);

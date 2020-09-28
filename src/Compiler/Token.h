@@ -44,6 +44,8 @@ public:
     int row, col;
     std::string type, litteral;
 
+    size_t nestingLevel = 0;
+
     Token ();
     Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow = 0, const size_t& newCol = 0);
 };

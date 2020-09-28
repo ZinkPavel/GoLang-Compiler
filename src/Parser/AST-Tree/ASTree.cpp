@@ -6,7 +6,6 @@ void ASTree::build (const std::vector<std::shared_ptr<Expression>>& exprSeq) {
     size_t nestingLevel = 0;
     Node *curParent = &root;
     std::stack<std::pair<Token*, Node*>> post;
-    // Node *post;
 
     for (size_t i = 0; i < exprSeq.size(); i++) {
         Expression *expr = &*exprSeq.at(i);
@@ -25,17 +24,18 @@ void ASTree::build (const std::vector<std::shared_ptr<Expression>>& exprSeq) {
             });
 
         while (post.size() > 0 && newNode.token.row > post.top().first->row) {
-            curParent = &*post.top().second;
+            curParent = &*post.top().second->parent;
             post.top().second->children.push_back({*post.top().first});
             post.pop();
             nestingLevel--;
         }
 
+        newNode.parent = curParent;
         curParent->children.push_back(newNode);
 
         if (it != tokenSeq->end()) {
             post.push({&*next(it), {&curParent->children.back()}});
-            curParent = &newNode;
+            curParent = &curParent->children.back();
             nestingLevel++;
         }
 
@@ -48,13 +48,11 @@ void ASTree::build (const std::vector<std::shared_ptr<Expression>>& exprSeq) {
     }
 }
 
-std::ostream& operator<< (std::ostream& os, const ASTree& tree) {
-    for (auto node : tree.root.children) {
-        os << node.token << '\n';
-
-        for (auto childNode : node.children) {
-            os << childNode.token << '\n';
-        }
+std::ostream& printASTree (std::ostream& os, const Node& node) {
+    for (const Node& children : node.children) {
+        for (size_t i = 0; i < children.token.nestingLevel; i++) os << '\t';
+        os << children << '\n';
+        printASTree(os, children);
     }
     return os;
 }

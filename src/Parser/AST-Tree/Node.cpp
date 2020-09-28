@@ -12,9 +12,7 @@ Node::Node (Token _token, bool _hasBraceSeq) {
 }
 
 std::ostream& operator<< (std::ostream& os, const Node& node) {
-    for (auto child : node.children) {
-        os << child.token << '\n';
-    }
+    os << node.token;
     return os;
 }
 

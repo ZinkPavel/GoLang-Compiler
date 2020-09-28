@@ -26,9 +26,12 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
         undefineTokenSeq.push_back(tokenListFromLexer.back());
     }
 
+    undefineTokenSeq.back().nestingLevel = braceStack.size();
+
     if (braceStack.size() > 0 && newToken.type == "R_BRACE") {
         Expression& topStackExpr = *braceStack.top();
         topStackExpr.actualTokenSeq.push_back(newToken);
+        topStackExpr.actualTokenSeq.back().nestingLevel = braceStack.size() - 1;
         topStackExpr.completeExpr = true;
         braceStack.pop();
     }
