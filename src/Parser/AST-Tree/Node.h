@@ -14,22 +14,6 @@ public:
     Node ();
     Node (Token _token);
     Node (Token _token, bool _hasBraceSeq);
-    // Node (Token _token, Node *_parent);
 };
 
 std::ostream& operator<< (std::ostream&, const Node& node);
-
-/* class TokenNode: public Node {
-public:
-    Token token;
-
-    TokenNode ();
-    TokenNode (const Token _token, Node *_parent);
-}; */
-
-/* class ExprNode: public Node {
-public:
-    std::vector<Node> children;
-    
-    ExprNode ();
-}; */

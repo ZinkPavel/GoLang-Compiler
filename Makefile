@@ -1,4 +1,4 @@
-All: partial_clear bin/app
+All: clear bin/app
 
 FLAGS = g++ -Wall -Werror -std=c++17
 OBJ = build/main.o $(TOOLS) $(TESTS) $(COMPILER) $(PARSER) $(TREE)
@@ -65,7 +65,4 @@ build/Tools/OperatorsRedefinition.o: src/Tools/OperatorsRedefinition.cpp
 # OTHER
 	
 clear:
-	rm -rf build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/*
-
-partial_clear:
-	rm -rf build/Parser/AST-Tree/*.o build/Tests/*.o bin/* 
+	rm -rf build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt

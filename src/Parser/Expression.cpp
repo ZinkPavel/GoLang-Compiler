@@ -37,10 +37,6 @@ Status Expression::checkExpr () {
     return newStatus;
 }
 
-std::string testFunc (const Token& token) {
-    return token.type;
-}
-
 bool Expression::checkByRegexMask () {
     std::stringstream actualSeq;
 

@@ -4,12 +4,12 @@
 void TestsLexer () {
     TestRunner tr;
     RUN_TEST(tr, DoubleSignTest);
-    RUN_TEST(tr, IdentifierTest);
+    // RUN_TEST(tr, IdentifierTest);
     RUN_TEST(tr, DecimalTest);
     RUN_TEST(tr, BinaryTest);
     RUN_TEST(tr, OctalTest);
     RUN_TEST(tr, HexademicalTest);
-    RUN_TEST(tr, DQuotesTest);
+    // RUN_TEST(tr, DQuotesTest);
 }
 
 void DoubleSignTest() {

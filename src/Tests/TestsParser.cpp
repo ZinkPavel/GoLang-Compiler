@@ -168,9 +168,4 @@ void SerializeTokenTest () {
     ASSERT_EQUAL(exprs.size(), 6u);
 
     ASSERT_EQUAL(tokenSeqs[0], "package identifier");
-    // ASSERT_EQUAL(tokenSeqs[1], "");
-    // ASSERT_EQUAL(tokenSeqs[2], "");
-    // ASSERT_EQUAL(tokenSeqs[3], "");
-    // ASSERT_EQUAL(tokenSeqs[4], "");
-    // ASSERT_EQUAL(tokenSeqs[5], "");
 }

@@ -4,6 +4,6 @@
 #include "TestController.h"
 
 void AllTests () {
+    TestsLexer();
     TestsParser();
-    // TestsLexer();
 }
