@@ -163,6 +163,16 @@ void Compiler::dumpAst () {
     out.close();
 }
 
+void Compiler::dumpSymbolTable () {
+    std::ofstream out ("dump-symbol-table.txt");
+
+    std::stringstream ss;
+    printSymbolTable(ss, tree.root);
+    out << ss.str();
+
+    out.close();
+}
+
 std::vector<Token>& Compiler::getTokenList () {
     return tokenList;
 }

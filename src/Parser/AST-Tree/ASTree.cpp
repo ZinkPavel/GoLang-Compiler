@@ -56,3 +56,12 @@ std::ostream& printASTree (std::ostream& os, const Node& node) {
     }
     return os;
 }
+
+std::ostream& printSymbolTable (std::ostream& os, const Node& node) {
+    for(const Node& children : node.children) {
+        os << children.token.nestingLevel << " - " << children << '\n';
+        printSymbolTable(os, children);
+    }
+    
+    return os;
+}

@@ -38,6 +38,7 @@ public:
     void readFile ();
     void dumpTokens ();
     void dumpAst ();
+    void dumpSymbolTable ();
 
     std::vector<Token>& getTokenList ();
     const std::vector<std::shared_ptr<Expression>>& getParserExprs () const;

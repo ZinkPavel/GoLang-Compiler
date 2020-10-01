@@ -17,3 +17,4 @@ private:
 };
 
 std::ostream& printASTree (std::ostream& os, const Node& node);
+std::ostream& printSymbolTable (std::ostream& os, const Node& node);
