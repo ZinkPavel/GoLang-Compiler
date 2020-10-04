@@ -5,5 +5,5 @@
 
 void AllTests () {
     TestsLexer();
-    // TestsParser();
+    TestsParser();
 }

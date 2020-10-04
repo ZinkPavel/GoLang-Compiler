@@ -19,12 +19,12 @@ void TestsParser () {
 }
 
 void MathExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/MathExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/MathExprs.txt", true, true);
 
     status = comp.getParserComplitionStatus();
     expr = *exprs.back();
 
-     {        
+    {        
         ASSERT_EQUAL(exprs.size(), 15u);
         ASSERT_EQUAL(expr.checkByRegexMask(), true);
         ASSERT_EQUAL(status.panicMode, false);
@@ -33,7 +33,7 @@ void MathExprTest () {
 }
 
 void ReturnExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/ReturnExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/ReturnExprs.txt", true, true);
 
     {
         status = comp.getParserComplitionStatus();
@@ -53,7 +53,7 @@ void ReturnExprTest () {
 }
 
 void ImportExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/ImportExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/ImportExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 3u);
 
@@ -63,7 +63,7 @@ void ImportExprTest () {
 }
 
 void PackageExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/PackageExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/PackageExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 3u);
 
@@ -73,7 +73,7 @@ void PackageExprTest () {
 }
 
 void IfExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/IfExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/IfExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 3u);
 
@@ -90,7 +90,7 @@ void IfExprTest () {
 }
 
 void WhileLoopExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/WhileLoopExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/WhileLoopExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 4u);
 
@@ -109,7 +109,7 @@ void WhileLoopExprTest () {
 }
 
 void FuncDeclareExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 5u);
 
@@ -125,7 +125,7 @@ void FuncDeclareExprTest () {
 }
 
 void AssignExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/AssignExprs.txt");
+    INIT_TEST_ENVAIRONMENT("tests/parser/AssignExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 1u);
 
@@ -133,7 +133,7 @@ void AssignExprTest () {
 }
 
 void ProgramTest () {
-    INIT_TEST_ENVAIRONMENT("tests/prog.go");
+    INIT_TEST_ENVAIRONMENT("tests/prog.go", true, true);
 
     ASSERT_EQUAL(exprs.size(), 6u);
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#define INIT_TEST_ENVAIRONMENT(filePath) \
-    Compiler comp(filePath); \
+#define INIT_TEST_ENVAIRONMENT(filePath, parserOn, isTestPass) \
+    Compiler comp(filePath, parserOn, isTestPass); \
     const std::vector<std::shared_ptr<Expression>>& exprs = comp.getParserExprs(); \
     Expression expr; \
     Status status

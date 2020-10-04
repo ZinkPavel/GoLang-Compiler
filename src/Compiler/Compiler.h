@@ -32,10 +32,11 @@ private:
     ASTree tree;
 
     bool parserOn = true;
+    bool isTestPass = false;
 
 public:
     Compiler (std::string filePath);
-    Compiler (std::string filePath, bool _parserOn);
+    Compiler (std::string filePath, bool _parserOn, bool _isTestPass);
     ~Compiler ();
 
     void readFile ();

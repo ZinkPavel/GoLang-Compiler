@@ -64,8 +64,5 @@ build/Tools/OperatorsRedefinition.o: src/Tools/OperatorsRedefinition.cpp
 
 # OTHER
 
-full_clear:
-	rm -rf build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt
-
 clear:
-	rm -rf bin/* dump*.txt
+	rm -rf build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt

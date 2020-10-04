@@ -13,7 +13,7 @@ void TestsLexer () {
 }
 
 void DoubleSignTest() {
-    Compiler comp ("tests/lexer/double_sign.txt", false);
+    Compiler comp ("tests/lexer/double_sign.txt", false, true);
     std::vector<Token>& tokenList = comp.getTokenList();
 
     ASSERT_EQUAL(tokenList[1], Token("OR", "||"));
@@ -25,7 +25,7 @@ void DoubleSignTest() {
 }
 
 void IdentifierTest () {
-    Compiler comp ("tests/lexer/identifier.txt", false);
+    Compiler comp ("tests/lexer/identifier.txt", false, true);
     std::vector<Token>& tokenList = comp.getTokenList();
 
     ASSERT_EQUAL(tokenList[3], Token("identifier", "test_text_0"));
@@ -35,7 +35,7 @@ void IdentifierTest () {
 }
 
 void DecimalTest () {
-    Compiler comp ("tests/lexer/digit.txt", false);
+    Compiler comp ("tests/lexer/digit.txt", false, true);
     std::vector<Token>& tokenList = comp.getTokenList();
 
     ASSERT_EQUAL(tokenList[0], Token("numeric_const", "12345"));
@@ -45,7 +45,7 @@ void DecimalTest () {
 }
 
 void BinaryTest () {
-    Compiler comp ("tests/lexer/digit.txt", false);
+    Compiler comp ("tests/lexer/digit.txt", false, true);
     std::vector<Token>& tokenList = comp.getTokenList();
 
     ASSERT_EQUAL(tokenList[7], Token("bin_const", "0b0101"));
@@ -53,7 +53,7 @@ void BinaryTest () {
 }
 
 void OctalTest () {
-    Compiler comp ("tests/lexer/digit.txt", false);
+    Compiler comp ("tests/lexer/digit.txt", false, true);
     std::vector<Token>& tokenList = comp.getTokenList();
 
     ASSERT_EQUAL(tokenList[8], Token("undefined", "0o7787"));
@@ -61,7 +61,7 @@ void OctalTest () {
 }
 
 void HexademicalTest () {
-    Compiler comp ("tests/lexer/digit.txt", false);
+    Compiler comp ("tests/lexer/digit.txt", false, true);
     std::vector<Token>& tokenList = comp.getTokenList();
 
     ASSERT_EQUAL(tokenList[9], Token("hex_const", "0xFFFF"));
@@ -69,7 +69,7 @@ void HexademicalTest () {
 }
 
 void DQuotesTest () {
-    Compiler comp ("tests/lexer/dquotes.txt", false);
+    Compiler comp ("tests/lexer/dquotes.txt", false, true);
     std::vector<Token>& tokenList = comp.getTokenList();
     
     ASSERT_EQUAL(tokenList[0], Token("string_litteral", "\"test_text_0\""));

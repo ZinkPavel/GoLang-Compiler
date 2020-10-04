@@ -8,8 +8,9 @@ Compiler::Compiler (std::string filePath) {
     else throw std::runtime_error("Opening file failed: \"" + filePath + "\" not available");
 }
 
-Compiler::Compiler (std::string filePath, bool _parserOn) {
+Compiler::Compiler (std::string filePath, bool _parserOn, bool _isTestPass) {
     parserOn = _parserOn;
+    isTestPass = _isTestPass;
     input.open(filePath);
     if (input) readFile();
     else throw std::runtime_error("Opening file failed: \"" + filePath + "\" not available");
@@ -58,7 +59,7 @@ void Compiler::readFile () {
                             NEW_TOKEN("comment", foundSequence);
                             it = str.end() - 1;
                         }
-                        else NEW_CH_TOKEN(PIPE, ch);
+                        else NEW_CH_TOKEN(SLASH, ch);
                         break;
                     
                     case CH::L_BRACE: NEW_CH_TOKEN(L_BRACE, ch);                  
@@ -143,7 +144,7 @@ void Compiler::readFile () {
                     }
                 }
                 foundSequence.clear();
-                if (parserOn) parser.update(tokenList);
+                if (parserOn) parser.update(tokenList, isTestPass);
             }
         }
     }
