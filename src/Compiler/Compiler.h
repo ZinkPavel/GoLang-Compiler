@@ -31,8 +31,11 @@ private:
     Parser parser;
     ASTree tree;
 
+    bool parserOn = true;
+
 public:
     Compiler (std::string filePath);
+    Compiler (std::string filePath, bool _parserOn);
     ~Compiler ();
 
     void readFile ();

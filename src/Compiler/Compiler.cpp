@@ -8,6 +8,13 @@ Compiler::Compiler (std::string filePath) {
     else throw std::runtime_error("Opening file failed: \"" + filePath + "\" not available");
 }
 
+Compiler::Compiler (std::string filePath, bool _parserOn) {
+    parserOn = _parserOn;
+    input.open(filePath);
+    if (input) readFile();
+    else throw std::runtime_error("Opening file failed: \"" + filePath + "\" not available");
+}
+
 Compiler::~Compiler () {
     input.close();
 }
@@ -136,11 +143,11 @@ void Compiler::readFile () {
                     }
                 }
                 foundSequence.clear();
-                parser.update(tokenList);
+                if (parserOn) parser.update(tokenList);
             }
         }
     }
-    tree.build(getParserExprs());
+    if (parserOn) tree.build(getParserExprs());
 }
 
 void Compiler::dumpTokens () {

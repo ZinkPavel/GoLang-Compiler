@@ -62,6 +62,5 @@ std::ostream& printSymbolTable (std::ostream& os, const Node& node) {
         os << children.token.nestingLevel << " - " << children << '\n';
         printSymbolTable(os, children);
     }
-    
     return os;
 }

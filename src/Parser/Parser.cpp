@@ -15,7 +15,14 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer) {
         Expression& lastExpr = *exprs.back();
 
         if (!lastExpr.completeExpr && !lastExpr.hasBraceSeq) {
-            lastExpr.endingStatus = {true, true}; // exception
+            lastExpr.endingStatus = {true, true};
+            { // exception
+                // throw std::runtime_error();
+                std::stringstream ss("Non valid sequence on <" + std::to_string(newToken.row) + ":" + std::to_string(newToken.col) + "> position.");
+                for (const auto& token : lastExpr.actualTokenSeq) ss << " " << token.litteral;
+                std::cout << ss.str() << std::endl;
+                throw std::runtime_error(ss.str());
+            }
             // lastExpr.endingStatus = status; // ?
         }
 
