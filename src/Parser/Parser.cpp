@@ -17,10 +17,7 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
         if (!lastExpr.completeExpr && !lastExpr.hasBraceSeq) {
             lastExpr.endingStatus = {true, true};
             if (!isTestPass) { // exception
-                // throw std::runtime_error();
-                std::stringstream ss("Non valid sequence on <" + std::to_string(newToken.row) + ":" + std::to_string(newToken.col) + "> position.");
-                for (const auto& token : lastExpr.actualTokenSeq) ss << " " << token.litteral;
-                // std::cout << "Problem with " << lastExpr << std::endl;
+                std::stringstream ss("Incorrect expression on <" + std::to_string(lastExpr.actualTokenSeq.back().row) + ":" + std::to_string(lastExpr.actualTokenSeq.back().col) + ">");
                 throw std::runtime_error(ss.str());
             }
             // lastExpr.endingStatus = status; // ?
@@ -42,6 +39,8 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
         topStackExpr.completeExpr = true;
         braceStack.pop();
     }
+
+    undefineTokenSeq.back().col += undefineTokenSeq.back().nestingLevel * 4;
 
     // Add new expression
 
@@ -74,6 +73,8 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
         for (size_t i = 0; i < undefineTokenSeq.size(); i++) {
             lastExpr.actualTokenSeq.push_back(undefineTokenSeq[i]);
             status = lastExpr.checkExpr();
+
+            // expression ?
 
             if (lastExpr.hasBraceSeq && !status.panicMode && status.waitingNewExpr) {
                 braceStack.push(exprs.back());
