@@ -13,6 +13,7 @@ void TestsParser () {
     RUN_TEST(tr, FuncDeclareExprTest);
     RUN_TEST(tr, AssignExprTest);
     RUN_TEST(tr, VarDefinitionTest);
+    RUN_TEST(tr, FuncCallTest);
 
     RUN_TEST(tr, ProgramTest);
 
@@ -134,7 +135,22 @@ void AssignExprTest () {
 }
 
 void VarDefinitionTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/VarDefinition.txt", true, true);
+    INIT_TEST_ENVAIRONMENT("tests/parser/VarDefinitionExprs.txt", true, true);
+
+    ASSERT_EQUAL(exprs.size(), 4u);
+
+    ASSERT_STATUS(0, false, true);
+    ASSERT_STATUS(1, false, true);
+    ASSERT_STATUS(2, false, true);
+    ASSERT_STATUS(3, false, true);
+
+    for (const auto& expr : comp.getParserExprs()) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
+}
+
+void FuncCallTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/FuncCallExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 4u);
 
@@ -151,7 +167,7 @@ void VarDefinitionTest () {
 void ProgramTest () {
     INIT_TEST_ENVAIRONMENT("tests/prog.go", true, true);
 
-    ASSERT_EQUAL(exprs.size(), 8u);
+    ASSERT_EQUAL(exprs.size(), 9u);
 
     for (size_t i = 0; i < exprs.size(); i++) {
         ASSERT_STATUS(i, false, true);
@@ -181,7 +197,7 @@ void SerializeTokenTest () {
         tokenSeqStream.clear();
     }
 
-    ASSERT_EQUAL(exprs.size(), 8u);
+    ASSERT_EQUAL(exprs.size(), 9u);
 
     ASSERT_EQUAL(tokenSeqs[0], "package identifier");
 }

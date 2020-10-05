@@ -54,6 +54,7 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
         if (isFuncDeclareExpr(undefineTokenSeq)) { EXPR_HIT(FuncDeclareExpr); }
         if (isAssignExpr(undefineTokenSeq)) { EXPR_HIT(AssignExpr); }
         if (isVarDefinitionExpr(undefineTokenSeq)) { EXPR_HIT(VarDefinitionExpr); } 
+        if (isFuncCallExpr(undefineTokenSeq)) { EXPR_HIT(FuncCallExpr); }
 
         if (counterEntry == 1) exprs.push_back(newExpression);
         else status.waitingNewExpr = true;

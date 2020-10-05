@@ -197,6 +197,22 @@ VarDefinitionExpr::VarDefinitionExpr () {
     };
 }
 
+FuncCallExpr::FuncCallExpr () {
+    expectedSeq = {
+        {"identifier"},
+        {"L_PAREN"},
+        {"identifier"},
+        {"R_PAREN"}
+    };
+
+    regexMask = {
+        "identifier\\s?"
+        "L_PAREN\\s?"
+        "identifier\\s?(COMMA\\s?identifier)?\\s?"
+        "R_PAREN\\s?"
+    };
+}
+
 bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
     size_t counter;
 
@@ -251,5 +267,10 @@ bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
 
 bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq) {
     VarDefinitionExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isFuncCallExpr (std::vector<Token>& undefineTokenSeq) {
+    FuncCallExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }

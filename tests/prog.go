@@ -8,5 +8,8 @@ func max(a, b int) int {
 }
 
 func main() {
+	var x int = 40
+	var y int = 30
 
+	max(x, y)
 }

@@ -23,6 +23,7 @@ void WhileLoopExprTest ();
 void FuncDeclareExprTest ();
 void AssignExprTest ();
 void VarDefinitionTest ();
+void FuncCallTest ();
 
 void ProgramTest();
 

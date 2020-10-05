@@ -7,13 +7,13 @@
 int main (int argc, char *argv[]) {
     std::vector<std::string> params (argv + 1, argv + argc);
 
-    Compiler comp("tests/prog.go");
+    // Compiler comp("tests/prog.go");
 
     if (params.size() == 1) {
-        if (params[0] == "--dump-tokens") comp.dumpTokens();
-        else if (params[0] == "--dump-ast") comp.dumpAst();
-        else if (params[0] == "--dump-symbol-table") comp.dumpSymbolTable();
-        else if (params[0] == "--tests") AllTests();
+        // if (params[0] == "--dump-tokens") comp.dumpTokens();
+        // else if (params[0] == "--dump-ast") comp.dumpAst();
+        // else if (params[0] == "--dump-symbol-table") comp.dumpSymbolTable();
+        if (params[0] == "--tests") AllTests();
     }
 
     return 0;
