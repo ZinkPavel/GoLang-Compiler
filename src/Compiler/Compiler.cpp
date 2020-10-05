@@ -33,7 +33,7 @@ void Compiler::readFile () {
         while (getline(input, str)) {
             currentRow++;
             for (auto it = str.begin(); it != str.end(); it++) {
-                currentCol = it - str.begin();
+                currentCol = it - str.begin() + 1;
                 ch = *it;
                 begin = it;
 
