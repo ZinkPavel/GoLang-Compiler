@@ -155,11 +155,24 @@ void Compiler::readFile () {
 void Compiler::checkExprsSeq (const Parser& parser) {
     std::stringstream ss;
     
+    // brace seqs
     auto& braceStack = parser.getBraceStack();
     if (braceStack.size() > 0) {
-        const auto& token = (*(*braceStack.top()).actualTokenSeq.begin());
-        ss << "Invalid brace sequence on <" << token.row << ":" << token.col << ">";
+        const auto& tokenSeq = (*braceStack.top()).actualTokenSeq;
+        const auto& braceToken = std::find_if(tokenSeq.begin(), tokenSeq.end(),
+            [](const Token& token) -> bool { return token.type == "L_BRACE"; });
+
+        ss << "Invalid brace sequence on [" << (*braceToken).row << ":" << (*braceToken).col << "]";
         throw std::runtime_error(ss.str());
+    }
+
+    // common case
+    for (const auto& expr : parser.getExprs()) {
+        if (!(*expr).completeExpr) {
+            const auto& token = (*(*expr).actualTokenSeq.begin());
+            ss << "Invalid expression on [" << token.row << ":" << token.col << "]";
+            throw std::runtime_error(ss.str());
+        }
     }
 }
 

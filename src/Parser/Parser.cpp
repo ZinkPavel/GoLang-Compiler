@@ -16,10 +16,6 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
 
         if (!lastExpr.completeExpr && !lastExpr.hasBraceSeq) {
             lastExpr.endingStatus = {true, true};
-            if (!isTestPass) { // exception
-                std::stringstream ss("Incorrect expression on <" + std::to_string(lastExpr.actualTokenSeq.back().row) + ":" + std::to_string(lastExpr.actualTokenSeq.back().col) + ">");
-                throw std::runtime_error(ss.str());
-            }
         }
 
         currentRow = newToken.row;
