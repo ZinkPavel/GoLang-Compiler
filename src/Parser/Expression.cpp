@@ -56,6 +56,11 @@ std::ostream& operator << (std::ostream& os, Expression& expr) {
     return os;
 }
 
+std::ostream& operator << (std::ostream& os, Status& status) {
+    os << "<" << (status.panicMode ? "panic" : "non-panic") << ":" << (status.waitingNewExpr ? "waiting" : "non-waiting") << ">";
+    return os;
+}
+
 /* Exprs */
 
 MathExpr::MathExpr () {
