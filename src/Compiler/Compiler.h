@@ -40,7 +40,7 @@ public:
     ~Compiler ();
 
     void readFile ();
-    void checkExprsSeq (const Parser& parser);
+    void checkParserOutput (const Parser& parser);
     
     void dumpTokens ();
     void dumpAst ();

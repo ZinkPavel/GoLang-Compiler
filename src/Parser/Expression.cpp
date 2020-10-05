@@ -181,6 +181,22 @@ AssignExpr::AssignExpr () {
     };
 }
 
+VarDefinitionExpr::VarDefinitionExpr () {
+    expectedSeq = {
+        {"var"},
+        {"identifier"},
+        dataTypes
+    };
+
+    regexMask = {
+        "var\\s?"
+        "identifier\\s?"
+        "(int|double|float|bool|string)\\s?"
+        "(EQUAL)?\\s?"
+        "(string_litteral|numeric_const|bin_const|octal_const|hex_const)?\\s?"
+    };
+}
+
 bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
     size_t counter;
 
@@ -230,5 +246,10 @@ bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq) {
 
 bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
     AssignExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq) {
+    VarDefinitionExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }

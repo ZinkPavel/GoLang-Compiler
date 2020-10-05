@@ -89,6 +89,11 @@ public:
     AssignExpr ();
 };
 
+class VarDefinitionExpr: public Expression {
+public:
+    VarDefinitionExpr ();
+};
+
 /* Checks */
 
 bool isMathExpr (std::vector<Token>& undefineTokenSeq);
@@ -99,3 +104,4 @@ bool isIfExpr (std::vector<Token>& undefineTokenSeq);
 bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq);
 bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq);
 bool isAssignExpr (std::vector<Token>& undefineTokenSeq);
+bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq);

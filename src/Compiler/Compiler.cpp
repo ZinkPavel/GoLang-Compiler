@@ -148,11 +148,11 @@ void Compiler::readFile () {
             }
         }
     } 
-    checkExprsSeq(parser);
+    if (parserOn && !isTestPass) checkParserOutput(parser);
     if (parserOn) tree.build(getParserExprs());
 }
 
-void Compiler::checkExprsSeq (const Parser& parser) {
+void Compiler::checkParserOutput (const Parser& parser) {
     std::stringstream ss;
     
     // brace seqs
