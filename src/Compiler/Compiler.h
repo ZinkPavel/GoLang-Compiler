@@ -40,6 +40,8 @@ public:
     ~Compiler ();
 
     void readFile ();
+    void checkExprsSeq (const Parser& parser);
+    
     void dumpTokens ();
     void dumpAst ();
     void dumpSymbolTable ();

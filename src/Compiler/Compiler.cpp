@@ -147,8 +147,20 @@ void Compiler::readFile () {
                 if (parserOn) parser.update(tokenList, isTestPass);
             }
         }
-    }
+    } 
+    checkExprsSeq(parser);
     if (parserOn) tree.build(getParserExprs());
+}
+
+void Compiler::checkExprsSeq (const Parser& parser) {
+    std::stringstream ss;
+    
+    auto& braceStack = parser.getBraceStack();
+    if (braceStack.size() > 0) {
+        const auto& token = (*(*braceStack.top()).actualTokenSeq.begin());
+        ss << "Invalid brace sequence on <" << token.row << ":" << token.col << ">";
+        throw std::runtime_error(ss.str());
+    }
 }
 
 void Compiler::dumpTokens () {

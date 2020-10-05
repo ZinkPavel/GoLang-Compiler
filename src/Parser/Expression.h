@@ -45,6 +45,7 @@ public:
 /* Operators */
 
 std::ostream& operator << (std::ostream& os, Expression& expr);
+std::ostream& operator << (std::ostream& os, Status& status);
 
 /* Exprs */
 
