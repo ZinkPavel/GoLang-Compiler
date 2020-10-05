@@ -20,7 +20,6 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
                 std::stringstream ss("Incorrect expression on <" + std::to_string(lastExpr.actualTokenSeq.back().row) + ":" + std::to_string(lastExpr.actualTokenSeq.back().col) + ">");
                 throw std::runtime_error(ss.str());
             }
-            // lastExpr.endingStatus = status; // ?
         }
 
         currentRow = newToken.row;
@@ -59,8 +58,6 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
         if (isFuncDeclareExpr(undefineTokenSeq)) { EXPR_HIT(FuncDeclareExpr); }
         if (isAssignExpr(undefineTokenSeq)) { EXPR_HIT(AssignExpr); }
 
-        // std::cout << "Counter entry = " << counterEntry << std::endl;
-
         if (counterEntry == 1) exprs.push_back(newExpression);
         else status.waitingNewExpr = true;
     }
@@ -93,4 +90,8 @@ const std::vector<std::shared_ptr<Expression>>& Parser::getExprs () const {
 
 const Status& Parser::getComplitionStatus () const {
     return status;
+}
+
+const std::stack<std::shared_ptr<Expression>>& Parser::getBraceStack () const {
+    return braceStack;
 }

@@ -27,4 +27,5 @@ public:
     void update (const std::vector<Token>& tokensFromLexer, bool isTestPass);
     const std::vector<std::shared_ptr<Expression>>& getExprs () const;
     const Status& getComplitionStatus () const;
+    const std::stack<std::shared_ptr<Expression>>& getBraceStack () const;
 };
