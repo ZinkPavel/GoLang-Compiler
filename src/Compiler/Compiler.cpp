@@ -150,7 +150,7 @@ void Compiler::readFile () {
     } 
     if (parserOn && !isTestPass) checkParserOutput(parser);
     if (parserOn) tree.build(getParserExprs());
-    // if (parserOn && !isTestPass) semanticsAnalysis(getParserExprs());
+    if (parserOn && !isTestPass) semanticsAnalysis(getParserExprs());
 }
 
 void Compiler::checkParserOutput (const Parser& parser) {
