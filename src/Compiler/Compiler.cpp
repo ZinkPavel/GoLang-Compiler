@@ -144,6 +144,7 @@ void Compiler::readFile () {
                     }
                 }
                 foundSequence.clear();
+                tokenList.back().assignDataType();
                 if (parserOn) parser.update(tokenList, isTestPass);
             }
         }

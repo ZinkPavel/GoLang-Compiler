@@ -5,6 +5,12 @@ Token::Token () {}
 Token::Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow, const size_t& newCol)
     : row(newRow), col(newCol), type(newType), litteral(newLitteral) {}
 
+void Token::assignDataType () {
+    if (type == "numeric_const") dataType = "int";
+    else if (type == "string_litteral") dataType = "string";
+    else if (type == "false" || type == "true") dataType = "bool";
+}
+
 std::ostream& operator << (std::ostream& os, const Token& token) {
     return os << '<' << token.row << ':' << token.col << "> " << token.type << " \'" << token.litteral << '\'';
 }
