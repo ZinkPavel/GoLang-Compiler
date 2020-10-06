@@ -1,8 +1,9 @@
-All: clear bin/app
+All: bin/app
 
 FLAGS = g++ -Wall -Werror -std=c++17
-OBJ = build/main.o $(TOOLS) $(TESTS) $(COMPILER) $(PARSER) $(TREE)
+OBJ = build/main.o $(TOOLS) $(TESTS) $(COMPILER) $(PARSER) $(TREE) $(SEMANTICS)
 
+SEMANTICS = build/Semantics/Semantics.o
 TREE = build/Parser/AST-Tree/ASTree.o build/Parser/AST-Tree/Node.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
 COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
@@ -18,6 +19,11 @@ bin/app: $(OBJ)
 
 build/main.o: src/main.cpp
 	$(FLAGS) -c src/main.cpp -o build/main.o
+
+# SEMANTICS
+
+build/Semantics/Semantics.o: src/Semantics/Semantics.cpp
+	$(FLAGS) -c src/Semantics/Semantics.cpp -o build/Semantics/Semantics.o
 
 # TREE
 
@@ -65,4 +71,4 @@ build/Tools/OperatorsRedefinition.o: src/Tools/OperatorsRedefinition.cpp
 # OTHER
 
 clear:
-	rm -rf build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt
+	rm -rf build/Semantics/*.o build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt
