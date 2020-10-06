@@ -155,9 +155,9 @@ FuncDeclarationExpr::FuncDeclarationExpr () {
         "identifier\\s?"
         "L_PAREN\\s?"
         "(identifier\\s?(COMMA\\s?identifier)?\\s"
-        "(L_SQ_BRACE\\s?R_SQ_BRACE)?\\s?(int|float|double|string|bool))?\\s?"
+        "(L_SQ_BRACE\\s?R_SQ_BRACE)?\\s?(int|string|bool))?\\s?"
         "R_PAREN\\s?"
-        "(int|float|double|string|bool)?\\s?"
+        "(int|string|bool)?\\s?"
         "L_BRACE";
 
     hasBraceSeq = true;
@@ -221,6 +221,19 @@ bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq)
     }  
 
     return counter == undefineTokenSeq.size();
+}
+
+std::string Expression::getStrTokensType (const char& delim) {
+    std::stringstream ss;
+    
+    bool first = true;
+    for (const auto& token : actualTokenSeq) {
+        if (!first) ss << delim;
+        ss << token.type;
+        first = false;
+    }
+
+    return ss.str();
 }
 
 /* Checks */

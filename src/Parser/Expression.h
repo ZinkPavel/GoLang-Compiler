@@ -9,7 +9,7 @@
 #include "../Compiler/Token.h"
 #include "../Tools/OperatorsRedefinition.h"
 
-const std::set<std::string> dataTypes = {"int", "double", "float", "bool", "string"};
+const std::set<std::string> dataTypes = {"int", "bool", "string"};
 const std::set<std::string> possibleSings = {"EXCLAMATION"};
 const std::set<std::string> vars = {"identifier", "numeric_const", "bin_cont", "octal_const", "hex_const"};
 const std::set<std::string> arithmeticSings = {"NOT_EQUAL", "DOUBLE_EQUAL", "OR", "AND", "PLUS", "MINUS", "STAR", "SLASH", "PROC", "LESS", "MORE"};
@@ -55,6 +55,7 @@ public:
     Status checkExpr ();
     bool checkByRegexMask ();
     bool exprIdentification (const std::vector<Token>& undefineTokenSeq);
+    std::string getStrTokensType (const char& delim);
 };
 
 /* Operators */
