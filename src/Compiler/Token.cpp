@@ -16,5 +16,9 @@ std::ostream& operator << (std::ostream& os, const Token& token) {
 }
 
 bool operator == (const Token& lhs, const Token& rhs) {
-    return tie(lhs.type, lhs.litteral) == tie(rhs.type, rhs.litteral);
+    return std::tie(lhs.type, lhs.litteral) == std::tie(rhs.type, rhs.litteral);
+}
+
+bool operator < (const Token& lhs, const Token& rhs) {
+    return std::tie(lhs.row, lhs.col) < std::tie(rhs.row, rhs.col);
 }

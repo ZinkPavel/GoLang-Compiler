@@ -56,3 +56,4 @@ public:
 
 std::ostream& operator << (std::ostream& os, const Token& token);
 bool operator == (const Token& lhs, const Token& rhs);
+bool operator < (const Token& lhs, const Token& rhs);
