@@ -79,19 +79,19 @@ public:
     WhileLoopExpr ();
 };
 
-class FuncDeclareExpr: public Expression {
+class FuncDeclarationExpr: public Expression {
 public:
-    FuncDeclareExpr ();
-};
-
-class AssignExpr: public Expression {
-public:
-    AssignExpr ();
+    FuncDeclarationExpr ();
 };
 
 class VarDefinitionExpr: public Expression {
 public:
     VarDefinitionExpr ();
+};
+
+class VarDeclarationExpr: public Expression {
+public:
+    VarDeclarationExpr ();
 };
 
 class FuncCallExpr: public Expression {

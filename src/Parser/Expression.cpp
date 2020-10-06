@@ -142,7 +142,7 @@ WhileLoopExpr::WhileLoopExpr () {
     hasBraceSeq = true;
 }
 
-FuncDeclareExpr::FuncDeclareExpr () {
+FuncDeclarationExpr::FuncDeclarationExpr () {
     expectedSeq = {
         {"func"},
         {"identifier"},
@@ -163,7 +163,7 @@ FuncDeclareExpr::FuncDeclareExpr () {
     hasBraceSeq = true;
 }
 
-AssignExpr::AssignExpr () {
+VarDefinitionExpr::VarDefinitionExpr () {
     expectedSeq = {
         {"identifier"},
         assignSings,
@@ -181,7 +181,7 @@ AssignExpr::AssignExpr () {
     };
 }
 
-VarDefinitionExpr::VarDefinitionExpr () {
+VarDeclarationExpr::VarDeclarationExpr () {
     expectedSeq = {
         {"var"},
         {"identifier"},
@@ -256,17 +256,17 @@ bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq) {
 }
 
 bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq) {
-    FuncDeclareExpr instance;
+    FuncDeclarationExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
-    AssignExpr instance;
+    VarDefinitionExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq) {
-    VarDefinitionExpr instance;
+    VarDeclarationExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
 

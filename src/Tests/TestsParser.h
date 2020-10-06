@@ -20,9 +20,9 @@ void ImportExprTest ();
 void PackageExprTest ();
 void IfExprTest ();
 void WhileLoopExprTest ();
-void FuncDeclareExprTest ();
-void AssignExprTest ();
-void VarDefinitionTest ();
+void FuncDeclarationExprTest ();
+void VarDefinitionExprTest ();
+void VarDeclarationTest ();
 void FuncCallTest ();
 
 void ProgramTest();

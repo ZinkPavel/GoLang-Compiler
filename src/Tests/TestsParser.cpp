@@ -10,9 +10,9 @@ void TestsParser () {
     RUN_TEST(tr, PackageExprTest);
     RUN_TEST(tr, IfExprTest);
     RUN_TEST(tr, WhileLoopExprTest);
-    RUN_TEST(tr, FuncDeclareExprTest);
-    RUN_TEST(tr, AssignExprTest);
-    RUN_TEST(tr, VarDefinitionTest);
+    RUN_TEST(tr, FuncDeclarationExprTest);
+    RUN_TEST(tr, VarDefinitionExprTest);
+    RUN_TEST(tr, VarDeclarationTest);
     RUN_TEST(tr, FuncCallTest);
 
     RUN_TEST(tr, ProgramTest);
@@ -110,8 +110,8 @@ void WhileLoopExprTest () {
     }
 }
 
-void FuncDeclareExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt", true, true);
+void FuncDeclarationExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclarationExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 5u);
 
@@ -126,16 +126,16 @@ void FuncDeclareExprTest () {
     }
 }
 
-void AssignExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/AssignExprs.txt", true, true);
+void VarDefinitionExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/VarDefinitionExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 1u);
 
     ASSERT_STATUS(0, false, true);
 }
 
-void VarDefinitionTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/VarDefinitionExprs.txt", true, true);
+void VarDeclarationTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/VarDeclarationExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 4u);
 

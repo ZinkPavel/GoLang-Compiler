@@ -12,6 +12,7 @@
 #include "Token.h"
 #include "../Parser/Parser.h"
 #include "../Parser/AST-Tree/ASTree.h"
+#include "../Semantics/Semantics.h"
 
 #define NEW_CH_TOKEN(type, ch) \
     tokenList.push_back({#type, {ch}, currentRow, currentCol}); \

@@ -1,0 +1,4 @@
+var x string
+var x int
+var x string = "Hello world"
+var x int = 54
