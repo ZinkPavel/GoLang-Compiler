@@ -9,6 +9,7 @@
 
 #define EXPR_HIT(exprType) \
     newExpression = std::make_shared<exprType>(); \
+    type = types.find(#exprType)->second; \
     counterEntry++;
 
 class Parser {

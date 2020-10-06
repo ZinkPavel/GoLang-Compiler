@@ -52,7 +52,7 @@ bool Expression::checkByRegexMask () {
 /* Operators */
 
 std::ostream& operator << (std::ostream& os, Expression& expr) {
-    os << Join(expr.actualTokenSeq, '\n');
+    os << expr.type << " " << Join(expr.actualTokenSeq, '\n');
     return os;
 }
 
@@ -260,12 +260,12 @@ bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq) {
     return instance.exprIdentification(undefineTokenSeq);
 }
 
-bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
+bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq) {
     VarDefinitionExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
 
-bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq) {
+bool isVarDeclarationExpr (std::vector<Token>& undefineTokenSeq) {
     VarDeclarationExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }

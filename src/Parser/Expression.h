@@ -2,6 +2,7 @@
 
 #include <set>
 #include <vector>
+#include <map>
 #include <regex>
 #include <string>
 
@@ -13,6 +14,19 @@ const std::set<std::string> possibleSings = {"EXCLAMATION"};
 const std::set<std::string> vars = {"identifier", "numeric_const", "bin_cont", "octal_const", "hex_const"};
 const std::set<std::string> arithmeticSings = {"NOT_EQUAL", "DOUBLE_EQUAL", "OR", "AND", "PLUS", "MINUS", "STAR", "SLASH", "PROC", "LESS", "MORE"};
 const std::set<std::string> assignSings = {"ASSIGN"};
+
+const std::map<std::string, size_t> types = {
+    {"MathExpr",        1},
+    {"ReturnExpr",      2},
+    {"ImportExpr",      3},
+    {"PackageExpr",     4},
+    {"IfExpr",          5},
+    {"WhileLoopExpr",       6},
+    {"FuncDeclarationExpr",    7},
+    {"VarDefinitionExpr",      8},
+    {"VarDeclarationExpr",     9},
+    {"FuncCallExpr",    10}
+};
 
 struct Status {
 public:
@@ -34,6 +48,7 @@ public:
     bool completeExpr = false;
     Status endingStatus; // exclusively for tests
     std::vector<Token> actualTokenSeq;
+    size_t type;
 
     Expression ();
 
@@ -108,6 +123,6 @@ bool isPackageExpr (std::vector<Token>& undefineTokenSeq);
 bool isIfExpr (std::vector<Token>& undefineTokenSeq);
 bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq);
 bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq);
-bool isAssignExpr (std::vector<Token>& undefineTokenSeq);
 bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq);
+bool isVarDeclarationExpr (std::vector<Token>& undefineTokenSeq);
 bool isFuncCallExpr (std::vector<Token>& undefineTokenSeq);
