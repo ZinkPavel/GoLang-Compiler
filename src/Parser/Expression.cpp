@@ -167,17 +167,17 @@ VarDefinitionExpr::VarDefinitionExpr () {
     expectedSeq = {
         {"identifier"},
         assignSings,
-        vars,
+        {"identifier", "numeric_const", "string_litteral", "true", "false"},
         arithmeticSings,
-        vars,
+        {"identifier", "numeric_const", "string_litteral", "true", "false"},
     };
 
     regexMask = {
         "identifier\\s?"
         "ASSIGN\\s?"
-        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+        "(identifier|numeric_const|string_litteral|true|false)\\s?"
         "(NOT_EQUAL|DOUBLE_EQUAL|OR|AND|PLUS|MINUS|STAR|SLASH|PROC|LESS|MORE)\\s?"
-        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+        "(identifier|numeric_const|string_litteral|true|false)\\s?"
     };
 }
 
@@ -185,13 +185,17 @@ VarDeclarationExpr::VarDeclarationExpr () {
     expectedSeq = {
         {"var"},
         {"identifier"},
-        dataTypes
+        dataTypes,
+        {"EQUAL"},
+        {"identifier", "numeric_const", "string_litteral", "true", "false"}
     };
 
     regexMask = {
         "var\\s?"
         "identifier\\s?"
         "(int|double|float|bool|string)\\s?"
+        "EQUAL\\s?"
+        "(identifier|numeric_const|string_litteral|true|false)\\s?"
     };
 }
 
