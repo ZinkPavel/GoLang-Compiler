@@ -1,0 +1,3 @@
+var x int = 3
+var y string = "text"
+var z bool = false

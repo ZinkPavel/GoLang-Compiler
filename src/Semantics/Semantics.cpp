@@ -1,7 +1,19 @@
 #include "Semantics.h"
 
-Var::Var (const Token& token) : 
-    row(token.row), col(token.col), dataType(token.dataType), litteral(token.litteral) {}
+Var::Var (Expression& expr) {
+    if (expr.type == 9) {
+        row = expr.actualTokenSeq[1].row;
+        col = expr.actualTokenSeq[1].col;
+        litteral = expr.actualTokenSeq[1].litteral;
+        dataType = expr.actualTokenSeq[2].litteral;
+        value = expr.actualTokenSeq[4].litteral;
+    } else throw std::runtime_error("Var contructor: wrong expression type");
+}
+
+std::ostream& operator << (std::ostream& os, Var& var) {
+    os << "<" << var.row << ":" << var.col << "> " << var.litteral << " " << var.dataType << " = " << var.value;
+    return os;
+}
 
 void semanticsAnalysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
     std::vector<std::shared_ptr<Expression>> mathExprs, returnExprs, importExprs, packageExprs, ifExprs, whileExprs, funcDeclareExprs, varDefinitionExprs, varDeclarationExprs, funcCallExprs;

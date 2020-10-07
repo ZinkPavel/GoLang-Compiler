@@ -5,10 +5,14 @@
 class Var {
 public:
     size_t row, col;
-    std::string dataType, litteral, value;
+    std::string litteral, dataType, value;
 
-    Var (const Token& token);
+    Var (Expression& expr);
 };
+
+/* Operaotors */
+
+std::ostream& operator << (std::ostream& os, Var& var);
 
 void semanticsAnalysis (const std::vector<std::shared_ptr<Expression>>& exprs);
 

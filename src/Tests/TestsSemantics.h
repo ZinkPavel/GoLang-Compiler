@@ -1,6 +1,8 @@
 #pragma once
 
-// #define INIT_TEST_ENVAIRONMENT(filePath)
+#define TEST_INIT(filePath) \
+    Compiler comp(filePath, true, true); \
+    const std::vector<std::shared_ptr<Expression>>& exprs = comp.getParserExprs()
 
 void TestsSemantics ();
 
