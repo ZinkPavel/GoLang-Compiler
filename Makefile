@@ -7,7 +7,7 @@ SEMANTICS = build/Semantics/Semantics.o
 TREE = build/Parser/AST-Tree/ASTree.o build/Parser/AST-Tree/Node.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
 COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
-TESTS = build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
+TESTS = build/Tests/TestsSemantics.o build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
 TOOLS = build/Tools/OperatorsRedefinition.o
 
 # APPLICATION
@@ -50,6 +50,9 @@ build/Compiler/Compiler.o: src/Compiler/Compiler.cpp
 	$(FLAGS) -c src/Compiler/Compiler.cpp -o build/Compiler/Compiler.o
 
 # TESTS
+
+build/Tests/TestsSemantics.o: src/Tests/TestsSemantics.cpp
+	$(FLAGS) -c src/Tests/TestsSemantics.cpp -o build/Tests/TestsSemantics.o
 
 build/Tests/TestsParser.o: src/Tests/TestsParser.cpp
 	$(FLAGS) -c src/Tests/TestsParser.cpp -o build/Tests/TestsParser.o
