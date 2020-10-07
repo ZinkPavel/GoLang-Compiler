@@ -14,7 +14,7 @@
 
 class Parser {
 private:
-    int currentRow = 1;
+    size_t currentRow = 1;
     size_t numOfReadTokens = 0;
 
     Status status;

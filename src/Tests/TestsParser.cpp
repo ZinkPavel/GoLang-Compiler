@@ -137,12 +137,13 @@ void VarDefinitionExprTest () {
 void VarDeclarationTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/VarDeclarationExprs.txt", true, true);
 
-    ASSERT_EQUAL(exprs.size(), 4u);
+    ASSERT_EQUAL(exprs.size(), 2u);
 
     ASSERT_STATUS(0, false, true);
     ASSERT_STATUS(1, false, true);
-    ASSERT_STATUS(2, false, true);
-    ASSERT_STATUS(3, false, true);
+
+    ASSERT_EQUAL(exprs[0]->actualTokenSeq.size(), 3u);
+    ASSERT_EQUAL(exprs[1]->actualTokenSeq.size(), 3u);
 
     for (const auto& expr : comp.getParserExprs()) {
         ASSERT_EQUAL((*expr).completeExpr, true);

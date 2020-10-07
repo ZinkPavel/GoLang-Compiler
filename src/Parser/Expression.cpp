@@ -192,8 +192,6 @@ VarDeclarationExpr::VarDeclarationExpr () {
         "var\\s?"
         "identifier\\s?"
         "(int|double|float|bool|string)\\s?"
-        "(EQUAL)?\\s?"
-        "(string_litteral|numeric_const|bin_const|octal_const|hex_const)?\\s?"
     };
 }
 

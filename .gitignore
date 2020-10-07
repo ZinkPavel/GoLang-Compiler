@@ -6,6 +6,7 @@
 /build/Compiler/*.o
 /build/Parser/*.o
 /build/Parser/AST-Tree/*.o
+/build/Semantics/*.o
 
 /.vscode
 /.idea
