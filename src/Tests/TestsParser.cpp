@@ -4,20 +4,20 @@
 
 void TestsParser () {
     TestRunner tr;
-    // RUN_TEST(tr, MathExprTest);
-    // RUN_TEST(tr, ReturnExprTest);
-    // RUN_TEST(tr, ImportExprTest);
-    // RUN_TEST(tr, PackageExprTest);
-    // RUN_TEST(tr, IfExprTest);
-    // RUN_TEST(tr, WhileLoopExprTest);
-    // RUN_TEST(tr, FuncDeclarationExprTest);
+    RUN_TEST(tr, MathExprTest);
+    RUN_TEST(tr, ReturnExprTest);
+    RUN_TEST(tr, ImportExprTest);
+    RUN_TEST(tr, PackageExprTest);
+    RUN_TEST(tr, IfExprTest);
+    RUN_TEST(tr, WhileLoopExprTest);
+    RUN_TEST(tr, FuncDeclarationExprTest);
     RUN_TEST(tr, VarDefinitionExprTest);
     RUN_TEST(tr, VarDeclarationTest);
-    // RUN_TEST(tr, FuncCallTest);
+    RUN_TEST(tr, FuncCallTest);
 
-    // RUN_TEST(tr, ProgramTest);
+    RUN_TEST(tr, ProgramTest);
 
-    // RUN_TEST(tr, SerializeTokenTest);
+    RUN_TEST(tr, SerializeTokenTest);
 }
 
 void MathExprTest () {

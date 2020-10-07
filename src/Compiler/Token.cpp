@@ -12,7 +12,7 @@ void Token::assignDataType () {
 }
 
 std::ostream& operator << (std::ostream& os, const Token& token) {
-    return os << '<' << token.row << ':' << token.col << "> " << token.type << " " << token.dataType << " \'" << token.litteral << "\'";
+    return os << '<' << token.row << ':' << token.col << "> " << token.type << " " << token.dataType << " \'" << token.litteral << "\' " << token.value;
 }
 
 bool operator == (const Token& lhs, const Token& rhs) {

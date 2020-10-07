@@ -24,13 +24,14 @@ void semanticsAnalysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
     for (auto& expr : funcDeclareExprs) blocksByVars.push_back({expr, {}});
 
     semCheckFuncDeclare(blocksByVars);
-    semCheckVarDefinition(varDeclarationExprs, blocksByVars);
+    semCheckVarDeclaration(varDeclarationExprs, blocksByVars);
+    semCheckVarDefinition(varDefinitionExprs, blocksByVars);
 
-    /* std::stringstream ss;
+    std::stringstream ss;
     for (auto& [block, vars] : blocksByVars) {
         ss << "BLOCK\n" << Join(block->actualTokenSeq, ' ') << '\n' << Join(vars, '\n') << "\n\n";
     }
-    std::cout << ss.str() << std::endl; */
+    std::cout << ss.str() << std::endl;
 }
 
 void semCheckFuncDeclare (std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
@@ -58,7 +59,7 @@ void semCheckFuncDeclare (std::vector<std::pair<std::shared_ptr<Expression>, std
     semCheckMultipleDeclaration(blocksByVars);
 }
 
-void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
+void semCheckVarDeclaration (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
     for (auto& varDecl : varDeclarationExprs) {
         bool blockExpect = false;
         size_t placeDeclCurVar = varDecl->actualTokenSeq[0].row;
@@ -66,15 +67,44 @@ void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDeclarat
         for (auto& [block, vars] : blocksByVars) {
             if (block->actualTokenSeq.front().row < placeDeclCurVar && block->actualTokenSeq.back().row > placeDeclCurVar) {
                 Token& newVar = varDecl->actualTokenSeq[1];
-                newVar.dataType = varDecl->actualTokenSeq.back().type;
+                newVar.dataType = varDecl->actualTokenSeq.back().dataType;
+                newVar.value = varDecl->actualTokenSeq.back().litteral;
                 vars.push_back(newVar);
                 blockExpect = true;
                 break;
             }
         }
-        if (!blockExpect) throw std::runtime_error("VAR Definition error");
+        if (!blockExpect) throw std::runtime_error("VAR Declaration error");
     }
     semCheckMultipleDeclaration(blocksByVars);
+}
+
+void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDefinitionExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
+    for (auto& varDef : varDefinitionExprs) {        
+        bool blockExpect = false;
+        size_t placeDefCurVar = varDef->actualTokenSeq[0].row;
+        auto& var = varDef->actualTokenSeq[0];
+        std::vector values = {varDef->actualTokenSeq[2], varDef->actualTokenSeq[4]};
+
+        for (auto& [block, vars] : blocksByVars) {
+            if (block->actualTokenSeq.front().row < placeDefCurVar && block->actualTokenSeq.back().row > placeDefCurVar) {
+                
+                auto it = std::find_if(vars.begin(), vars.end(), [var](Token& token) -> bool {
+                    return token.litteral == var.litteral;
+                });
+
+                if (it != vars.end()) {
+                    
+                    if (values[0].dataType == it->dataType && values[1].dataType == it->dataType) {
+                        std::cout << "All so good" << std::endl;
+                        blockExpect = true;
+                    } else throw std::runtime_error("type mismatch");
+                    break;
+                }
+            }
+        }
+        if (!blockExpect) throw std::runtime_error("Var do not decalre");
+    }
 }
 
 void semCheckMultipleDeclaration (std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
