@@ -25,6 +25,12 @@ void semanticsAnalysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
 
     semCheckFuncDeclare(blocksByVars);
     semCheckVarDefinition(varDeclarationExprs, blocksByVars);
+
+    /* std::stringstream ss;
+    for (auto& [block, vars] : blocksByVars) {
+        ss << "BLOCK\n" << Join(block->actualTokenSeq, ' ') << '\n' << Join(vars, '\n') << "\n\n";
+    }
+    std::cout << ss.str() << std::endl; */
 }
 
 void semCheckFuncDeclare (std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
@@ -49,6 +55,7 @@ void semCheckFuncDeclare (std::vector<std::pair<std::shared_ptr<Expression>, std
             }
         }
     }
+    semCheckMultipleDeclaration(blocksByVars);
 }
 
 void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
@@ -65,6 +72,18 @@ void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDeclarat
                 break;
             }
         }
-        if (!blockExpect) throw std::runtime_error("VAR ERROR");
+        if (!blockExpect) throw std::runtime_error("VAR Definition error");
     }
+    semCheckMultipleDeclaration(blocksByVars);
+}
+
+void semCheckMultipleDeclaration (std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
+    for (auto& blockByVar : blocksByVars) {
+        for (auto& var : blockByVar.second) {
+            size_t result = std::count_if(blockByVar.second.begin(), blockByVar.second.end(), [var](Token& token) -> bool {
+                return token.litteral == var.litteral;
+            });
+            if (result > 1) throw std::runtime_error("Multiple declaration error");
+        }
+    }  
 }
