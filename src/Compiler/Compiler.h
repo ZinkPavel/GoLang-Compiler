@@ -36,6 +36,8 @@ private:
     bool isTestPass = false;
 
 public:
+    Semantics semantics;
+
     Compiler (std::string filePath);
     Compiler (std::string filePath, bool _parserOn, bool _isTestPass);
     ~Compiler ();
@@ -50,6 +52,7 @@ public:
     std::vector<Token>& getTokenList ();
     const std::vector<std::shared_ptr<Expression>>& getParserExprs () const;
     const Status& getParserComplitionStatus() const;
+    std::vector<Block>& getSemanticsBlocks ();
 };
 
 /* Checks */

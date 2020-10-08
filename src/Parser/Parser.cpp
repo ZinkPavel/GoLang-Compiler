@@ -1,8 +1,5 @@
 #include "Parser.h"
 
-#include <string>
-#include <exception>
-
 Parser::Parser () {}
 
 void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPass) {

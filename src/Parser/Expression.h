@@ -5,6 +5,7 @@
 #include <map>
 #include <regex>
 #include <string>
+#include <exception>
 
 #include "../Compiler/Token.h"
 #include "../Tools/OperatorsRedefinition.h"
@@ -14,6 +15,19 @@ const std::set<std::string> possibleSings = {"EXCLAMATION"};
 const std::set<std::string> vars = {"identifier", "numeric_const", "bin_cont", "octal_const", "hex_const"};
 const std::set<std::string> arithmeticSings = {"NOT_EQUAL", "DOUBLE_EQUAL", "OR", "AND", "PLUS", "MINUS", "STAR", "SLASH", "PROC", "LESS", "MORE"};
 const std::set<std::string> assignSings = {"ASSIGN"};
+
+/* enum EXPR_TYPE {
+    MATH = 1,
+    RETURN = 2,
+    IMPORT = 3,
+    PACKAGE = 4,
+    IF = 5,
+    WHILE = 6,
+    FUNC_DECLARE = 7,
+    VAR_DEF = 8,
+    VAR_DEC = 9,
+    FUNC_CALL = 10
+}; */
 
 const std::map<std::string, size_t> types = {
     {"MathExpr",        1},

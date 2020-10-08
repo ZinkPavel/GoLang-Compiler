@@ -220,6 +220,10 @@ const Status& Compiler::getParserComplitionStatus() const {
     return parser.getComplitionStatus();
 }
 
+std::vector<Block>& Compiler::getSemanticsBlocks () {
+    return semantics.blocks;
+}
+
 /* Checks */
 
 inline bool isDQuotes (const char& ch) {

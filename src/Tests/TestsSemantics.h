@@ -1,5 +1,8 @@
 #pragma once
 
+#include "TestController.h"
+#include "../Semantics/Semantics.h"
+
 #define TEST_INIT(filePath) \
     Compiler comp(filePath, true, true); \
     const std::vector<std::shared_ptr<Expression>>& exprs = comp.getParserExprs()

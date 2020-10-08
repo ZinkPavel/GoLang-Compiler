@@ -1,39 +1,23 @@
 #pragma once
 
-#include "../Compiler/Compiler.h"
+#include "../Compiler/Token.h"
+#include "../Parser/Expression.h"
 
-class Var {
+#include "Var.h"
+#include "Block.h"
+
+class Semantics {
 public:
-    size_t row, col;
-    std::string litteral, dataType, value;
-
-    Var (size_t _row, size_t _col, std::string _literral, std::string _dataType, std::string _value);
-    Var (Token& token);
-    Var (Expression& expr);
+    std::vector<Block> blocks;
+    
+    Semantics ();
+    void addVarFromExpr(Expression& expr);
 };
-
-class Block {
-public:
-    bool hasReturn = false,
-        hasArgs = false;
-
-    std::string name, argsType, returnType;
-    std::vector<Var> vars;
-
-    Block (Expression& expr);
-
-    void multipleDeclarationCheck ();
-};
-
-/* Operaotors */
-
-std::ostream& operator << (std::ostream& os, Var& var);
-bool operator == (Var& lhs, Var& rhs);
 
 void semanticsAnalysis (const std::vector<std::shared_ptr<Expression>>& exprs);
 
-void semCheckVarDeclaration (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
-void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDefinitionExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
-void semCheckReturn (std::vector<std::shared_ptr<Expression>> returnExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
+// void semCheckVarDeclaration (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
+// void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDefinitionExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
+// void semCheckReturn (std::vector<std::shared_ptr<Expression>> returnExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
 
-void semCheckMultipleDeclaration (std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
+// void semCheckMultipleDeclaration (std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars);
