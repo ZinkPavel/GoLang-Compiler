@@ -1,0 +1,3 @@
+var x string = "wewg"
+var y int = 3
+var z bool = false

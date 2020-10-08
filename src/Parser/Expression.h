@@ -2,17 +2,45 @@
 
 #include <set>
 #include <vector>
+#include <map>
 #include <regex>
 #include <string>
+#include <exception>
 
 #include "../Compiler/Token.h"
 #include "../Tools/OperatorsRedefinition.h"
 
-const std::set<std::string> dataTypes = {"int", "double", "float", "bool", "string"};
+const std::set<std::string> dataTypes = {"int", "bool", "string"};
 const std::set<std::string> possibleSings = {"EXCLAMATION"};
 const std::set<std::string> vars = {"identifier", "numeric_const", "bin_cont", "octal_const", "hex_const"};
 const std::set<std::string> arithmeticSings = {"NOT_EQUAL", "DOUBLE_EQUAL", "OR", "AND", "PLUS", "MINUS", "STAR", "SLASH", "PROC", "LESS", "MORE"};
 const std::set<std::string> assignSings = {"ASSIGN"};
+
+/* enum EXPR_TYPE {
+    MATH = 1,
+    RETURN = 2,
+    IMPORT = 3,
+    PACKAGE = 4,
+    IF = 5,
+    WHILE = 6,
+    FUNC_DECLARE = 7,
+    VAR_DEF = 8,
+    VAR_DEC = 9,
+    FUNC_CALL = 10
+}; */
+
+const std::map<std::string, size_t> types = {
+    {"MathExpr",        1},
+    {"ReturnExpr",      2},
+    {"ImportExpr",      3},
+    {"PackageExpr",     4},
+    {"IfExpr",          5},
+    {"WhileLoopExpr",       6},
+    {"FuncDeclarationExpr",    7},
+    {"VarDefinitionExpr",      8},
+    {"VarDeclarationExpr",     9},
+    {"FuncCallExpr",    10}
+};
 
 struct Status {
 public:
@@ -34,12 +62,14 @@ public:
     bool completeExpr = false;
     Status endingStatus; // exclusively for tests
     std::vector<Token> actualTokenSeq;
+    size_t type;
 
     Expression ();
 
     Status checkExpr ();
     bool checkByRegexMask ();
     bool exprIdentification (const std::vector<Token>& undefineTokenSeq);
+    std::string getStrTokensType (const char& delim);
 };
 
 /* Operators */
@@ -79,19 +109,19 @@ public:
     WhileLoopExpr ();
 };
 
-class FuncDeclareExpr: public Expression {
+class FuncDeclarationExpr: public Expression {
 public:
-    FuncDeclareExpr ();
-};
-
-class AssignExpr: public Expression {
-public:
-    AssignExpr ();
+    FuncDeclarationExpr ();
 };
 
 class VarDefinitionExpr: public Expression {
 public:
     VarDefinitionExpr ();
+};
+
+class VarDeclarationExpr: public Expression {
+public:
+    VarDeclarationExpr ();
 };
 
 class FuncCallExpr: public Expression {
@@ -108,6 +138,6 @@ bool isPackageExpr (std::vector<Token>& undefineTokenSeq);
 bool isIfExpr (std::vector<Token>& undefineTokenSeq);
 bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq);
 bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq);
-bool isAssignExpr (std::vector<Token>& undefineTokenSeq);
 bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq);
+bool isVarDeclarationExpr (std::vector<Token>& undefineTokenSeq);
 bool isFuncCallExpr (std::vector<Token>& undefineTokenSeq);

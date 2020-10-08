@@ -12,6 +12,7 @@
 #include "Token.h"
 #include "../Parser/Parser.h"
 #include "../Parser/AST-Tree/ASTree.h"
+#include "../Semantics/Semantics.h"
 
 #define NEW_CH_TOKEN(type, ch) \
     tokenList.push_back({#type, {ch}, currentRow, currentCol}); \
@@ -30,6 +31,7 @@ private:
     std::vector<Token> tokenList;
     Parser parser;
     ASTree tree;
+    Semantics semantics;
 
     bool parserOn = true;
     bool isTestPass = false;
@@ -49,6 +51,7 @@ public:
     std::vector<Token>& getTokenList ();
     const std::vector<std::shared_ptr<Expression>>& getParserExprs () const;
     const Status& getParserComplitionStatus() const;
+    std::vector<Block>& getSemanticsBlocks ();
 };
 
 /* Checks */

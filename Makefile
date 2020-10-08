@@ -1,12 +1,13 @@
-All: clear bin/app
+All: bin/app
 
 FLAGS = g++ -Wall -Werror -std=c++17
-OBJ = build/main.o $(TOOLS) $(TESTS) $(COMPILER) $(PARSER) $(TREE)
+OBJ = build/main.o $(SEMANTICS) $(TREE) $(PARSER) $(COMPILER) $(TESTS) $(TOOLS)
 
+SEMANTICS = build/Semantics/Block.o build/Semantics/Var.o build/Semantics/Semantics.o 
 TREE = build/Parser/AST-Tree/ASTree.o build/Parser/AST-Tree/Node.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
 COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
-TESTS = build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
+TESTS = build/Tests/TestsSemantics.o build/Tests/TestsParser.o build/Tests/TestsLexer.o build/Tests/TestController.o build/Tests/TestRunner.o
 TOOLS = build/Tools/OperatorsRedefinition.o
 
 # APPLICATION
@@ -18,6 +19,17 @@ bin/app: $(OBJ)
 
 build/main.o: src/main.cpp
 	$(FLAGS) -c src/main.cpp -o build/main.o
+
+# SEMANTICS
+
+build/Semantics/Semantics.o: src/Semantics/Semantics.cpp
+	$(FLAGS) -c src/Semantics/Semantics.cpp -o build/Semantics/Semantics.o
+
+build/Semantics/Var.o: src/Semantics/Var.cpp
+	$(FLAGS) -c src/Semantics/Var.cpp -o build/Semantics/Var.o
+
+build/Semantics/Block.o: src/Semantics/Block.cpp
+	$(FLAGS) -c src/Semantics/Block.cpp -o build/Semantics/Block.o
 
 # TREE
 
@@ -45,6 +57,9 @@ build/Compiler/Compiler.o: src/Compiler/Compiler.cpp
 
 # TESTS
 
+build/Tests/TestsSemantics.o: src/Tests/TestsSemantics.cpp
+	$(FLAGS) -c src/Tests/TestsSemantics.cpp -o build/Tests/TestsSemantics.o
+
 build/Tests/TestsParser.o: src/Tests/TestsParser.cpp
 	$(FLAGS) -c src/Tests/TestsParser.cpp -o build/Tests/TestsParser.o
 
@@ -65,4 +80,4 @@ build/Tools/OperatorsRedefinition.o: src/Tools/OperatorsRedefinition.cpp
 # OTHER
 
 clear:
-	rm -rf build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt
+	rm -rf build/Semantics/*.o build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt

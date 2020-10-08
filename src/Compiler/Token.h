@@ -37,20 +37,23 @@ enum CH {
 };
 
 const std::vector<std::string> keywords = {"int", "double", "var", "float", "return", "package",
-    "import", "func", "bool", "string", "for", "if", "else", "while", "do"};
+    "import", "func", "bool", "string", "for", "if", "else", "while", "do", "true", "false"};
 
 class Token {
 public:
-    int row, col;
-    std::string type, litteral;
+    size_t row, col;
+    std::string type, dataType, value, litteral;
 
     size_t nestingLevel = 0;
 
     Token ();
     Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow = 0, const size_t& newCol = 0);
+
+    void assignDataType ();
 };
 
 /* Operators */
 
 std::ostream& operator << (std::ostream& os, const Token& token);
 bool operator == (const Token& lhs, const Token& rhs);
+bool operator < (const Token& lhs, const Token& rhs);

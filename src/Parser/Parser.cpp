@@ -1,8 +1,5 @@
 #include "Parser.h"
 
-#include <string>
-#include <exception>
-
 Parser::Parser () {}
 
 void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPass) {
@@ -44,6 +41,7 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
 
         size_t counterEntry = 0;
         std::shared_ptr<Expression> newExpression;
+        size_t type;
 
         if (isMathExpr(undefineTokenSeq)) { EXPR_HIT(MathExpr); }
         if (isReturnExpr(undefineTokenSeq)) { EXPR_HIT(ReturnExpr); }
@@ -51,12 +49,15 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
         if (isPackageExpr(undefineTokenSeq)) { EXPR_HIT(PackageExpr); }
         if (isIfExpr(undefineTokenSeq)) { EXPR_HIT(IfExpr); }
         if (isWhileLoopExpr(undefineTokenSeq)) { EXPR_HIT(WhileLoopExpr); }
-        if (isFuncDeclareExpr(undefineTokenSeq)) { EXPR_HIT(FuncDeclareExpr); }
-        if (isAssignExpr(undefineTokenSeq)) { EXPR_HIT(AssignExpr); }
-        if (isVarDefinitionExpr(undefineTokenSeq)) { EXPR_HIT(VarDefinitionExpr); } 
+        if (isFuncDeclareExpr(undefineTokenSeq)) { EXPR_HIT(FuncDeclarationExpr); }
+        if (isVarDefinitionExpr(undefineTokenSeq)) { EXPR_HIT(VarDefinitionExpr); }
+        if (isVarDeclarationExpr(undefineTokenSeq)) { EXPR_HIT(VarDeclarationExpr); } 
         if (isFuncCallExpr(undefineTokenSeq)) { EXPR_HIT(FuncCallExpr); }
 
-        if (counterEntry == 1) exprs.push_back(newExpression);
+        if (counterEntry == 1) {
+            newExpression->type = type;
+            exprs.push_back(newExpression);
+        }
         else status.waitingNewExpr = true;
     }
 

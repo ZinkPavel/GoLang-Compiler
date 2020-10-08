@@ -144,12 +144,16 @@ void Compiler::readFile () {
                     }
                 }
                 foundSequence.clear();
+                tokenList.back().assignDataType();
                 if (parserOn) parser.update(tokenList, isTestPass);
             }
         }
     } 
     if (parserOn && !isTestPass) checkParserOutput(parser);
     if (parserOn) tree.build(getParserExprs());
+    if (parserOn && !isTestPass) semantics.analysis(parser.getExprs());
+
+    // std::cout << semantics << std::endl; // test
 }
 
 void Compiler::checkParserOutput (const Parser& parser) {
@@ -216,6 +220,10 @@ const std::vector<std::shared_ptr<Expression>>& Compiler::getParserExprs () cons
 
 const Status& Compiler::getParserComplitionStatus() const {
     return parser.getComplitionStatus();
+}
+
+std::vector<Block>& Compiler::getSemanticsBlocks () {
+    return semantics.blocks;
 }
 
 /* Checks */

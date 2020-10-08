@@ -10,9 +10,9 @@ void TestsParser () {
     RUN_TEST(tr, PackageExprTest);
     RUN_TEST(tr, IfExprTest);
     RUN_TEST(tr, WhileLoopExprTest);
-    RUN_TEST(tr, FuncDeclareExprTest);
-    RUN_TEST(tr, AssignExprTest);
-    RUN_TEST(tr, VarDefinitionTest);
+    RUN_TEST(tr, FuncDeclarationExprTest);
+    RUN_TEST(tr, VarDefinitionExprTest);
+    RUN_TEST(tr, VarDeclarationTest);
     RUN_TEST(tr, FuncCallTest);
 
     RUN_TEST(tr, ProgramTest);
@@ -110,8 +110,8 @@ void WhileLoopExprTest () {
     }
 }
 
-void FuncDeclareExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclareExprs.txt", true, true);
+void FuncDeclarationExprTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/FuncDeclarationExprs.txt", true, true);
 
     ASSERT_EQUAL(exprs.size(), 5u);
 
@@ -126,23 +126,30 @@ void FuncDeclareExprTest () {
     }
 }
 
-void AssignExprTest () {
-    INIT_TEST_ENVAIRONMENT("tests/parser/AssignExprs.txt", true, true);
-
-    ASSERT_EQUAL(exprs.size(), 1u);
-
-    ASSERT_STATUS(0, false, true);
-}
-
-void VarDefinitionTest () {
+void VarDefinitionExprTest () {
     INIT_TEST_ENVAIRONMENT("tests/parser/VarDefinitionExprs.txt", true, true);
 
-    ASSERT_EQUAL(exprs.size(), 4u);
+    ASSERT_EQUAL(exprs.size(), 2u);
+
+    ASSERT_STATUS(0, false, true);
+    ASSERT_STATUS(1, false, false);
+
+    ASSERT_EQUAL(exprs[0]->actualTokenSeq.size(), 5u);
+    ASSERT_EQUAL(exprs[1]->actualTokenSeq.size(), 3u);
+}
+
+void VarDeclarationTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/VarDeclarationExprs.txt", true, true);
+
+    ASSERT_EQUAL(exprs.size(), 3u);
 
     ASSERT_STATUS(0, false, true);
     ASSERT_STATUS(1, false, true);
     ASSERT_STATUS(2, false, true);
-    ASSERT_STATUS(3, false, true);
+
+    ASSERT_EQUAL(exprs[0]->actualTokenSeq.size(), 5u);
+    ASSERT_EQUAL(exprs[1]->actualTokenSeq.size(), 5u);
+    ASSERT_EQUAL(exprs[2]->actualTokenSeq.size(), 5u);
 
     for (const auto& expr : comp.getParserExprs()) {
         ASSERT_EQUAL((*expr).completeExpr, true);
@@ -167,7 +174,7 @@ void FuncCallTest () {
 void ProgramTest () {
     INIT_TEST_ENVAIRONMENT("tests/prog.go", true, true);
 
-    ASSERT_EQUAL(exprs.size(), 9u);
+    ASSERT_EQUAL(exprs.size(), 11u);
 
     for (size_t i = 0; i < exprs.size(); i++) {
         ASSERT_STATUS(i, false, true);
@@ -197,7 +204,7 @@ void SerializeTokenTest () {
         tokenSeqStream.clear();
     }
 
-    ASSERT_EQUAL(exprs.size(), 9u);
+    ASSERT_EQUAL(exprs.size(), 11u);
 
     ASSERT_EQUAL(tokenSeqs[0], "package identifier");
 }

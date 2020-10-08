@@ -52,7 +52,7 @@ bool Expression::checkByRegexMask () {
 /* Operators */
 
 std::ostream& operator << (std::ostream& os, Expression& expr) {
-    os << Join(expr.actualTokenSeq, '\n');
+    os << expr.type << " " << Join(expr.actualTokenSeq, '\n');
     return os;
 }
 
@@ -142,7 +142,7 @@ WhileLoopExpr::WhileLoopExpr () {
     hasBraceSeq = true;
 }
 
-FuncDeclareExpr::FuncDeclareExpr () {
+FuncDeclarationExpr::FuncDeclarationExpr () {
     expectedSeq = {
         {"func"},
         {"identifier"},
@@ -155,45 +155,47 @@ FuncDeclareExpr::FuncDeclareExpr () {
         "identifier\\s?"
         "L_PAREN\\s?"
         "(identifier\\s?(COMMA\\s?identifier)?\\s"
-        "(L_SQ_BRACE\\s?R_SQ_BRACE)?\\s?(int|float|double|string|bool))?\\s?"
+        "(L_SQ_BRACE\\s?R_SQ_BRACE)?\\s?(int|string|bool))?\\s?"
         "R_PAREN\\s?"
-        "(int|float|double|string|bool)?\\s?"
+        "(int|string|bool)?\\s?"
         "L_BRACE";
 
     hasBraceSeq = true;
 }
 
-AssignExpr::AssignExpr () {
+VarDefinitionExpr::VarDefinitionExpr () {
     expectedSeq = {
         {"identifier"},
         assignSings,
-        vars,
+        {"identifier", "numeric_const", "string_litteral", "true", "false"},
         arithmeticSings,
-        vars,
+        {"identifier", "numeric_const", "string_litteral", "true", "false"},
     };
 
     regexMask = {
         "identifier\\s?"
         "ASSIGN\\s?"
-        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+        "(identifier|numeric_const|string_litteral|true|false)\\s?"
         "(NOT_EQUAL|DOUBLE_EQUAL|OR|AND|PLUS|MINUS|STAR|SLASH|PROC|LESS|MORE)\\s?"
-        "(identifier|numeric_const|bin_const|octal_const|hex_const)\\s?"
+        "(identifier|numeric_const|string_litteral|true|false)\\s?"
     };
 }
 
-VarDefinitionExpr::VarDefinitionExpr () {
+VarDeclarationExpr::VarDeclarationExpr () {
     expectedSeq = {
         {"var"},
         {"identifier"},
-        dataTypes
+        dataTypes,
+        {"EQUAL"},
+        {"identifier", "numeric_const", "string_litteral", "true", "false"}
     };
 
     regexMask = {
         "var\\s?"
         "identifier\\s?"
         "(int|double|float|bool|string)\\s?"
-        "(EQUAL)?\\s?"
-        "(string_litteral|numeric_const|bin_const|octal_const|hex_const)?\\s?"
+        "EQUAL\\s?"
+        "(identifier|numeric_const|string_litteral|true|false)\\s?"
     };
 }
 
@@ -221,6 +223,19 @@ bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq)
     }  
 
     return counter == undefineTokenSeq.size();
+}
+
+std::string Expression::getStrTokensType (const char& delim) {
+    std::stringstream ss;
+    
+    bool first = true;
+    for (const auto& token : actualTokenSeq) {
+        if (!first) ss << delim;
+        ss << token.type;
+        first = false;
+    }
+
+    return ss.str();
 }
 
 /* Checks */
@@ -256,17 +271,17 @@ bool isWhileLoopExpr (std::vector<Token>& undefineTokenSeq) {
 }
 
 bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq) {
-    FuncDeclareExpr instance;
-    return instance.exprIdentification(undefineTokenSeq);
-}
-
-bool isAssignExpr (std::vector<Token>& undefineTokenSeq) {
-    AssignExpr instance;
+    FuncDeclarationExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
 
 bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq) {
     VarDefinitionExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isVarDeclarationExpr (std::vector<Token>& undefineTokenSeq) {
+    VarDeclarationExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
 
