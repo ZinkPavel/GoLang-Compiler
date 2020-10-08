@@ -7,6 +7,8 @@ Block::Block (Expression& expr) {
         std::vector<Token>& tokenSeq = expr.actualTokenSeq;
         std::string strTokens = expr.getStrTokensType(' ');
         name = tokenSeq[1].litteral;
+        start = expr.actualTokenSeq.front().row;
+        end = expr.actualTokenSeq.back().row;
         if (std::regex_search(strTokens, std::regex("L_PAREN (identifier (COMMA identifier)?\\s?(int|string|bool)) R_PAREN"))) hasArgs = true;
         if (std::regex_search(strTokens, std::regex("(int|bool|string) L_BRACE"))) hasReturn = true;
         if (hasReturn) returnType = (tokenSeq[tokenSeq.size() - 3]).litteral;
@@ -40,9 +42,10 @@ void Block::multipleDeclarationCheck () {
 /* Operators */
 
 std::ostream& operator << (std::ostream& os, Block& block) {
-    os << "<" << block.start << ":" << block.end << ">" << "Name = " << block.name << "\n";
-    if (block.hasArgs) os << "ArgsType = " << block.argsType << "\n";
-    if (block.hasReturn) os << "BlockReturnType = " << block.returnType << "\n";
+    os << "<" << block.start << ":" << block.end << ">";
+    os << "Name = " << block.name << "; ";
+    if (block.hasArgs) os << "ArgsType = " << block.argsType << "; ";
+    if (block.hasReturn) os << "BlockReturnType = " << block.returnType << "; ";
     os << "\n";
     if (block.vars.size() > 0) for (auto& var : block.vars) os << var << "\n"; 
     return os;

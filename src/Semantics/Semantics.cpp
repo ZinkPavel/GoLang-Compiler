@@ -45,6 +45,13 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
     for (auto& varDecl : varDeclarationExprs) addVarByExpr(*varDecl);
 }
 
+/* Operators */
+
+std::ostream& operator << (std::ostream& os, Semantics& semantics) {
+    if (semantics.blocks.size() > 0) for (auto& block : semantics.blocks) os << block << "\n";    
+    return os;
+}
+
 /* void semCheckVarDeclaration (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
     for (auto& varDecl : varDeclarationExprs) {
         bool blockExpect = false;
