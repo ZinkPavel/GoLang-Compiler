@@ -7,7 +7,20 @@ public:
     size_t row, col;
     std::string litteral, dataType, value;
 
+    Var (size_t _row, size_t _col, std::string _literral, std::string _dataType, std::string _value);
+    Var (Token& token);
     Var (Expression& expr);
+};
+
+class Block {
+public:
+    bool hasReturn = false,
+        hasArgs = false;
+
+    std::string name, argsType, returnType;
+    std::vector<Var> vars;
+
+    Block (Expression& expr);
 };
 
 /* Operaotors */

@@ -1,0 +1,4 @@
+func main (a,b int) int {}
+func main (a string) string {}
+func main () bool {}
+func main () {}
