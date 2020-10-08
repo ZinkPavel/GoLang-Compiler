@@ -151,7 +151,7 @@ void Compiler::readFile () {
     } 
     if (parserOn && !isTestPass) checkParserOutput(parser);
     if (parserOn) tree.build(getParserExprs());
-    if (parserOn && !isTestPass) semanticsAnalysis(getParserExprs());
+    if (parserOn && !isTestPass) semantics.analysis(parser.getExprs());
 }
 
 void Compiler::checkParserOutput (const Parser& parser) {

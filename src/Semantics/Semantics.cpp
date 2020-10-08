@@ -1,10 +1,25 @@
 #include "Semantics.h"
 
-void semanticsAnalysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
-    std::vector<std::shared_ptr<Expression>> mathExprs, returnExprs, importExprs, packageExprs, ifExprs, whileExprs, funcDeclareExprs, varDefinitionExprs, varDeclarationExprs, funcCallExprs;
-    // std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>> blocksByVars;
-    std::vector<Block> blocks;
+Semantics::Semantics () {}
 
+void Semantics::addVarByExpr (Expression& expr) {
+    bool blockDetected = false;
+    Var newVar(expr);
+    size_t placeVar = newVar.row;
+
+    for (auto& block : blocks) {
+        if (block.start < placeVar && block.end > placeVar) {
+            blockDetected = true;
+            block.vars.push_back(newVar);
+        }
+    }
+    if (!blockDetected) throw std::runtime_error("Var declaration error");
+}
+
+void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
+    std::vector<std::shared_ptr<Expression>> mathExprs, returnExprs, importExprs, packageExprs, ifExprs, whileExprs, funcDeclareExprs, varDefinitionExprs, varDeclarationExprs, funcCallExprs;
+
+    // classification
     for (const auto& expr : exprs) {
         switch (expr->type)
         {
@@ -26,30 +41,8 @@ void semanticsAnalysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
         blocks.push_back({*expr});
         blocks.back().multipleDeclarationCheck();
     }
-    // std::cout << blocks.size() << std::endl;
 
-    // semCheckVarDeclaration(varDeclarationExprs, blocksByVars);
-    // semCheckVarDefinition(varDefinitionExprs, blocksByVars);
-    // semCheckReturn(returnExprs, blocksByVars);
-
-    // std::stringstream ss;
-    // for (auto& [block, vars] : blocksByVars) {
-    //     ss << "BLOCK\n" << Join(block->actualTokenSeq, ' ') << '\n' << Join(vars, '\n') << "\n\n";
-    // }
-    // std::cout << ss.str() << std::endl;
-}
-
-Semantics::Semantics () {}
-
-void Semantics::addVarFromExpr (Expression& expr) {
-    // bool blockDetected = false;
-    // Var newVar(expr);
-    // size_t placeVar = newVar.row;
-
-    // for (auto& block : blocks) {
-    //     // if (block)
-    // }
-    // if (!blockDetected) throw std::runtime_error("Var devlaration error");
+    for (auto& varDecl : varDeclarationExprs) addVarByExpr(*varDecl);
 }
 
 /* void semCheckVarDeclaration (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {

@@ -31,13 +31,12 @@ private:
     std::vector<Token> tokenList;
     Parser parser;
     ASTree tree;
+    Semantics semantics;
 
     bool parserOn = true;
     bool isTestPass = false;
 
 public:
-    Semantics semantics;
-
     Compiler (std::string filePath);
     Compiler (std::string filePath, bool _parserOn, bool _isTestPass);
     ~Compiler ();
