@@ -174,7 +174,7 @@ void FuncCallTest () {
 void ProgramTest () {
     INIT_TEST_ENVAIRONMENT("tests/prog.go", true, true);
 
-    ASSERT_EQUAL(exprs.size(), 10u);
+    ASSERT_EQUAL(exprs.size(), 11u);
 
     for (size_t i = 0; i < exprs.size(); i++) {
         ASSERT_STATUS(i, false, true);
@@ -204,7 +204,7 @@ void SerializeTokenTest () {
         tokenSeqStream.clear();
     }
 
-    ASSERT_EQUAL(exprs.size(), 10u);
+    ASSERT_EQUAL(exprs.size(), 11u);
 
     ASSERT_EQUAL(tokenSeqs[0], "package identifier");
 }

@@ -1,9 +1,9 @@
 All: bin/app
 
 FLAGS = g++ -Wall -Werror -std=c++17
-OBJ = build/main.o $(TOOLS) $(TESTS) $(COMPILER) $(PARSER) $(TREE) $(SEMANTICS)
+OBJ = build/main.o $(SEMANTICS) $(TREE) $(PARSER) $(COMPILER) $(TESTS) $(TOOLS)
 
-SEMANTICS = build/Semantics/Semantics.o
+SEMANTICS = build/Semantics/Block.o build/Semantics/Var.o build/Semantics/Semantics.o 
 TREE = build/Parser/AST-Tree/ASTree.o build/Parser/AST-Tree/Node.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
 COMPILER = build/Compiler/Token.o build/Compiler/Compiler.o
@@ -24,6 +24,12 @@ build/main.o: src/main.cpp
 
 build/Semantics/Semantics.o: src/Semantics/Semantics.cpp
 	$(FLAGS) -c src/Semantics/Semantics.cpp -o build/Semantics/Semantics.o
+
+build/Semantics/Var.o: src/Semantics/Var.cpp
+	$(FLAGS) -c src/Semantics/Var.cpp -o build/Semantics/Var.o
+
+build/Semantics/Block.o: src/Semantics/Block.cpp
+	$(FLAGS) -c src/Semantics/Block.cpp -o build/Semantics/Block.o
 
 # TREE
 

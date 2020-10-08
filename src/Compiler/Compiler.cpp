@@ -152,8 +152,8 @@ void Compiler::readFile () {
     if (parserOn && !isTestPass) checkParserOutput(parser);
     if (parserOn) tree.build(getParserExprs());
     if (parserOn && !isTestPass) semantics.analysis(parser.getExprs());
-    
-    std::cout << semantics << std::endl; // test
+
+    // std::cout << semantics << std::endl; // test
 }
 
 void Compiler::checkParserOutput (const Parser& parser) {

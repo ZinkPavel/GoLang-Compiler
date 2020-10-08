@@ -8,8 +8,11 @@ func max(a, b int) int {
 }
 
 func main() {
-	var x int = 40
-	var y int = 30
+	var x int = 43
+	var y bool = true
+	var z int = 10
 
-	max(x, y)
+	x := 34 + 43
+
+	max(x, z)
 }
