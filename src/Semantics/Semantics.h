@@ -15,6 +15,7 @@ public:
     void addVarByExpr (Expression& expr);
     void callReturnCheck (Expression& expr);
     void varDefinitionCheck (Expression& expr);
+    void callFunctionCheck (Expression& expr);
 
     void analysis (const std::vector<std::shared_ptr<Expression>>& exprs);
 };

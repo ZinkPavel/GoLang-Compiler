@@ -9,6 +9,7 @@ Block::Block (Expression& expr) {
         name = tokenSeq[1].litteral;
         start = expr.actualTokenSeq.front().row;
         end = expr.actualTokenSeq.back().row;
+        numArgs = 0;
         if (std::regex_search(strTokens, std::regex("L_PAREN (identifier (COMMA identifier)?\\s?(int|string|bool)) R_PAREN"))) hasArgs = true;
         if (std::regex_search(strTokens, std::regex("(int|bool|string) L_BRACE"))) hasReturn = true;
         if (hasReturn) returnType = (tokenSeq[tokenSeq.size() - 3]).litteral;
@@ -21,6 +22,7 @@ Block::Block (Expression& expr) {
             argsType = (it + 1)->type;
             for (; it->type != "L_PAREN"; it++) {
                 if (it->type == "identifier") {
+                    numArgs++;
                     it->dataType = argsType;
                     vars.push_back({*it});
                 }

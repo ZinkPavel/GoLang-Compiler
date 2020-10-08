@@ -13,7 +13,7 @@ public:
     bool hasReturn = false,
         hasArgs = false;
 
-    size_t start, end;
+    size_t start, end, numArgs;
     std::string name, argsType, returnType;
     std::vector<Var> vars;
 

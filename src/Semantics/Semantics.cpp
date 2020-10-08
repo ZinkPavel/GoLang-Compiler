@@ -63,6 +63,33 @@ void Semantics::varDefinitionCheck (Expression& expr) {
     }
 }
 
+void Semantics::callFunctionCheck (Expression& expr) {
+    size_t placeCall = expr.actualTokenSeq[0].row, numArgs = -1;;
+    std::vector<Var> args;
+    Block expectedBlock, callableBlock;
+    
+    for (auto& block : blocks) {
+        if (block.start < placeCall && block.end > placeCall) expectedBlock = block;
+        if (block.name == expr.actualTokenSeq[0].litteral) callableBlock = block;
+    }
+
+    std::regex regex("(identifier|numeric_const|string_litteral|true|false)");
+    for (auto& token : expr.actualTokenSeq) if (std::regex_search(token.type, regex)) numArgs++;
+    if (callableBlock.numArgs != numArgs) throw std::runtime_error("Call function. Wrong num arguments.");
+
+    for (size_t i = 1; i <= numArgs; i++) {
+        auto it = std::find_if(expectedBlock.vars.begin(), expectedBlock.vars.end(), [i, expr](Var& var) -> bool {
+            return expr.actualTokenSeq[i * 2].litteral == var.litteral;
+        });
+        if (it == expectedBlock.vars.end()) throw std::runtime_error("Call function. Arg not found.");
+        args.push_back(*it);
+    }
+
+    for (auto& arg : args) {
+        if (arg.dataType != callableBlock.argsType) throw std::runtime_error("Call function. Type mismatch.");
+    }
+}
+
 void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
     std::vector<std::shared_ptr<Expression>> mathExprs, returnExprs, importExprs, packageExprs, ifExprs, whileExprs, funcDeclareExprs, varDefinitionExprs, varDeclarationExprs, funcCallExprs;
 
@@ -77,9 +104,9 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
         case 5: ifExprs.push_back(expr); break; // ...
         case 6: whileExprs.push_back(expr); break; // ...
         case 7: funcDeclareExprs.push_back(expr); break; // OK
-        case 8: varDefinitionExprs.push_back(expr); break; // IN PROGRESS
+        case 8: varDefinitionExprs.push_back(expr); break; // OK
         case 9: varDeclarationExprs.push_back(expr); break; // OK
-        case 10: funcCallExprs.push_back(expr); break; // ...
+        case 10: funcCallExprs.push_back(expr); break; // OK
         default: break;
         }
     }
@@ -92,6 +119,7 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
     for (auto& varDecl : varDeclarationExprs) addVarByExpr(*varDecl);
     for (auto& callReturn : returnExprs) callReturnCheck(*callReturn);
     for (auto& varDef : varDefinitionExprs) varDefinitionCheck(*varDef);
+    for (auto& callFunc : funcCallExprs) callFunctionCheck(*callFunc);
 }
 
 /* Operators */
@@ -100,30 +128,3 @@ std::ostream& operator << (std::ostream& os, Semantics& semantics) {
     if (semantics.blocks.size() > 0) for (auto& block : semantics.blocks) os << block << "\n";    
     return os;
 }
-
-// void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDefinitionExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
-//     for (auto& varDef : varDefinitionExprs) {        
-//         bool blockExpect = false;
-//         size_t placeDefCurVar = varDef->actualTokenSeq[0].row;
-//         auto& var = varDef->actualTokenSeq[0];
-//         std::vector values = {varDef->actualTokenSeq[2], varDef->actualTokenSeq[4]};
-
-//         for (auto& [block, vars] : blocksByVars) {
-//             if (block->actualTokenSeq.front().row < placeDefCurVar && block->actualTokenSeq.back().row > placeDefCurVar) {
-                
-//                 auto it = std::find_if(vars.begin(), vars.end(), [var](Token& token) -> bool {
-//                     return token.litteral == var.litteral;
-//                 });
-
-//                 if (it != vars.end()) {
-                    
-//                     if (values[0].dataType == it->dataType && values[1].dataType == it->dataType) {
-//                         blockExpect = true;
-//                     } else throw std::runtime_error("type mismatch");
-//                     break;
-//                 }
-//             }
-//         }
-//         if (!blockExpect) throw std::runtime_error("Var do not decalre");
-//     }
-// }
