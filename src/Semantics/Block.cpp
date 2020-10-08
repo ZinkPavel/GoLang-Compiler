@@ -36,3 +36,14 @@ void Block::multipleDeclarationCheck () {
         if (count > 1) throw std::runtime_error("Multiple declaration error");
     }
 }
+
+/* Operators */
+
+std::ostream& operator << (std::ostream& os, Block& block) {
+    os << "<" << block.start << ":" << block.end << ">" << "Name = " << block.name << "\n";
+    if (block.hasArgs) os << "ArgsType = " << block.argsType << "\n";
+    if (block.hasReturn) os << "BlockReturnType = " << block.returnType << "\n";
+    os << "\n";
+    if (block.vars.size() > 0) for (auto& var : block.vars) os << var << "\n"; 
+    return os;
+}

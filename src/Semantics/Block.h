@@ -22,3 +22,7 @@ public:
 
     void multipleDeclarationCheck ();
 };
+
+/* Operators */
+
+std::ostream& operator << (std::ostream& os, Block& block);

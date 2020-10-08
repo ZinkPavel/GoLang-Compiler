@@ -19,7 +19,7 @@ public:
     Var (Expression& expr);
 };
 
-/* Operaotors */
+/* Operators */
 
 std::ostream& operator << (std::ostream& os, Var& var);
 bool operator == (Var& lhs, Var& rhs);
