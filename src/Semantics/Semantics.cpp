@@ -37,7 +37,30 @@ void Semantics::callReturnCheck (Expression& expr) {
             if (var.dataType != expectedBlock.returnType) throw std::runtime_error("Return. Type mismatch.");
         }
     }
-    if (!varDetected) throw std::runtime_error("Return. return value not found.");
+    if (!varDetected) throw std::runtime_error("Return. Return value not found.");
+}
+
+void Semantics::varDefinitionCheck (Expression& expr) {
+    bool blockDetected = false;
+    size_t placeDefinition = expr.actualTokenSeq[0].row;
+    Block expectedBlock;
+    
+    for (auto& block : blocks) {
+        if (block.start < placeDefinition && block.end > placeDefinition) {
+            blockDetected = true;
+            expectedBlock = block;
+        }
+    }
+    if (!blockDetected) throw std::runtime_error("Var definition. Var not found.");
+
+    auto it = std::find_if(expectedBlock.vars.begin(), expectedBlock.vars.end(), [expr] (const Var& var) {
+        return var.litteral == expr.actualTokenSeq[0].litteral;
+    });
+    if (it == expectedBlock.vars.end()) throw std::runtime_error("Var definition. Var not exist.");
+
+    if (expr.actualTokenSeq[2].dataType != it->dataType || expr.actualTokenSeq[4].dataType != it->dataType) {
+        throw std::runtime_error("Var definition. Type mismatch.");
+    }
 }
 
 void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
@@ -48,13 +71,13 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
         switch (expr->type)
         {
         case 1: mathExprs.push_back(expr); break;
-        case 2: returnExprs.push_back(expr); break; // IN PROCESS
+        case 2: returnExprs.push_back(expr); break; // OK
         case 3: importExprs.push_back(expr); break;
         case 4: packageExprs.push_back(expr); break;
         case 5: ifExprs.push_back(expr); break; // ...
         case 6: whileExprs.push_back(expr); break; // ...
         case 7: funcDeclareExprs.push_back(expr); break; // OK
-        case 8: varDefinitionExprs.push_back(expr); break; // ...
+        case 8: varDefinitionExprs.push_back(expr); break; // IN PROGRESS
         case 9: varDeclarationExprs.push_back(expr); break; // OK
         case 10: funcCallExprs.push_back(expr); break; // ...
         default: break;
@@ -68,6 +91,7 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
 
     for (auto& varDecl : varDeclarationExprs) addVarByExpr(*varDecl);
     for (auto& callReturn : returnExprs) callReturnCheck(*callReturn);
+    for (auto& varDef : varDefinitionExprs) varDefinitionCheck(*varDef);
 }
 
 /* Operators */
@@ -76,26 +100,6 @@ std::ostream& operator << (std::ostream& os, Semantics& semantics) {
     if (semantics.blocks.size() > 0) for (auto& block : semantics.blocks) os << block << "\n";    
     return os;
 }
-
-/* void semCheckVarDeclaration (std::vector<std::shared_ptr<Expression>> varDeclarationExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
-    for (auto& varDecl : varDeclarationExprs) {
-        bool blockExpect = false;
-        size_t placeDeclCurVar = varDecl->actualTokenSeq[0].row;
-
-        for (auto& [block, vars] : blocksByVars) {
-            if (block->actualTokenSeq.front().row < placeDeclCurVar && block->actualTokenSeq.back().row > placeDeclCurVar) {
-                Token& newVar = varDecl->actualTokenSeq[1];
-                newVar.dataType = varDecl->actualTokenSeq.back().dataType;
-                newVar.value = varDecl->actualTokenSeq.back().litteral;
-                vars.push_back(newVar);
-                blockExpect = true;
-                break;
-            }
-        }
-        if (!blockExpect) throw std::runtime_error("VAR Declaration error");
-    }
-    semCheckMultipleDeclaration(blocksByVars);
-} */
 
 // void semCheckVarDefinition (std::vector<std::shared_ptr<Expression>> varDefinitionExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
 //     for (auto& varDef : varDefinitionExprs) {        
@@ -123,20 +127,3 @@ std::ostream& operator << (std::ostream& os, Semantics& semantics) {
 //         if (!blockExpect) throw std::runtime_error("Var do not decalre");
 //     }
 // }
-
-// void semCheckReturn (std::vector<std::shared_ptr<Expression>> returnExprs, std::vector<std::pair<std::shared_ptr<Expression>, std::vector<Token>>>& blocksByVars) {
-//     /* for (auto& expr : returnExprs) {
-//         bool blockExpect = false;
-//         size_t placeDefCurVar = expr->actualTokenSeq[0].row;
-
-//         for (auto& [block, vars] : blocksByVars) {
-//             if (block->actualTokenSeq.front().row < placeDefCurVar && block->actualTokenSeq.back().row > placeDefCurVar) {
-//                 blockExpect = true;
-//                 std::string& blockReturnType = block->actualTokenSeq[]
-
-//             }
-//         }
-//         if (!blockExpect) throw std::runtime_error("Мы не в блоке");
-//     } */
-// }
-
