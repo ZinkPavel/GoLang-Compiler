@@ -13,7 +13,31 @@ void Semantics::addVarByExpr (Expression& expr) {
             block.vars.push_back(newVar);
         }
     }
-    if (!blockDetected) throw std::runtime_error("Var declaration error");
+    if (!blockDetected) throw std::runtime_error("Var. Wrong declaration.");
+}
+
+void Semantics::callReturnCheck (Expression& expr) {
+    bool blockDetected = false, varDetected = false;
+    size_t placeReturn = expr.actualTokenSeq[0].row;
+    Block expectedBlock;
+    
+    for (auto& block : blocks) {
+        if (block.start < placeReturn && block.end > placeReturn) {
+            blockDetected = true;
+            expectedBlock = block;
+        }
+    }
+    if (!blockDetected) throw std::runtime_error("Return. Wrong declaration.");
+
+    if (!expectedBlock.hasReturn) throw std::runtime_error("Return. This block returns nothing.");
+    
+    for (auto& var : expectedBlock.vars) {
+        if (expr.actualTokenSeq[1].litteral == var.litteral) {
+            varDetected = true;
+            if (var.dataType != expectedBlock.returnType) throw std::runtime_error("Return. Type mismatch.");
+        }
+    }
+    if (!varDetected) throw std::runtime_error("Return. return value not found.");
 }
 
 void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
@@ -24,14 +48,14 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
         switch (expr->type)
         {
         case 1: mathExprs.push_back(expr); break;
-        case 2: returnExprs.push_back(expr); break; // ...
+        case 2: returnExprs.push_back(expr); break; // IN PROCESS
         case 3: importExprs.push_back(expr); break;
         case 4: packageExprs.push_back(expr); break;
         case 5: ifExprs.push_back(expr); break; // ...
         case 6: whileExprs.push_back(expr); break; // ...
         case 7: funcDeclareExprs.push_back(expr); break; // OK
         case 8: varDefinitionExprs.push_back(expr); break; // ...
-        case 9: varDeclarationExprs.push_back(expr); break; // PROCESS
+        case 9: varDeclarationExprs.push_back(expr); break; // OK
         case 10: funcCallExprs.push_back(expr); break; // ...
         default: break;
         }
@@ -43,6 +67,7 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
     }
 
     for (auto& varDecl : varDeclarationExprs) addVarByExpr(*varDecl);
+    for (auto& callReturn : returnExprs) callReturnCheck(*callReturn);
 }
 
 /* Operators */

@@ -12,7 +12,8 @@ public:
     
     Semantics ();
     
-    void addVarByExpr(Expression& expr);
+    void addVarByExpr (Expression& expr);
+    void callReturnCheck (Expression& expr);
 
     void analysis (const std::vector<std::shared_ptr<Expression>>& exprs);
 };
