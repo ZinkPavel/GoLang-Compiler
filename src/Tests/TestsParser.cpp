@@ -186,7 +186,7 @@ void ProgramTest () {
 }
 
 void SerializeTokenTest () {
-    Compiler comp("tests/prog.go");
+    Compiler comp("tests/prog.go", true, true);
     const std::vector<std::shared_ptr<Expression>>& exprs = comp.getParserExprs();
 
     std::stringstream tokenSeqStream;

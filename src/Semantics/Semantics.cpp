@@ -123,6 +123,39 @@ void Semantics::ifCheck (Expression& expr) {
     })) throw std::runtime_error("If declaration. Args type mismatch");
 }
 
+void Semantics::whileCheck (Expression& expr) {
+    bool blockDetected = false;
+    size_t placeWhile = expr.actualTokenSeq[0].row, whileStart = expr.actualTokenSeq[0].row, whileEnd = expr.actualTokenSeq[0].row;
+    size_t expectedNumArgs = 0;
+    std::vector<Var> args;
+    Block expectedBlock;
+
+    for (auto& block : blocks) {
+        if (block.start < placeWhile && block.end > placeWhile) {
+            expectedBlock = block;
+            blockDetected = true;
+        }
+    }
+    if (!blockDetected) throw std::runtime_error("While declaration. Wrong declaration place.");
+
+    for (auto& token : expr.actualTokenSeq) {
+        if (std::regex_search(token.type, std::regex("(identifier|numeric_const|string_litteral|int|false|true)"))) {
+            expectedNumArgs++;
+            if (token.type == "identifier") {
+                auto it = std::find_if(expectedBlock.vars.begin(), expectedBlock.vars.end(), [token, whileStart, whileEnd] (Var& var) -> bool {
+                    return (var.row < whileStart || var.row > whileEnd) && var.litteral == token.litteral;
+                });
+                if (it != expectedBlock.vars.end()) args.push_back(*it);
+            } else args.push_back({token});           
+        }
+    }
+    if (expectedNumArgs != args.size()) throw std::runtime_error("While declaration. Some variables could not be found.");
+
+    if (!std::all_of(args.begin(), args.end(), [args] (Var& arg) -> bool {
+        return arg.dataType == args[0].dataType;
+    })) throw std::runtime_error("While declaration. Args type mismatch");
+}
+
 void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs) {
     std::vector<std::shared_ptr<Expression>> mathExprs, returnExprs, importExprs, packageExprs, ifExprs, whileExprs, funcDeclareExprs, varDefinitionExprs, varDeclarationExprs, funcCallExprs;
 
@@ -153,7 +186,8 @@ void Semantics::analysis (const std::vector<std::shared_ptr<Expression>>& exprs)
     for (auto& callReturn : returnExprs) callReturnCheck(*callReturn);
     for (auto& varDef : varDefinitionExprs) varDefinitionCheck(*varDef);
     for (auto& callFunc : funcCallExprs) callFunctionCheck(*callFunc);
-    for (auto& ifDef : ifExprs) ifCheck(*ifDef);
+    for (auto& ifDecl : ifExprs) ifCheck(*ifDecl);
+    for (auto& whileDecl : whileExprs) whileCheck(*whileDecl);
 }
 
 /* Operators */

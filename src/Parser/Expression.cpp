@@ -126,14 +126,14 @@ IfExpr::IfExpr () {
 
 WhileLoopExpr::WhileLoopExpr () {
     expectedSeq = {
-        {"while"},
+        {"for"},
         vars,
         arithmeticSings,
         vars,
         {"L_BRACE"}
     };
 
-    regexMask = "while"
+    regexMask = "for"
         "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
         "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)"
         "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"

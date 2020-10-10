@@ -17,6 +17,7 @@ public:
     void varDefinitionCheck (Expression& expr);
     void callFunctionCheck (Expression& expr);
     void ifCheck (Expression& expr);
+    void whileCheck (Expression& expr);
 
     void analysis (const std::vector<std::shared_ptr<Expression>>& exprs);
 };
