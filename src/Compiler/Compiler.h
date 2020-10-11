@@ -13,6 +13,7 @@
 #include "../Parser/Parser.h"
 #include "../Parser/AST-Tree/ASTree.h"
 #include "../Semantics/Semantics.h"
+#include "../CodeGenerate/CodeGenerator.h"
 
 #define NEW_CH_TOKEN(type, ch) \
     tokenList.push_back({#type, {ch}, currentRow, currentCol}); \
@@ -32,6 +33,7 @@ private:
     Parser parser;
     ASTree tree;
     Semantics semantics;
+    CodeGenerator codeGenerator;
 
     bool parserOn = true;
     bool isTestPass = false;

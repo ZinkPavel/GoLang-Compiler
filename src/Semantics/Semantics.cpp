@@ -31,13 +31,15 @@ void Semantics::callReturnCheck (Expression& expr) {
 
     if (!expectedBlock.hasReturn) throw std::runtime_error("Return. This block returns nothing.");
     
-    for (auto& var : expectedBlock.vars) {
-        if (expr.actualTokenSeq[1].litteral == var.litteral) {
-            varDetected = true;
-            if (var.dataType != expectedBlock.returnType) throw std::runtime_error("Return. Type mismatch.");
+    if (expr.actualTokenSeq[1].type == "identifier") {
+        for (auto& var : expectedBlock.vars) {
+            if (expr.actualTokenSeq[1].litteral == var.litteral) {
+                varDetected = true;
+                if (var.dataType != expectedBlock.returnType) throw std::runtime_error("Return. Type mismatch.[1]");
+            }
         }
-    }
-    if (!varDetected) throw std::runtime_error("Return. Return value not found.");
+        if (!varDetected) throw std::runtime_error("Return. Return value not found.");
+    } else if (expr.actualTokenSeq[1].dataType != expectedBlock.returnType) throw std::runtime_error("Return. Type mismatch.[2]");
 }
 
 void Semantics::varDefinitionCheck (Expression& expr) {
