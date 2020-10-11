@@ -152,7 +152,7 @@ void Compiler::readFile () {
     if (parserOn && !isTestPass) checkParserOutput(parser);
     if (parserOn) tree.build(getParserExprs());
     if (parserOn && !isTestPass) semantics.analysis(parser.getExprs());
-    if (parserOn && !isTestPass) codeGenerator.generate();
+    if (parserOn && !isTestPass) codeGenerator.generate(semantics, parser.getExprs());
 }
 
 void Compiler::checkParserOutput (const Parser& parser) {
