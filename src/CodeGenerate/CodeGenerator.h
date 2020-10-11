@@ -15,5 +15,7 @@ public:
 
     void generate ();
     void write ();
-    void genHeader ();
+    void genPrologue ();
+    void genEpilogue ();
+
 };
