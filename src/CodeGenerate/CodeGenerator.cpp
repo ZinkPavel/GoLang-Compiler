@@ -2,12 +2,13 @@
 
 CodeGenerator::CodeGenerator () { 
     nestingLevel = 0;
+    shift = 0;
     outPath = "output/output.s";
 }
 
-void CodeGenerator::generate (const Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs) {
+void CodeGenerator::generate (Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs) {
     std::stringstream ss;
-    const Block& mainBlock = *std::find_if(semantics.blocks.begin(), semantics.blocks.end(), [] (const Block& block) -> bool {
+    Block& mainBlock = *std::find_if(semantics.blocks.begin(), semantics.blocks.end(), [] (const Block& block) -> bool {
         return block.name == "main";
     });
     
@@ -17,6 +18,7 @@ void CodeGenerator::generate (const Semantics& semantics, const std::vector<std:
         switch (expr->type)
         {
         case 2: genReturn(ss, mainBlock, *expr); break;
+        case 9: genVarDeclaration(ss, mainBlock, *expr); break;
         default: break;
         }
     }    
@@ -53,10 +55,24 @@ void CodeGenerator::genReturn (std::stringstream& ss, const Block& block, Expres
         auto it = std::find_if(block.vars.begin(), block.vars.end(), [expr](const Var& var) -> bool {
             return expr.actualTokenSeq[1].litteral == var.litteral;
         });
-        ss << it->value << "\n";
+        ss << "DWORD PTR [rbp-" << it->shift << "]\n";
     } else if (expr.actualTokenSeq[1].type == "numeric_const") {
         ss << expr.actualTokenSeq[1].litteral << "\n";
     } else {
         throw std::runtime_error("Type mismatch");
     }
+}
+
+void CodeGenerator::genVarDeclaration (std::stringstream& ss, Block& block, Expression& expr) {
+    for (size_t i = 0; i < nestingLevel; i++) ss << "\t";
+
+    auto it = std::find_if(block.vars.begin(), block.vars.end(), [expr](Var& var) -> bool {
+        return expr.actualTokenSeq[1].litteral == var.litteral;
+    });
+
+    if (it->dataType == "int") {
+        shift = shift + 4;
+        it->shift = shift;
+    }
+    ss << "mov " << "DWORD PTR [rbp-" << shift << "], " << it->value << "\n";
 }
