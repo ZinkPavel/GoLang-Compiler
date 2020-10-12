@@ -1,7 +1,7 @@
 #include "CodeGenerator.h"
 
 CodeGenerator::CodeGenerator () { 
-    waitingBranch = false;
+    pendingBranch = false;
     nestingLevel = 0;
     numBranches = 1;
     numStr = 0;
@@ -19,7 +19,16 @@ void CodeGenerator::generate (Semantics& semantics, const std::vector<std::share
         return block.name == "main";
     });
     
-    preparatoryWork(exprs);
+    std::queue<size_t> branches;
+    for (auto& expr : exprs) {
+        switch (expr->type)
+        {
+        case 5: branches.push(BRNCH::IF); break;
+        case 6: branches.push(BRNCH::WHILE); break;
+        default: break;
+        }    
+    }
+
     genPrologue(streams.back());
 
     for (auto& expr : exprs) {
@@ -36,10 +45,10 @@ void CodeGenerator::generate (Semantics& semantics, const std::vector<std::share
         }
     }
 
-    if (waitingBranch) {
+    if (pendingBranch) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        waitingBranch = false;
+        pendingBranch = false;
     }  
     
     genEpilogue(streams.back());
@@ -72,10 +81,10 @@ void CodeGenerator::genEpilogue (std::stringstream& ss) {
 }
 
 void CodeGenerator::genReturn (std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
-    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        waitingBranch = false;
+        pendingBranch = false;
     }
     
     std::stringstream& ss = streams.back();
@@ -92,10 +101,10 @@ void CodeGenerator::genReturn (std::vector<std::stringstream>& streams, const Bl
 }
 
 void CodeGenerator::genIf(std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
-    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        waitingBranch = false;
+        pendingBranch = false;
     }
     
     std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
@@ -113,15 +122,17 @@ void CodeGenerator::genIf(std::vector<std::stringstream>& streams, const Block& 
         })).shift));
     }
     
+    branches.pop();
+    numBranches = (branches.front() > 0 && branches.front() == BRNCH::WHILE) ? numBranches + 2 : numBranches + 1;
     ss << "\tmov eax, DWORD PTR [rbp-" << varValues[0] << "]\n";
     ss << "\tcmp eax, DWORD PTR [rbp-" << varValues[1] << "]\n";
     ss << "\tjle .L" << ++numBranches << "\n";
 
-    waitingBranch = true;
+    pendingBranch = true;
 }
 
 void CodeGenerator::genWhile(std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
-    if (waitingBranch && expr.actualTokenSeq.front().row > point) waitingBranch = false;
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) pendingBranch = false;
 
     std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
 
@@ -138,7 +149,7 @@ void CodeGenerator::genWhile(std::vector<std::stringstream>& streams, const Bloc
         })).shift));
     }
 
-    numBranches += 2;
+    numBranches = (branches.front() > 0 && branches.front() == BRNCH::WHILE) ? numBranches + 2 : numBranches + 1;
     ss << "\tjmp .L" << numBranches-1 << "\n";
     
     streams.push_back(std::stringstream());
@@ -152,10 +163,10 @@ void CodeGenerator::genWhile(std::vector<std::stringstream>& streams, const Bloc
 }
 
 void CodeGenerator::genVarDeclaration (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
-    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        waitingBranch = false;
+        pendingBranch = false;
     }
     
     std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
@@ -173,10 +184,10 @@ void CodeGenerator::genVarDeclaration (std::vector<std::stringstream>& streams, 
 }
 
 void CodeGenerator::genVarDefiniton (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
-    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        waitingBranch = false;
+        pendingBranch = false;
     }
     
     std::stringstream& ss = (streams.size() > 2 && expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
@@ -228,10 +239,10 @@ void CodeGenerator::genVarDefiniton (std::vector<std::stringstream>& streams, Bl
 }
 
 void CodeGenerator::genPrint (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
-    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        waitingBranch = false;
+        pendingBranch = false;
     }
 
     size_t varValue = std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
@@ -251,10 +262,10 @@ void CodeGenerator::genPrint (std::vector<std::stringstream>& streams, Block& bl
 }
 
 void CodeGenerator::genScan (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
-    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        waitingBranch = false;
+        pendingBranch = false;
     }
 
     size_t varValue = std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
