@@ -235,6 +235,26 @@ PrintExpr::PrintExpr () {
     };
 }
 
+ScanExpr::ScanExpr () {
+    expectedSeq = {
+        {"scan"},
+        {"L_PAREN"},
+        {"string_litteral"},
+        {"COMMA"},
+        {"identifier"},
+        {"R_PAREN"}
+    };
+
+    regexMask = {
+        "scan\\s?"
+        "L_PAREN\\s?"
+        "string_litteral\\s?"
+        "COMMA\\s?"
+        "identifier\\s?"
+        "R_PAREN\\s?"
+    };
+}
+
 bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
     size_t counter;
 
@@ -311,5 +331,10 @@ bool isFuncCallExpr (std::vector<Token>& undefineTokenSeq) {
 
 bool isPrintExpr (std::vector<Token>& undefineTokenSeq) {
     PrintExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isScanExpr (std::vector<Token>& undefineTokenSeq) {
+    ScanExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }

@@ -37,7 +37,7 @@ enum CH {
 };
 
 const std::vector<std::string> keywords = {"int", "double", "var", "float", "return", "package",
-    "import", "func", "bool", "string", "for", "if", "else", "while", "do", "true", "false", "print"};
+    "import", "func", "bool", "string", "for", "if", "else", "while", "do", "true", "false", "print", "scan"};
 
 class Token {
 public:

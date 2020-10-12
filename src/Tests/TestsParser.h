@@ -25,6 +25,7 @@ void VarDefinitionExprTest ();
 void VarDeclarationTest ();
 void FuncCallTest ();
 void PrintTest ();
+void ScanTest ();
 
 void ProgramTest();
 
