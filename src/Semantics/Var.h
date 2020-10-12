@@ -10,7 +10,7 @@
 
 class Var {
 public:
-    size_t row, col, shift;
+    size_t row, col;
     std::string litteral, dataType, value;
 
     Var ();

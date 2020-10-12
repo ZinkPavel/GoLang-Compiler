@@ -60,8 +60,12 @@ void Semantics::varDefinitionCheck (Expression& expr) {
     });
     if (it == expectedBlock.vars.end()) throw std::runtime_error("Var definition. Var not exist.");
 
-    if (expr.actualTokenSeq[2].dataType != it->dataType || expr.actualTokenSeq[4].dataType != it->dataType) {
-        throw std::runtime_error("Var definition. Type mismatch.");
+    for (auto ptr = expr.actualTokenSeq.begin() + 1; ptr != expr.actualTokenSeq.end(); ptr++) {
+        if (ptr->litteral == "identifier") {
+            if (std::find_if(expectedBlock.vars.begin(), expectedBlock.vars.end(), [ptr] (const Var& var) {
+                return var.litteral == ptr->litteral && var.dataType == ptr->dataType;
+            }) == expectedBlock.vars.end()) throw std::runtime_error("Var definition. Type mismatch");
+        }
     }
 }
 

@@ -41,10 +41,8 @@ const std::vector<std::string> keywords = {"int", "double", "var", "float", "ret
 
 class Token {
 public:
-    size_t row, col;
+    size_t row, col, nestingLevel = 0, shift;
     std::string type, dataType, value, litteral;
-
-    size_t nestingLevel = 0;
 
     Token ();
     Token (const std::string& newType, const std::string& newLitteral, const size_t& newRow = 0, const size_t& newCol = 0);

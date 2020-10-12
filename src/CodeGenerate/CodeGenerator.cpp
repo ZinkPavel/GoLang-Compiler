@@ -2,9 +2,12 @@
 
 CodeGenerator::CodeGenerator () { 
     nestingLevel = 0;
+    numBranches = 0;
     shift = 0;
     outPath = "output/output.s";
 }
+
+std::vector<Token>& CodeGenerator::getVars () { return vars; }
 
 void CodeGenerator::generate (Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs) {
     std::stringstream ss;
@@ -18,6 +21,7 @@ void CodeGenerator::generate (Semantics& semantics, const std::vector<std::share
         switch (expr->type)
         {
         case 2: genReturn(ss, mainBlock, *expr); break;
+        case 8: genVarDefiniton(ss, mainBlock, *expr); break;
         case 9: genVarDeclaration(ss, mainBlock, *expr); break;
         default: break;
         }
@@ -50,29 +54,71 @@ void CodeGenerator::genEpilogue (std::stringstream& ss) {
 void CodeGenerator::genReturn (std::stringstream& ss, const Block& block, Expression& expr) {
     for (size_t i = 0; i < nestingLevel; i++) ss << "\t";
     ss << "mov " << "eax, ";
+    Token& var = expr.actualTokenSeq[1];
     
-    if (expr.actualTokenSeq[1].type == "identifier") {
-        auto it = std::find_if(block.vars.begin(), block.vars.end(), [expr](const Var& var) -> bool {
-            return expr.actualTokenSeq[1].litteral == var.litteral;
-        });
-        ss << "DWORD PTR [rbp-" << it->shift << "]\n";
-    } else if (expr.actualTokenSeq[1].type == "numeric_const") {
-        ss << expr.actualTokenSeq[1].litteral << "\n";
-    } else {
-        throw std::runtime_error("Type mismatch");
-    }
+    if (var.type == "identifier") ss << "DWORD PTR [rbp-" << (*std::find_if(vars.begin(), vars.end(), [expr, var](Token& token) {
+        return var.litteral == token.litteral;
+    })).shift << "]\n";
+    else if (var.type == "numeric_const") ss << var.litteral << "\n";
+    else throw std::runtime_error("Type mismatch");
 }
 
 void CodeGenerator::genVarDeclaration (std::stringstream& ss, Block& block, Expression& expr) {
     for (size_t i = 0; i < nestingLevel; i++) ss << "\t";
+    Token& var = expr.actualTokenSeq[1];
 
-    auto it = std::find_if(block.vars.begin(), block.vars.end(), [expr](Var& var) -> bool {
-        return expr.actualTokenSeq[1].litteral == var.litteral;
-    });
-
-    if (it->dataType == "int") {
+    if (var.dataType == "int") {
         shift = shift + 4;
-        it->shift = shift;
+        var.shift = shift;
     }
-    ss << "mov " << "DWORD PTR [rbp-" << shift << "], " << it->value << "\n";
+
+    vars.push_back(var);
+    ss << "mov " << "DWORD PTR [rbp-" << var.shift << "], " << var.value << "\n";
+}
+
+void CodeGenerator::genVarDefiniton (std::stringstream& ss, Block& block, Expression& expr) {
+    std::string sign = expr.actualTokenSeq[3].litteral, tabulation;
+    tabulation.insert(tabulation.begin(), nestingLevel, '\t');
+
+    std::vector<std::pair<bool, std::string>> varValues;
+    {
+        varValues.push_back({true, std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+            return expr.actualTokenSeq[0].litteral == var.litteral;
+        })).shift)});
+
+        if (expr.actualTokenSeq[2].type == "identifier") {
+            varValues.push_back({true, std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+                return expr.actualTokenSeq[2].litteral == var.litteral;
+            })).shift)});
+        } else varValues.push_back({false, expr.actualTokenSeq[2].litteral});
+
+        if (expr.actualTokenSeq[4].type == "identifier") {
+            varValues.push_back({true, std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+                return expr.actualTokenSeq[4].litteral == var.litteral;
+            })).shift)});
+        } else varValues.push_back({false, expr.actualTokenSeq[4].litteral});
+    }
+
+    if (sign == "+") {
+        ss << tabulation << "mov edx, " << (varValues[1].first ? "DWORD PTR [rbp-" + varValues[1].second + "]" : varValues[1].second) << "\n";
+        ss << tabulation << "mov eax, " << (varValues[2].first ? "DWORD PTR [rbp-" + varValues[2].second + "]" : varValues[2].second) << "\n";
+        ss << tabulation << "add eax, edx\n";
+        ss << tabulation << "mov " << (varValues[0].first ? "DWORD PTR [rbp-" + varValues[0].second + "]" : varValues[0].second) << ", eax\n";
+    }
+    else if (sign == "-") {
+        ss << tabulation << "mov eax, " << (varValues[1].first ? "DWORD PTR [rbp-" + varValues[1].second + "]" : varValues[1].second) << "\n";
+        ss << tabulation << "sub eax, " << (varValues[2].first ? "DWORD PTR [rbp-" + varValues[2].second + "]" : varValues[2].second) << "\n";;
+        ss << tabulation << "mov " << (varValues[0].first ? "DWORD PTR [rbp-" + varValues[0].second + "]" : varValues[0].second) << ", eax\n";
+    }
+    else if (sign == "/") {
+        ss << tabulation << "mov eax, " << (varValues[1].first ? "DWORD PTR [rbp-" + varValues[1].second + "]" : varValues[1].second) << "\n";
+        ss << tabulation << "cdq\n";
+        ss << tabulation << "idiv " << (varValues[2].first ? "DWORD PTR [rbp-" + varValues[2].second + "]" : varValues[2].second) << "\n";
+        ss << tabulation << "mov " << (varValues[0].first ? "DWORD PTR [rbp-" + varValues[0].second + "]" : varValues[0].second) << ", eax\n";
+    }
+    else if (sign == "*") {
+        ss << tabulation << "mov eax, " << (varValues[1].first ? "DWORD PTR [rbp-" + varValues[1].second + "]" : varValues[1].second) << "\n";
+        ss << tabulation << "imul eax, " << (varValues[2].first ? "DWORD PTR [rbp-" + varValues[2].second + "]" : varValues[2].second) << "\n";
+        ss << tabulation << "mov " << (varValues[0].first ? "DWORD PTR [rbp-" + varValues[0].second + "]" : varValues[0].second) << ", eax\n";
+    }
 }
