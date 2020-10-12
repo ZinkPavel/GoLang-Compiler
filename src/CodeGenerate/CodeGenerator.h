@@ -30,7 +30,7 @@ public:
     void generate (Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs);
     void write (std::vector<std::stringstream>& streams, std::stringstream& strStream);
     
-    void genPrologue (std::stringstream& ss);
+    void genPrologue (std::stringstream& ss); 
     
     void genReturn (std::vector<std::stringstream>& streams, const Block& block, Expression& expr);
     void genIf (std::vector<std::stringstream>& streams, const Block& block, Expression& expr);
