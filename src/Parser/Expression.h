@@ -39,7 +39,8 @@ const std::map<std::string, size_t> types = {
     {"FuncDeclarationExpr",    7},
     {"VarDefinitionExpr",      8},
     {"VarDeclarationExpr",     9},
-    {"FuncCallExpr",    10}
+    {"FuncCallExpr",    10},
+    {"PrintExpr",       11}
 };
 
 struct Status {
@@ -129,6 +130,11 @@ public:
     FuncCallExpr ();
 };
 
+class PrintExpr: public Expression {
+public:
+    PrintExpr ();
+};
+
 /* Checks */
 
 bool isMathExpr (std::vector<Token>& undefineTokenSeq);
@@ -141,3 +147,4 @@ bool isFuncDeclareExpr (std::vector<Token>& undefineTokenSeq);
 bool isVarDefinitionExpr (std::vector<Token>& undefineTokenSeq);
 bool isVarDeclarationExpr (std::vector<Token>& undefineTokenSeq);
 bool isFuncCallExpr (std::vector<Token>& undefineTokenSeq);
+bool isPrintExpr (std::vector<Token>& undefineTokenSeq);

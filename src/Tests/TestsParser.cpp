@@ -14,10 +14,11 @@ void TestsParser () {
     RUN_TEST(tr, VarDefinitionExprTest);
     RUN_TEST(tr, VarDeclarationTest);
     RUN_TEST(tr, FuncCallTest);
+    RUN_TEST(tr, PrintTest);
 
-    RUN_TEST(tr, ProgramTest);
+    // RUN_TEST(tr, ProgramTest);
 
-    RUN_TEST(tr, SerializeTokenTest);
+    // RUN_TEST(tr, SerializeTokenTest);
 }
 
 void MathExprTest () {
@@ -165,6 +166,18 @@ void FuncCallTest () {
     ASSERT_STATUS(1, false, true);
     ASSERT_STATUS(2, false, true);
     ASSERT_STATUS(3, false, true);
+
+    for (const auto& expr : comp.getParserExprs()) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
+}
+
+void PrintTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/PrintExprs.txt", true, true);
+
+    ASSERT_EQUAL(exprs.size(), 1u);
+
+    ASSERT_STATUS(0, false, true);
 
     for (const auto& expr : comp.getParserExprs()) {
         ASSERT_EQUAL((*expr).completeExpr, true);

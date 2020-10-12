@@ -215,13 +215,32 @@ FuncCallExpr::FuncCallExpr () {
     };
 }
 
+PrintExpr::PrintExpr () {
+    expectedSeq = {
+        {"print"},
+        {"L_PAREN"},
+        {"string_litteral"},
+        {"COMMA"},
+        {"identifier"},
+        {"R_PAREN"}
+    };
+
+    regexMask = {
+        "print\\s?"
+        "L_PAREN\\s?"
+        "string_litteral\\s?"
+        "COMMA\\s?"
+        "identifier\\s?"
+        "R_PAREN\\s?"
+    };
+}
+
 bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
     size_t counter;
 
     for (counter = 0; counter < undefineTokenSeq.size(); counter++) {
         if (expectedSeq[counter].find(undefineTokenSeq[counter].type) == expectedSeq[counter].end()) break;
-    }  
-
+    }
     return counter == undefineTokenSeq.size();
 }
 
@@ -287,5 +306,10 @@ bool isVarDeclarationExpr (std::vector<Token>& undefineTokenSeq) {
 
 bool isFuncCallExpr (std::vector<Token>& undefineTokenSeq) {
     FuncCallExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isPrintExpr (std::vector<Token>& undefineTokenSeq) {
+    PrintExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
