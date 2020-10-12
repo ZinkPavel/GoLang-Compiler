@@ -1,39 +1,43 @@
 #include "CodeGenerator.h"
 
 CodeGenerator::CodeGenerator () { 
+    hasBranches = false;
     nestingLevel = 0;
-    numBranches = 0;
+    numBranches = 1;
     shift = 0;
+    point = 0;
     outPath = "output/output.s";
 }
 
 std::vector<Token>& CodeGenerator::getVars () { return vars; }
 
 void CodeGenerator::generate (Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs) {
-    std::stringstream ss;
+    std::vector<std::stringstream> streams(1);
     Block& mainBlock = *std::find_if(semantics.blocks.begin(), semantics.blocks.end(), [] (const Block& block) -> bool {
         return block.name == "main";
     });
     
-    genPrologue(ss);
+    genPrologue(streams.back());
 
     for (auto& expr : exprs) {
         switch (expr->type)
         {
-        case 2: genReturn(ss, mainBlock, *expr); break;
-        case 8: genVarDefiniton(ss, mainBlock, *expr); break;
-        case 9: genVarDeclaration(ss, mainBlock, *expr); break;
+        case 2: genReturn(streams, mainBlock, *expr); break;
+        case 5: genIf(streams, mainBlock, *expr); break;
+        case 8: genVarDefiniton(streams, mainBlock, *expr); break;
+        case 9: genVarDeclaration(streams, mainBlock, *expr); break;
         default: break;
         }
     }    
     
-    genEpilogue(ss);
-    write(ss);
+    genEpilogue(streams.back());
+    write(streams);
 }
 
-void CodeGenerator::write (std::stringstream& ss) {
+void CodeGenerator::write (std::vector<std::stringstream>& streams) {
     std::ofstream output(outPath);
-    output << ss.str() << std::endl;
+    for (auto& stream : streams) output << stream.str();
+    output << std::endl;
     output.close();
 }
 
@@ -51,7 +55,9 @@ void CodeGenerator::genEpilogue (std::stringstream& ss) {
     ss << "\tret\n";
 }
 
-void CodeGenerator::genReturn (std::stringstream& ss, const Block& block, Expression& expr) {
+void CodeGenerator::genReturn (std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
+    std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
+    
     for (size_t i = 0; i < nestingLevel; i++) ss << "\t";
     ss << "mov " << "eax, ";
     Token& var = expr.actualTokenSeq[1];
@@ -63,7 +69,32 @@ void CodeGenerator::genReturn (std::stringstream& ss, const Block& block, Expres
     else throw std::runtime_error("Type mismatch");
 }
 
-void CodeGenerator::genVarDeclaration (std::stringstream& ss, Block& block, Expression& expr) {
+void CodeGenerator::genIf(std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
+    hasBranches = true;
+    point = expr.actualTokenSeq.back().row;
+
+    std::vector<std::string> varValues;
+    {
+        varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+            return expr.actualTokenSeq[1].litteral == var.litteral;
+        })).shift));
+
+        varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+            return expr.actualTokenSeq[3].litteral == var.litteral;
+        })).shift));
+    }
+    
+    streams.back() << "\tmov eax, DWORD PTR [rbp-" << varValues[0] << "]\n" ;
+    streams.back() << "\tcmp eax, DWORD PTR [rbp-" << varValues[1] << "]\n" ;
+    streams.back() << "\tjle .L" << ++numBranches << "\n";
+    
+    streams.push_back(std::stringstream());
+    streams.back() << ".L" << numBranches << ":\n";
+}
+
+void CodeGenerator::genVarDeclaration (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
+    std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
+    
     for (size_t i = 0; i < nestingLevel; i++) ss << "\t";
     Token& var = expr.actualTokenSeq[1];
 
@@ -76,7 +107,9 @@ void CodeGenerator::genVarDeclaration (std::stringstream& ss, Block& block, Expr
     ss << "mov " << "DWORD PTR [rbp-" << var.shift << "], " << var.value << "\n";
 }
 
-void CodeGenerator::genVarDefiniton (std::stringstream& ss, Block& block, Expression& expr) {
+void CodeGenerator::genVarDefiniton (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
+    std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
+    
     std::string sign = expr.actualTokenSeq[3].litteral, tabulation;
     tabulation.insert(tabulation.begin(), nestingLevel, '\t');
 
