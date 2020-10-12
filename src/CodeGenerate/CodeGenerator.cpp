@@ -4,6 +4,7 @@ CodeGenerator::CodeGenerator () {
     pendingBranch = false;
     nestingLevel = 0;
     numBranches = 1;
+    numStr = 0;
     shift = 0;
     point = 0;
     outPath = "output/output.s";
@@ -13,6 +14,7 @@ std::vector<Token>& CodeGenerator::getVars () { return vars; }
 
 void CodeGenerator::generate (Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs) {
     std::vector<std::stringstream> streams(1);
+    std::stringstream strStream;
     Block& mainBlock = *std::find_if(semantics.blocks.begin(), semantics.blocks.end(), [] (const Block& block) -> bool {
         return block.name == "main";
     });
@@ -27,6 +29,7 @@ void CodeGenerator::generate (Semantics& semantics, const std::vector<std::share
         case 6: genWhile(streams, mainBlock, *expr); break;
         case 8: genVarDefiniton(streams, mainBlock, *expr); break;
         case 9: genVarDeclaration(streams, mainBlock, *expr); break;
+        case 11: genPrint(streams, strStream, mainBlock, *expr); break;
         default: break;
         }
     }
@@ -38,11 +41,12 @@ void CodeGenerator::generate (Semantics& semantics, const std::vector<std::share
     }  
     
     genEpilogue(streams.back());
-    write(streams);
+    write(streams, strStream);
 }
 
-void CodeGenerator::write (std::vector<std::stringstream>& streams) {
+void CodeGenerator::write (std::vector<std::stringstream>& streams, std::stringstream& strStream) {
     std::ofstream output(outPath);
+    output << strStream.str();
     for (auto& stream : streams) output << stream.str();
     output << std::endl;
     output.close();
@@ -216,4 +220,27 @@ void CodeGenerator::genVarDefiniton (std::vector<std::stringstream>& streams, Bl
         ss << tabulation << "imul eax, " << (varValues[2].first ? "DWORD PTR [rbp-" + varValues[2].second + "]" : varValues[2].second) << "\n";
         ss << tabulation << "mov " << (varValues[0].first ? "DWORD PTR [rbp-" + varValues[0].second + "]" : varValues[0].second) << ", eax\n";
     }
+}
+
+void CodeGenerator::genPrint (std::vector<std::stringstream>& streams, std::stringstream& strStream, Block& block, Expression& expr) {
+    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
+        streams.push_back(std::stringstream());
+        streams.back() << ".L" << numBranches << ":\n";
+        pendingBranch = false;
+    }
+
+    size_t varValue = std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+        return expr.actualTokenSeq[4].litteral == var.litteral;
+    })->shift;  
+
+    std::stringstream& ss = (streams.size() > 2 && expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
+
+    strStream << ".LC" << numStr << ":\n";
+    strStream << "\t.string " << expr.actualTokenSeq[2].litteral << "\n";
+
+    ss << "\tmov eax, DWORD PTR [rbp-" << varValue << "]\n";
+    ss << "\tmov esi, eax\n";
+    ss << "\tmov edi, OFFSET FLAT:.LC0\n";
+    ss << "\tmov eax, 0\n";
+    ss << "\tcall printf\n";
 }

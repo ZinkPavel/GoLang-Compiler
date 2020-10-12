@@ -13,7 +13,7 @@
 class CodeGenerator {    
 public:
     bool pendingBranch;
-    size_t nestingLevel, numBranches, shift, point;
+    size_t nestingLevel, numBranches, numStr, shift, point;
     std::string outPath;
     std::vector<Token> vars;
 
@@ -22,7 +22,7 @@ public:
     std::vector<Token>& getVars ();
 
     void generate (Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs);
-    void write (std::vector<std::stringstream>& streams);
+    void write (std::vector<std::stringstream>& streams, std::stringstream& strStream);
     
     void genPrologue (std::stringstream& ss);
     
@@ -31,6 +31,7 @@ public:
     void genWhile (std::vector<std::stringstream>& streams, const Block& block, Expression& expr);
     void genVarDeclaration (std::vector<std::stringstream>& streams, Block& block, Expression& expr);
     void genVarDefiniton (std::vector<std::stringstream>& streams, Block& block, Expression& expr);
+    void genPrint (std::vector<std::stringstream>& streams, std::stringstream& strStream, Block& block, Expression& expr);
     
     void genEpilogue (std::stringstream& ss);
 };
