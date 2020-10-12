@@ -1,18 +1,17 @@
-package main // package definition
+package main
 
-func max(a, b int) int {
-	if a > b {
-		return a
+func main() int {
+	var x int = 10
+
+	if x < 15 {
+		x := 1 + 6
 	}
-	return b
-}
 
-func main() {
-	var x int = 43
-	var y bool = true
-	var z int = 10
+	for x > 5 {
+		x := x - 1
+	}
 
-	x := 34 + 43
+	print("%d", x)
 
-	max(x, z)
+	return 0
 }

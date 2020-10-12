@@ -111,22 +111,34 @@ void CodeGenerator::genIf(std::vector<std::stringstream>& streams, const Block& 
 
     point = expr.actualTokenSeq.back().row > point ? expr.actualTokenSeq.back().row : point;
 
+    std::string sign = expr.actualTokenSeq[2].type;
     std::vector<std::string> varValues;
     {
-        varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
-            return expr.actualTokenSeq[1].litteral == var.litteral;
-        })).shift));
+        if (expr.actualTokenSeq[1].type == "identifier") { 
+            varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+                return expr.actualTokenSeq[1].litteral == var.litteral;
+            })).shift));
+        } else varValues.push_back(expr.actualTokenSeq[1].litteral);
 
-        varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
-            return expr.actualTokenSeq[3].litteral == var.litteral;
-        })).shift));
+        if (expr.actualTokenSeq[3].type == "identifier") { 
+            varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+                return expr.actualTokenSeq[3].litteral == var.litteral;
+            })).shift));
+        } else varValues.push_back(expr.actualTokenSeq[3].litteral);
     }
     
     branches.pop();
     numBranches = (branches.front() > 0 && branches.front() == BRNCH::WHILE) ? numBranches + 2 : numBranches + 1;
-    ss << "\tmov eax, DWORD PTR [rbp-" << varValues[0] << "]\n";
-    ss << "\tcmp eax, DWORD PTR [rbp-" << varValues[1] << "]\n";
-    ss << "\tjle .L" << ++numBranches << "\n";
+    
+    ss << "\tmov eax, " << ((expr.actualTokenSeq[1].type == "identifier") ? "DWORD PTR [rbp-" + varValues[0] + "]" : varValues[0]) << "\n";
+    ss << "\tcmp eax, " << ((expr.actualTokenSeq[3].type == "identifier") ? "DWORD PTR [rbp-" + varValues[1] + "]" : varValues[1]) << "\n";
+    
+    if (sign == "MORE") ss << "\tjle ";
+    else if (sign == "LESS") ss << "\tjge ";
+    else if (sign == "EQUAL") ss << "\tjne ";
+    else if (sign == "NOT_EQUAL") ss << "\tje ";
+    
+    ss << ".L" << ++numBranches << "\n";
 
     pendingBranch = true;
 }
@@ -138,15 +150,20 @@ void CodeGenerator::genWhile(std::vector<std::stringstream>& streams, const Bloc
 
     point = expr.actualTokenSeq.back().row > point ? expr.actualTokenSeq.back().row : point;
 
+    std::string sign = expr.actualTokenSeq[2].type;
     std::vector<std::string> varValues;
     {
-        varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
-            return expr.actualTokenSeq[1].litteral == var.litteral;
-        })).shift));
+       if (expr.actualTokenSeq[1].type == "identifier") { 
+            varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+                return expr.actualTokenSeq[1].litteral == var.litteral;
+            })).shift));
+        } else varValues.push_back(expr.actualTokenSeq[1].litteral);
 
-        varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
-            return expr.actualTokenSeq[3].litteral == var.litteral;
-        })).shift));
+        if (expr.actualTokenSeq[3].type == "identifier") { 
+            varValues.push_back(std::to_string((*std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+                return expr.actualTokenSeq[3].litteral == var.litteral;
+            })).shift));
+        } else varValues.push_back(expr.actualTokenSeq[3].litteral);
     }
 
     numBranches = (branches.front() > 0 && branches.front() == BRNCH::WHILE) ? numBranches + 2 : numBranches + 1;
@@ -157,9 +174,15 @@ void CodeGenerator::genWhile(std::vector<std::stringstream>& streams, const Bloc
     
     streams.push_back(std::stringstream());
     streams.back() << ".L" << numBranches-1 << ":\n";
-    streams.back() << "\tmov eax, DWORD PTR [rbp-" << varValues[0] << "]\n";
-    streams.back() << "\tcmp eax, DWORD PTR [rbp-" << varValues[1] << "]\n";
-    streams.back() << "\tjg .L" << numBranches << "\n";
+    streams.back() << "\tmov eax, " << ((expr.actualTokenSeq[1].type == "identifier") ? "DWORD PTR [rbp-" + varValues[0] + "]" : varValues[0]) << "\n";
+    streams.back() << "\tcmp eax, " << ((expr.actualTokenSeq[3].type == "identifier") ? "DWORD PTR [rbp-" + varValues[1] + "]" : varValues[1]) << "\n";
+
+    if (sign == "MORE") streams.back() << "\tjg ";
+    else if (sign == "LESS") streams.back() << "\tjl ";
+    else if (sign == "EQUAL") streams.back() << "\tje ";
+    else if (sign == "NOT_EQUAL") streams.back() << "\tjne ";
+    
+    streams.back() << ".L" << numBranches << "\n";
 }
 
 void CodeGenerator::genVarDeclaration (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
