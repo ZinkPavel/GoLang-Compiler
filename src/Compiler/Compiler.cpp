@@ -152,8 +152,7 @@ void Compiler::readFile () {
     if (parserOn && !isTestPass) checkParserOutput(parser);
     if (parserOn) tree.build(getParserExprs());
     if (parserOn && !isTestPass) semantics.analysis(parser.getExprs());
-
-    // std::cout << semantics << std::endl; // test
+    if (parserOn && !isTestPass) codeGenerator.generate(semantics, parser.getExprs());
 }
 
 void Compiler::checkParserOutput (const Parser& parser) {
@@ -181,7 +180,7 @@ void Compiler::checkParserOutput (const Parser& parser) {
 }
 
 void Compiler::dumpTokens () {
-    std::ofstream out ("dump-token.txt");
+    std::ofstream out ("output/dump-token.txt");
     
     std::stringstream ss;
     for (const auto& token : tokenList) ss << token << '\n';
@@ -191,7 +190,7 @@ void Compiler::dumpTokens () {
 }
 
 void Compiler::dumpAst () {
-    std::ofstream out ("dump-ast.txt");
+    std::ofstream out ("output/dump-ast.txt");
 
     std::stringstream ss;
     printASTree(ss, tree.root);
@@ -201,7 +200,7 @@ void Compiler::dumpAst () {
 }
 
 void Compiler::dumpSymbolTable () {
-    std::ofstream out ("dump-symbol-table.txt");
+    std::ofstream out ("output/dump-symbol-table.txt");
 
     std::stringstream ss;
     printSymbolTable(ss, tree.root);

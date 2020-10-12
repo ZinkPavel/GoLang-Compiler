@@ -1,8 +1,9 @@
 All: bin/app
 
 FLAGS = g++ -Wall -Werror -std=c++17
-OBJ = build/main.o $(SEMANTICS) $(TREE) $(PARSER) $(COMPILER) $(TESTS) $(TOOLS)
+OBJ = build/main.o $(CODE_GENERATOR) $(SEMANTICS) $(TREE) $(PARSER) $(COMPILER) $(TESTS) $(TOOLS)
 
+CODE_GENERATOR = build/CodeGenerate/CodeGenerator.o
 SEMANTICS = build/Semantics/Block.o build/Semantics/Var.o build/Semantics/Semantics.o 
 TREE = build/Parser/AST-Tree/ASTree.o build/Parser/AST-Tree/Node.o
 PARSER = build/Parser/Expression.o build/Parser/Parser.o
@@ -19,6 +20,11 @@ bin/app: $(OBJ)
 
 build/main.o: src/main.cpp
 	$(FLAGS) -c src/main.cpp -o build/main.o
+
+# CODE_GENERATOR
+
+build/CodeGenerate/CodeGenerator.o: src/CodeGenerate/CodeGenerator.cpp
+	$(FLAGS) -c src/CodeGenerate/CodeGenerator.cpp -o build/CodeGenerate/CodeGenerator.o
 
 # SEMANTICS
 
@@ -80,4 +86,4 @@ build/Tools/OperatorsRedefinition.o: src/Tools/OperatorsRedefinition.cpp
 # OTHER
 
 clear:
-	rm -rf build/Semantics/*.o build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/* dump*.txt
+	rm -rf build/CodeGenerate/*.o build/Semantics/*.o build/Parser/AST-Tree/*.o build/Parser/*.o build/Compiler/*.o build/Tests/*.o build/Tools/*.o build/*.o bin/*

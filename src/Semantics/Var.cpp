@@ -19,6 +19,9 @@ Var::Var (Expression& expr) {
         litteral = expr.actualTokenSeq[1].litteral;
         dataType = expr.actualTokenSeq[2].litteral;
         value = expr.actualTokenSeq[4].litteral;
+
+        expr.actualTokenSeq[1].dataType = dataType;
+        expr.actualTokenSeq[1].value = value;
     } else throw std::runtime_error("Var contructor: wrong expression type. Expected VarDeclarationExpression.");
 }
 

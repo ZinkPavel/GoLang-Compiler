@@ -1,7 +1,7 @@
-while f < d {
+for f < d {
     d - f
     if f + d {
-        while c < b {
+        for c < b {
             
         }
     }

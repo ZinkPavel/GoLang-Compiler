@@ -53,6 +53,8 @@ void Parser::update (const std::vector<Token>& tokenListFromLexer, bool isTestPa
         if (isVarDefinitionExpr(undefineTokenSeq)) { EXPR_HIT(VarDefinitionExpr); }
         if (isVarDeclarationExpr(undefineTokenSeq)) { EXPR_HIT(VarDeclarationExpr); } 
         if (isFuncCallExpr(undefineTokenSeq)) { EXPR_HIT(FuncCallExpr); }
+        if (isPrintExpr(undefineTokenSeq)) { EXPR_HIT(PrintExpr); }
+        if (isScanExpr(undefineTokenSeq)) { EXPR_HIT(ScanExpr); } 
 
         if (counterEntry == 1) {
             newExpression->type = type;

@@ -14,10 +14,12 @@ void TestsParser () {
     RUN_TEST(tr, VarDefinitionExprTest);
     RUN_TEST(tr, VarDeclarationTest);
     RUN_TEST(tr, FuncCallTest);
+    RUN_TEST(tr, PrintTest);
+    RUN_TEST(tr, ScanTest);
 
-    RUN_TEST(tr, ProgramTest);
+    // RUN_TEST(tr, ProgramTest);
 
-    RUN_TEST(tr, SerializeTokenTest);
+    // RUN_TEST(tr, SerializeTokenTest);
 }
 
 void MathExprTest () {
@@ -171,6 +173,30 @@ void FuncCallTest () {
     }
 }
 
+void PrintTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/PrintExprs.txt", true, true);
+
+    ASSERT_EQUAL(exprs.size(), 1u);
+
+    ASSERT_STATUS(0, false, true);
+
+    for (const auto& expr : comp.getParserExprs()) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
+}
+
+void ScanTest () {
+    INIT_TEST_ENVAIRONMENT("tests/parser/ScanExprs.txt", true, true);
+
+    ASSERT_EQUAL(exprs.size(), 1u);
+
+    ASSERT_STATUS(0, false, true);
+
+    for (const auto& expr : comp.getParserExprs()) {
+        ASSERT_EQUAL((*expr).completeExpr, true);
+    }
+}
+
 void ProgramTest () {
     INIT_TEST_ENVAIRONMENT("tests/prog.go", true, true);
 
@@ -186,7 +212,7 @@ void ProgramTest () {
 }
 
 void SerializeTokenTest () {
-    Compiler comp("tests/prog.go");
+    Compiler comp("tests/prog.go", true, true);
     const std::vector<std::shared_ptr<Expression>>& exprs = comp.getParserExprs();
 
     std::stringstream tokenSeqStream;

@@ -126,14 +126,14 @@ IfExpr::IfExpr () {
 
 WhileLoopExpr::WhileLoopExpr () {
     expectedSeq = {
-        {"while"},
+        {"for"},
         vars,
         arithmeticSings,
         vars,
         {"L_BRACE"}
     };
 
-    regexMask = "while"
+    regexMask = "for"
         "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
         "\\s?(PLUS|MINUS|PROC|STAR|SLASH|LESS|MORE|AND|OR)"
         "\\s?(identifier|numeric_const|bin_const|octal_const|hex_const)"
@@ -215,13 +215,52 @@ FuncCallExpr::FuncCallExpr () {
     };
 }
 
+PrintExpr::PrintExpr () {
+    expectedSeq = {
+        {"print"},
+        {"L_PAREN"},
+        {"string_litteral"},
+        {"COMMA"},
+        {"identifier"},
+        {"R_PAREN"}
+    };
+
+    regexMask = {
+        "print\\s?"
+        "L_PAREN\\s?"
+        "string_litteral\\s?"
+        "COMMA\\s?"
+        "identifier\\s?"
+        "R_PAREN\\s?"
+    };
+}
+
+ScanExpr::ScanExpr () {
+    expectedSeq = {
+        {"scan"},
+        {"L_PAREN"},
+        {"string_litteral"},
+        {"COMMA"},
+        {"identifier"},
+        {"R_PAREN"}
+    };
+
+    regexMask = {
+        "scan\\s?"
+        "L_PAREN\\s?"
+        "string_litteral\\s?"
+        "COMMA\\s?"
+        "identifier\\s?"
+        "R_PAREN\\s?"
+    };
+}
+
 bool Expression::exprIdentification (const std::vector<Token>& undefineTokenSeq) {
     size_t counter;
 
     for (counter = 0; counter < undefineTokenSeq.size(); counter++) {
         if (expectedSeq[counter].find(undefineTokenSeq[counter].type) == expectedSeq[counter].end()) break;
-    }  
-
+    }
     return counter == undefineTokenSeq.size();
 }
 
@@ -287,5 +326,15 @@ bool isVarDeclarationExpr (std::vector<Token>& undefineTokenSeq) {
 
 bool isFuncCallExpr (std::vector<Token>& undefineTokenSeq) {
     FuncCallExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isPrintExpr (std::vector<Token>& undefineTokenSeq) {
+    PrintExpr instance;
+    return instance.exprIdentification(undefineTokenSeq);
+}
+
+bool isScanExpr (std::vector<Token>& undefineTokenSeq) {
+    ScanExpr instance;
     return instance.exprIdentification(undefineTokenSeq);
 }
