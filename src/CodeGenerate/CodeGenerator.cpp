@@ -1,7 +1,7 @@
 #include "CodeGenerator.h"
 
 CodeGenerator::CodeGenerator () { 
-    pendingBranch = false;
+    waitingBranch = false;
     nestingLevel = 0;
     numBranches = 1;
     numStr = 0;
@@ -14,11 +14,12 @@ std::vector<Token>& CodeGenerator::getVars () { return vars; }
 
 void CodeGenerator::generate (Semantics& semantics, const std::vector<std::shared_ptr<Expression>>& exprs) {
     std::vector<std::stringstream> streams(1);
-    std::stringstream strStream;
+
     Block& mainBlock = *std::find_if(semantics.blocks.begin(), semantics.blocks.end(), [] (const Block& block) -> bool {
         return block.name == "main";
     });
     
+    preparatoryWork(exprs);
     genPrologue(streams.back());
 
     for (auto& expr : exprs) {
@@ -29,48 +30,52 @@ void CodeGenerator::generate (Semantics& semantics, const std::vector<std::share
         case 6: genWhile(streams, mainBlock, *expr); break;
         case 8: genVarDefiniton(streams, mainBlock, *expr); break;
         case 9: genVarDeclaration(streams, mainBlock, *expr); break;
-        case 11: genPrint(streams, strStream, mainBlock, *expr); break;
+        case 11: genPrint(streams, mainBlock, *expr); break;
+        case 12: genScan(streams, mainBlock, *expr); break;
         default: break;
         }
     }
 
-    if (pendingBranch) {
+    if (waitingBranch) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        pendingBranch = false;
+        waitingBranch = false;
     }  
     
     genEpilogue(streams.back());
-    write(streams, strStream);
+    write(streams, lcStream);
 }
 
 void CodeGenerator::write (std::vector<std::stringstream>& streams, std::stringstream& strStream) {
     std::ofstream output(outPath);
+    output << ".intel_syntax noprefix\n";
+    output << ".globl main\n\n";
     output << strStream.str();
+
     for (auto& stream : streams) output << stream.str();
+    
     output << std::endl;
     output.close();
 }
 
 void CodeGenerator::genPrologue (std::stringstream& ss) {
-    ss << ".intel_syntax noprefix\n";
-    ss << ".globl main\n";
     ss << "\nmain:\n";
     ss << "\tpush rbp\n";
     ss << "\tmov rbp, rsp\n";
+    ss << "\tsub rsp, 16\n";
     nestingLevel++;
 }
 
 void CodeGenerator::genEpilogue (std::stringstream& ss) {
-    ss << "\tpop rbp\n";
+    ss << "\tleave\n";
     ss << "\tret\n";
 }
 
 void CodeGenerator::genReturn (std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
-    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
+    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        pendingBranch = false;
+        waitingBranch = false;
     }
     
     std::stringstream& ss = streams.back();
@@ -87,10 +92,10 @@ void CodeGenerator::genReturn (std::vector<std::stringstream>& streams, const Bl
 }
 
 void CodeGenerator::genIf(std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
-    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
+    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        pendingBranch = false;
+        waitingBranch = false;
     }
     
     std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
@@ -112,11 +117,11 @@ void CodeGenerator::genIf(std::vector<std::stringstream>& streams, const Block& 
     ss << "\tcmp eax, DWORD PTR [rbp-" << varValues[1] << "]\n";
     ss << "\tjle .L" << ++numBranches << "\n";
 
-    pendingBranch = true;
+    waitingBranch = true;
 }
 
 void CodeGenerator::genWhile(std::vector<std::stringstream>& streams, const Block& block, Expression& expr) {
-    if (pendingBranch && expr.actualTokenSeq.front().row > point) pendingBranch = false;
+    if (waitingBranch && expr.actualTokenSeq.front().row > point) waitingBranch = false;
 
     std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
 
@@ -147,10 +152,10 @@ void CodeGenerator::genWhile(std::vector<std::stringstream>& streams, const Bloc
 }
 
 void CodeGenerator::genVarDeclaration (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
-    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
+    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        pendingBranch = false;
+        waitingBranch = false;
     }
     
     std::stringstream& ss = (expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
@@ -168,10 +173,10 @@ void CodeGenerator::genVarDeclaration (std::vector<std::stringstream>& streams, 
 }
 
 void CodeGenerator::genVarDefiniton (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
-    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
+    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        pendingBranch = false;
+        waitingBranch = false;
     }
     
     std::stringstream& ss = (streams.size() > 2 && expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
@@ -222,11 +227,11 @@ void CodeGenerator::genVarDefiniton (std::vector<std::stringstream>& streams, Bl
     }
 }
 
-void CodeGenerator::genPrint (std::vector<std::stringstream>& streams, std::stringstream& strStream, Block& block, Expression& expr) {
-    if (pendingBranch && expr.actualTokenSeq.front().row > point) {
+void CodeGenerator::genPrint (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
+    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
         streams.push_back(std::stringstream());
         streams.back() << ".L" << numBranches << ":\n";
-        pendingBranch = false;
+        waitingBranch = false;
     }
 
     size_t varValue = std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
@@ -235,12 +240,35 @@ void CodeGenerator::genPrint (std::vector<std::stringstream>& streams, std::stri
 
     std::stringstream& ss = (streams.size() > 2 && expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
 
-    strStream << ".LC" << numStr << ":\n";
-    strStream << "\t.string " << expr.actualTokenSeq[2].litteral << "\n";
+    lcStream << ".LC" << numStr << ":\n";
+    lcStream << "\t.string " << expr.actualTokenSeq[2].litteral << "\n";
 
     ss << "\tmov eax, DWORD PTR [rbp-" << varValue << "]\n";
     ss << "\tmov esi, eax\n";
     ss << "\tmov edi, OFFSET FLAT:.LC0\n";
     ss << "\tmov eax, 0\n";
     ss << "\tcall printf\n";
+}
+
+void CodeGenerator::genScan (std::vector<std::stringstream>& streams, Block& block, Expression& expr) {
+    if (waitingBranch && expr.actualTokenSeq.front().row > point) {
+        streams.push_back(std::stringstream());
+        streams.back() << ".L" << numBranches << ":\n";
+        waitingBranch = false;
+    }
+
+    size_t varValue = std::find_if(vars.begin(), vars.end(), [expr](Token& var) {
+        return expr.actualTokenSeq[4].litteral == var.litteral;
+    })->shift;  
+
+    std::stringstream& ss = (streams.size() > 2 && expr.actualTokenSeq.begin()->row < point ? streams[streams.size()-2] : streams.back());
+
+    lcStream << ".LC" << numStr << ":\n";
+    lcStream << "\t.string " << expr.actualTokenSeq[2].litteral << "\n";
+
+    ss << "\tmov eax, DWORD PTR [rbp-" << varValue << "]\n";
+    ss << "\tmov esi, eax\n";
+    ss << "\tmov edi, OFFSET FLAT:.LC0\n";
+    ss << "\tmov eax, 0\n";
+    ss << "\tcall __isoc99_scanf\n";
 }

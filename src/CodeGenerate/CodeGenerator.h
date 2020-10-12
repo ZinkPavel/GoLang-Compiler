@@ -12,10 +12,12 @@
 
 class CodeGenerator {    
 public:
-    bool pendingBranch;
+    bool waitingBranch, writeInWaitingStream;
     size_t nestingLevel, numBranches, numStr, shift, point;
     std::string outPath;
     std::vector<Token> vars;
+    std::stringstream lcStream;
+    std::vector<std::string> waitingStream;
 
     CodeGenerator ();
 
@@ -31,7 +33,8 @@ public:
     void genWhile (std::vector<std::stringstream>& streams, const Block& block, Expression& expr);
     void genVarDeclaration (std::vector<std::stringstream>& streams, Block& block, Expression& expr);
     void genVarDefiniton (std::vector<std::stringstream>& streams, Block& block, Expression& expr);
-    void genPrint (std::vector<std::stringstream>& streams, std::stringstream& strStream, Block& block, Expression& expr);
+    void genPrint (std::vector<std::stringstream>& streams, Block& block, Expression& expr);
+    void genScan (std::vector<std::stringstream>& streams, Block& block, Expression& expr);
     
     void genEpilogue (std::stringstream& ss);
 };
